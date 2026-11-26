@@ -3,16 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Trilha PG • Especialista IBAM (Admin & Endemias)</title>
+  <title>Caderno de Estudos • Trilha PG (Banca IBAM)</title>
 
   <!-- CONFIGURAÇÃO PWA (ANDROID & iOS) -->
   <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#1d4ed8" />
+  <meta name="theme-color" content="#1e3a5f" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Trilha PG" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%231d4ed8'/%3E%3Cpath d='M96 34L44 56v42c0 34.5 22.2 66.7 52 76 29.8-9.3 52-41.5 52-76V56L96 34zm-10 92l-26-26 11.3-11.3L86 103.4l34.7-34.7L132 80l-46 46z' fill='%23ffffff'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%231e3a5f'/%3E%3Cpath d='M96 34L44 56v42c0 34.5 22.2 66.7 52 76 29.8-9.3 52-41.5 52-76V56L96 34zm-10 92l-26-26 11.3-11.3L86 103.4l34.7-34.7L132 80l-46 46z' fill='%23ffffff'/%3E%3C/svg%3E" />
+
+  <!-- FONTES DE LEITURA E CADERNO DE ESTUDOS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -21,14 +26,26 @@
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Merriweather"', 'Georgia', 'serif']
+          },
           colors: {
+            paper: {
+              50: '#FAF8F5',
+              100: '#F3EFEA',
+              200: '#E7E0D6',
+              800: '#1C1917',
+              900: '#141210',
+              950: '#0D0C0A'
+            },
             brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              500: '#2563eb',
-              600: '#1d4ed8',
-              700: '#1e40af',
-              900: '#1e3a8a'
+              50: '#EFF6FF',
+              100: '#DBEAFE',
+              500: '#2563EB',
+              600: '#1E3A5F',
+              700: '#172E4D',
+              900: '#0F1F36'
             }
           }
         }
@@ -36,21 +53,45 @@
     };
   </script>
   <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .font-editorial { font-family: 'Merriweather', Georgia, serif; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
-    .prose-ai h3 { font-size: 1.05rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.35rem; color: #1d4ed8; }
-    .dark .prose-ai h3 { color: #60a5fa; }
-    .prose-ai p { margin-bottom: 0.65rem; line-height: 1.6; }
-    .prose-ai ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
-    .prose-ai li { margin-bottom: 0.3rem; }
+    ::-webkit-scrollbar-thumb { background: rgba(120, 113, 108, 0.35); border-radius: 9999px; }
+
+    /* Textura sutil de caderno pautado no cabeçalho de estudo */
+    .notebook-grid {
+      background-image: radial-gradient(rgba(30, 58, 95, 0.08) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .dark .notebook-grid {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* Grifo de marca-texto */
+    .highlighter-yellow {
+      background: linear-gradient(120deg, rgba(253, 224, 71, 0.45) 0%, rgba(253, 224, 71, 0.45) 100%);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    .dark .highlighter-yellow {
+      background: linear-gradient(120deg, rgba(234, 179, 8, 0.25) 0%, rgba(234, 179, 8, 0.25) 100%);
+    }
+
+    .prose-ai h3 { font-family: 'Merriweather', Georgia, serif; font-size: 1.02rem; font-weight: 700; margin-top: 1.15rem; margin-bottom: 0.4rem; color: #1E3A5F; }
+    .dark .prose-ai h3 { color: #93C5FD; }
+    .prose-ai p { margin-bottom: 0.7rem; line-height: 1.7; }
+    .prose-ai ul { list-style: disc; padding-left: 1.35rem; margin-bottom: 0.8rem; }
+    .prose-ai li { margin-bottom: 0.35rem; line-height: 1.6; }
     .prose-ai strong { font-weight: 700; }
 
+    /* Animação 3D de virada do Flashcard */
     .flashcard-scene { perspective: 1200px; }
     .flashcard-inner {
       position: relative;
       width: 100%;
-      min-height: 310px;
+      min-height: 325px;
       transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
       transform-style: preserve-3d;
     }
@@ -64,24 +105,24 @@
     .flashcard-back { transform: rotateY(180deg); }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
+<body class="bg-paper-50 text-stone-800 dark:bg-paper-950 dark:text-stone-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
 
-  <!-- SIDEBAR DESKTOP -->
-  <aside class="hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-30">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800">
+  <!-- SIDEBAR ESTILO GABINETE DE ESTUDOS -->
+  <aside class="hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 bg-paper-100/90 dark:bg-paper-900 border-r border-paper-200 dark:border-stone-800 z-30">
+    <div class="p-5 border-b border-paper-200 dark:border-stone-800">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold shadow-sm">
-          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        <div class="w-10 h-10 rounded-xl bg-brand-600 text-amber-200 flex items-center justify-center font-bold shadow-sm ring-2 ring-brand-600/20">
+          <i data-lucide="book-marked" class="w-5 h-5"></i>
         </div>
         <div>
-          <h1 class="font-extrabold text-base tracking-tight leading-tight">Trilha PG • IBAM</h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Praia Grande • PWA & Nuvem</p>
+          <h1 class="font-editorial font-black text-base tracking-tight leading-tight text-stone-900 dark:text-white">Trilha PG • IBAM</h1>
+          <p class="text-[11px] font-medium text-stone-500 dark:text-stone-400">Caderno de Aprovação • Praia Grande</p>
         </div>
       </div>
 
       <div class="mt-4">
-        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Cargo Alvo</label>
-        <select id="cargoSelectDesktop" onchange="setCargo(this.value)" class="w-full text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Edital / Cargo Alvo</label>
+        <select id="cargoSelectDesktop" onchange="setCargo(this.value)" class="w-full text-xs font-bold rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 px-3 py-2 text-stone-800 dark:text-stone-100 shadow-2xs focus:outline-none focus:ring-2 focus:ring-brand-600">
           <option value="admin">Agente Administrativo</option>
           <option value="ace">Agente de Combate às Endemias</option>
           <option value="ambos">Ambos os Cargos (Completo)</option>
@@ -90,48 +131,51 @@
     </div>
 
     <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-stone-400">Plano de Estudos</p>
       <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-        <i data-lucide="map" class="w-4 h-4"></i> Trilhas do Edital
+        <i data-lucide="notebook-pen" class="w-4 h-4"></i> Caderno & Trilhas
       </button>
       <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition justify-between">
-        <span class="flex items-center gap-3"><i data-lucide="layers" class="w-4 h-4"></i> Flashcards IBAM</span>
-        <span id="badgeFlashDesktop" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold">0/0</span>
+        <span class="flex items-center gap-3"><i data-lucide="layers" class="w-4 h-4"></i> Fichas de Revisão</span>
+        <span id="badgeFlashDesktop" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold">0/0</span>
       </button>
       <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-        <i data-lucide="radar" class="w-4 h-4"></i> Radar de Pegadinhas IBAM
+        <i data-lucide="compass" class="w-4 h-4"></i> Mapa de Pegadinhas
       </button>
-      <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-        <i data-lucide="bot" class="w-4 h-4"></i> Mentor IA (Especialista)
-      </button>
+
+      <p class="px-3 pt-4 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-stone-400">Prática & Diagnóstico</p>
       <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-        <i data-lucide="file-check-2" class="w-4 h-4"></i> Simulado por Edital
+        <i data-lucide="file-check-2" class="w-4 h-4"></i> Simulado de Prova
       </button>
       <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition justify-between">
-        <span class="flex items-center gap-3"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Caderno de Erros</span>
+        <span class="flex items-center gap-3"><i data-lucide="bookmark-x" class="w-4 h-4"></i> Caderno de Erros</span>
         <span id="badgeErrosDesktop" class="text-xs px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 font-bold">0</span>
       </button>
+      <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="graduation-cap" class="w-4 h-4"></i> Tutor IA (Banca IBAM)
+      </button>
       <button onclick="switchTab('progresso')" data-tab="progresso" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-        <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Progresso & Banco
+        <i data-lucide="award" class="w-4 h-4"></i> Desempenho & Acervo
       </button>
     </nav>
 
-    <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-      <button id="btnInstallPwaDesktop" onclick="triggerPwaInstall()" class="hidden w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">
-        <i data-lucide="download" class="w-4 h-4"></i> Instalar App no Dispositivo
+    <div class="p-4 border-t border-paper-200 dark:border-stone-800 space-y-2 bg-paper-100 dark:bg-paper-900">
+      <button id="btnInstallPwaDesktop" onclick="triggerPwaInstall()" class="hidden w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition">
+        <i data-lucide="download" class="w-4 h-4"></i> Instalar App
       </button>
-      <button onclick="openModal('modalFirebase')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition">
-        <span class="flex items-center gap-2 truncate"><i data-lucide="cloud" class="w-4 h-4 text-sky-500 shrink-0"></i> <span id="firebaseUserLabel" class="truncate">Firebase Firestore</span></span>
-        <span id="firebaseStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+      <button onclick="openModal('modalFirebase')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-50 text-xs font-semibold transition">
+        <span class="flex items-center gap-2 truncate"><i data-lucide="cloud" class="w-4 h-4 text-sky-600 shrink-0"></i> <span id="firebaseUserLabel" class="truncate">Nuvem Firestore</span></span>
+        <span id="firebaseStatusDot" class="w-2.5 h-2.5 rounded-full bg-stone-400 shrink-0"></span>
       </button>
-      <button onclick="openModal('modalApi')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition">
+      <button onclick="openModal('modalApi')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-50 text-xs font-semibold transition">
         <span class="flex items-center gap-2"><i data-lucide="key-round" class="w-4 h-4 text-brand-600"></i> Chave API Gemini</span>
         <span id="apiStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
       </button>
       <div class="flex gap-2">
-        <button onclick="openModal('modalJson')" class="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition">
+        <button onclick="openModal('modalJson')" class="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 text-xs font-semibold transition">
           <i data-lucide="file-json" class="w-3.5 h-3.5"></i> JSON / Backup
         </button>
-        <button onclick="toggleTheme()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition" title="Alternar Tema">
+        <button onclick="toggleTheme()" class="px-3 py-2 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 text-xs font-semibold transition" title="Modo Leitura Noturna">
           <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
           <i data-lucide="sun" class="w-4 h-4 hidden dark:inline text-amber-400"></i>
         </button>
@@ -140,89 +184,89 @@
   </aside>
 
   <!-- CONTEÚDO PRINCIPAL -->
-  <div class="flex-1 md:pl-72 flex flex-col min-h-screen pb-20 md:pb-6">
-    <header class="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 py-3">
-      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+  <div class="flex-1 md:pl-72 flex flex-col min-h-screen pb-20 md:pb-8">
+    <header class="sticky top-0 z-20 bg-paper-50/95 dark:bg-paper-950/95 backdrop-blur border-b border-paper-200 dark:border-stone-800 px-4 py-3">
+      <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2 md:hidden">
-          <select id="cargoSelectMobile" onchange="setCargo(this.value)" class="text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-1.5">
+          <select id="cargoSelectMobile" onchange="setCargo(this.value)" class="text-xs font-bold rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 px-2 py-1.5">
             <option value="admin">Agente Administrativo</option>
             <option value="ace">Agente Combate Endemias</option>
             <option value="ambos">Ambos os Cargos</option>
           </select>
         </div>
 
-        <div class="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-          <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300 font-bold" id="headerCargoBadge">Cargo: Agente Administrativo</span>
-          <span id="headerTrailStats">0/37 trilhas concluídas</span>
-          <span id="syncIndicator" class="hidden px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">☁️ Sincronizado</span>
+        <div class="hidden md:flex items-center gap-2.5 text-xs font-medium text-stone-600 dark:text-stone-400">
+          <span class="px-3 py-1 rounded-full bg-brand-600 text-white font-bold shadow-2xs" id="headerCargoBadge">Cargo: Agente Administrativo</span>
+          <span class="font-semibold" id="headerTrailStats">0/37 tópicos estudados</span>
+          <span id="syncIndicator" class="hidden px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold">☁️ Sincronizado</span>
         </div>
 
         <div class="flex items-center gap-2 ml-auto">
-          <button id="btnInstallPwaMobile" onclick="triggerPwaInstall()" class="hidden px-2.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center gap-1">
+          <button id="btnInstallPwaMobile" onclick="triggerPwaInstall()" class="hidden px-2.5 py-1 rounded-full bg-emerald-700 text-white text-xs font-bold flex items-center gap-1">
             <i data-lucide="download" class="w-3.5 h-3.5"></i> Instalar
           </button>
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-bold">
-            <i data-lucide="zap" class="w-3.5 h-3.5"></i> <span id="headerXp">0 XP</span>
+          <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 dark:bg-amber-950/60 border border-amber-300/70 dark:border-amber-800 text-amber-900 dark:text-amber-300 text-xs font-extrabold">
+            <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-600"></i> <span id="headerXp">0 XP</span>
           </div>
-          <button onclick="openModal('modalFirebase')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Firebase">
-            <i data-lucide="cloud" class="w-4 h-4 text-sky-500"></i>
+          <button onclick="openModal('modalFirebase')" class="md:hidden p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800" title="Firebase">
+            <i data-lucide="cloud" class="w-4 h-4 text-sky-600"></i>
           </button>
-          <button onclick="openModal('modalApi')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Chave API">
+          <button onclick="openModal('modalApi')" class="md:hidden p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800" title="Chave API">
             <i data-lucide="key-round" class="w-4 h-4"></i>
           </button>
-          <button onclick="openModal('modalJson')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Importar/Exportar JSON">
+          <button onclick="openModal('modalJson')" class="md:hidden p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800" title="Importar/Exportar JSON">
             <i data-lucide="file-json" class="w-4 h-4"></i>
           </button>
-          <button onclick="toggleTheme()" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+          <button onclick="toggleTheme()" class="md:hidden p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800">
             <i data-lucide="sun-moon" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
     </header>
 
-    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6" id="mainContainer"></main>
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-7" id="mainContainer"></main>
   </div>
 
   <!-- NAVEGAÇÃO INFERIOR MOBILE -->
-  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 z-30">
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-paper-100 dark:bg-paper-900 border-t border-paper-200 dark:border-stone-800 flex justify-around py-2 z-30">
     <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="map" class="w-4 h-4 mb-0.5"></i> Trilhas
+      <i data-lucide="notebook-pen" class="w-4 h-4 mb-0.5"></i> Caderno
     </button>
     <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="layers" class="w-4 h-4 mb-0.5"></i> Cards
+      <i data-lucide="layers" class="w-4 h-4 mb-0.5"></i> Fichas
     </button>
     <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="radar" class="w-4 h-4 mb-0.5"></i> Radar
+      <i data-lucide="compass" class="w-4 h-4 mb-0.5"></i> Pegadinhas
     </button>
     <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="bot" class="w-4 h-4 mb-0.5"></i> Mentor
+      <i data-lucide="graduation-cap" class="w-4 h-4 mb-0.5"></i> Tutor IA
     </button>
     <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="file-check-2" class="w-4 h-4 mb-0.5"></i> Simulado
+      <i data-lucide="file-check-2" class="w-4 h-4 mb-0.5"></i> Prova
     </button>
     <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
-      <i data-lucide="alert-triangle" class="w-4 h-4 mb-0.5"></i> Erros
+      <i data-lucide="bookmark-x" class="w-4 h-4 mb-0.5"></i> Erros
     </button>
   </nav>
 
   <!-- MODAL CONFIGURAÇÃO DE CHAVE API GEMINI -->
-  <div id="modalApi" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-xl">
+  <div id="modalApi" class="hidden fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 max-w-md w-full p-6 shadow-xl">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-brand-600"></i> Chave API Gemini</h2>
-        <button onclick="closeModal('modalApi')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h2 class="font-editorial text-lg font-bold flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-brand-600"></i> Chave API Gemini</h2>
+        <button onclick="closeModal('modalApi')" class="text-stone-400 hover:text-stone-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+      <p class="text-xs text-stone-500 dark:text-stone-400 mb-4 leading-relaxed">
         Sua chave do Google AI Studio permanece armazenada exclusivamente no <strong>localStorage</strong> do seu navegador (nunca é enviada para a nuvem).
       </p>
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-semibold mb-1">API Key</label>
-          <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" />
+          <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800" />
         </div>
         <div>
           <label class="block text-xs font-semibold mb-1">Modelo</label>
-          <select id="inputGeminiModel" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          <select id="inputGeminiModel" class="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800">
             <option value="gemini-2.5-flash">gemini-2.5-flash (Recomendado - Rápido)</option>
             <option value="gemini-2.5-pro">gemini-2.5-pro (Análise Profunda)</option>
             <option value="gemini-2.0-flash">gemini-2.0-flash</option>
@@ -237,32 +281,32 @@
   </div>
 
   <!-- MODAL FIREBASE AUTH & FIRESTORE -->
-  <div id="modalFirebase" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+  <div id="modalFirebase" class="hidden fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 max-w-lg w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="cloud" class="w-5 h-5 text-sky-500"></i> Integração Firebase Firestore</h2>
-        <button onclick="closeModal('modalFirebase')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h2 class="font-editorial text-lg font-bold flex items-center gap-2"><i data-lucide="cloud" class="w-5 h-5 text-sky-600"></i> Integração Firebase Firestore</h2>
+        <button onclick="closeModal('modalFirebase')" class="text-stone-400 hover:text-stone-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <div class="space-y-4 text-xs">
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
+        <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700">
           <p class="font-bold mb-1">1. Credenciais do Projeto Firebase (firebaseConfig JSON)</p>
-          <p class="text-slate-500 dark:text-slate-400 mb-2">Cole o JSON <code>firebaseConfig</code> do seu projeto no Firebase Console:</p>
-          <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"></textarea>
+          <p class="text-stone-500 dark:text-stone-400 mb-2">Cole o JSON <code>firebaseConfig</code> do seu projeto no Firebase Console:</p>
+          <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' class="w-full p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 font-mono text-[11px]"></textarea>
           <div class="mt-2 flex flex-wrap gap-2">
             <button onclick="saveFirebaseConfigFromUI()" class="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold">Salvar Config & Inicializar</button>
-            <button onclick="loginWithGoogleFirebase()" class="px-3.5 py-2 rounded-lg bg-slate-900 dark:bg-brand-600 text-white font-bold">Entrar com Google</button>
+            <button onclick="loginWithGoogleFirebase()" class="px-3.5 py-2 rounded-lg bg-brand-600 text-white font-bold">Entrar com Google</button>
             <button onclick="logoutFirebase()" id="btnLogoutFirebase" class="hidden px-3.5 py-2 rounded-lg bg-rose-600 text-white font-bold">Sair</button>
           </div>
-          <p id="firebaseAuthInfo" class="mt-2 text-[11px] font-semibold text-slate-500">Status: Modo Offline / LocalStorage</p>
+          <p id="firebaseAuthInfo" class="mt-2 text-[11px] font-semibold text-stone-500">Status: Modo Offline / LocalStorage</p>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
-          <p class="font-bold mb-1">2. Sincronização de Banco & Aulas na Nuvem</p>
-          <p class="text-slate-500 dark:text-slate-400 mb-2">Envie suas questões customizadas, flashcards dominados e aulas IA para o Firestore.</p>
+        <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700">
+          <p class="font-bold mb-1">2. Sincronização de Acervo & Aulas na Nuvem</p>
+          <p class="text-stone-500 dark:text-stone-400 mb-2">Envie suas questões customizadas, fichas dominadas e aulas IA para o Firestore.</p>
           <div class="flex flex-wrap gap-2">
-            <button onclick="pushAllToFirestore()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Enviar Dados ao Firestore</button>
-            <button onclick="pullFromFirestoreManual(false)" class="px-3.5 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold">Baixar Dados do Firestore</button>
+            <button onclick="pushAllToFirestore()" class="px-3.5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold">Enviar Dados ao Firestore</button>
+            <button onclick="pullFromFirestoreManual(false)" class="px-3.5 py-2 rounded-lg bg-stone-700 hover:bg-stone-600 text-white font-bold">Baixar Dados do Firestore</button>
           </div>
         </div>
       </div>
@@ -270,27 +314,27 @@
   </div>
 
   <!-- MODAL IMPORTAR / EXPORTAR JSON -->
-  <div id="modalJson" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+  <div id="modalJson" class="hidden fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 max-w-xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="file-json" class="w-5 h-5 text-brand-600"></i> Gerenciador JSON (Questões & Backup)</h2>
-        <button onclick="closeModal('modalJson')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h2 class="font-editorial text-lg font-bold flex items-center gap-2"><i data-lucide="file-json" class="w-5 h-5 text-brand-600"></i> Gerenciador JSON (Questões & Backup)</h2>
+        <button onclick="closeModal('modalJson')" class="text-stone-400 hover:text-stone-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <div class="space-y-4 text-xs">
-        <div class="p-3.5 rounded-xl bg-brand-50/70 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-900">
-          <p class="font-bold text-brand-800 dark:text-brand-300 mb-1">1. Importar Pacote de Questões ou Backup (.json)</p>
-          <p class="text-slate-600 dark:text-slate-300 mb-2">Selecione um arquivo JSON de questões extras ou backup completo do estudante:</p>
+        <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900">
+          <p class="font-bold text-amber-900 dark:text-amber-300 mb-1">1. Importar Pacote de Questões ou Backup (.json)</p>
+          <p class="text-stone-600 dark:text-stone-300 mb-2">Selecione um arquivo JSON de questões extras ou backup completo do estudante:</p>
           <input type="file" id="jsonFileInput" accept=".json" onchange="handleJsonFileUpload(event)" class="block w-full mb-2 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-700" />
-          <textarea id="jsonPasteArea" rows="5" placeholder='Cole aqui o conteúdo JSON ou selecione o arquivo acima...' class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"></textarea>
-          <button onclick="importFromTextarea()" class="mt-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Processar & Salvar JSON</button>
+          <textarea id="jsonPasteArea" rows="5" placeholder='Cole aqui o conteúdo JSON ou selecione o arquivo acima...' class="w-full p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 font-mono text-[11px]"></textarea>
+          <button onclick="importFromTextarea()" class="mt-2 px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold">Processar & Salvar JSON</button>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
+        <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700">
           <p class="font-bold mb-1">2. Exportar Dados</p>
           <div class="flex flex-wrap gap-2 mt-2">
-            <button onclick="exportCustomQuestionsJSON()" class="px-3 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700">Exportar Questões IA/Extras (.json)</button>
-            <button onclick="exportFullBackupJSON()" class="px-3 py-2 rounded-lg bg-slate-700 text-white font-semibold hover:bg-slate-600">Backup Completo (Progresso + Chat)</button>
+            <button onclick="exportCustomQuestionsJSON()" class="px-3 py-2 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-800">Exportar Questões IA/Extras (.json)</button>
+            <button onclick="exportFullBackupJSON()" class="px-3 py-2 rounded-lg bg-stone-700 text-white font-semibold hover:bg-stone-600">Backup Completo (Progresso + Chat)</button>
           </div>
         </div>
       </div>
@@ -298,7 +342,7 @@
   </div>
 
   <!-- TOAST -->
-  <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white bg-slate-900 dark:bg-brand-600 transition-all"></div>
+  <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white bg-brand-600 transition-all"></div>
 
   <!-- FIREBASE SDK COMPAT -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -311,20 +355,20 @@
     const STORAGE_FB_CONFIG_KEY = 'trilha_pg_fb_config_v1';
 
     const DISCIPLINAS = [
-      { id: 'lp', codigo: 'I', nome: 'Língua Portuguesa', bloco: 'basicos', cargos: ['admin', 'ace'] },
-      { id: 'mat', codigo: 'II', nome: 'Matemática', bloco: 'basicos', cargos: ['admin', 'ace'] },
-      { id: 'inf', codigo: 'III', nome: 'Informática', bloco: 'basicos', cargos: ['admin'] },
-      { id: 'adm-1', codigo: 'I', nome: 'Atendimento e Comunicação', bloco: 'especificos_admin', cargos: ['admin'] },
-      { id: 'adm-2', codigo: 'II', nome: 'Gestão de Documentos e Processos', bloco: 'especificos_admin', cargos: ['admin'] },
-      { id: 'adm-3', codigo: 'III', nome: 'Materiais e Equipamentos', bloco: 'especificos_admin', cargos: ['admin'] },
-      { id: 'adm-4', codigo: 'IV', nome: 'Legislação e Administração Pública', bloco: 'especificos_admin', cargos: ['admin'] },
-      { id: 'ace-sus', codigo: 'SUS', nome: 'Saúde Pública e SUS', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-1', codigo: 'I', nome: 'Atribuições e Legislação (ACE)', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-2', codigo: 'II', nome: 'Vigilância em Saúde', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-3', codigo: 'III', nome: 'Doenças Transmitidas por Vetores', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-4', codigo: 'IV', nome: 'Controle de Vetores e Animais', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-5', codigo: 'V', nome: 'Procedimentos e Equipamentos', bloco: 'especificos_ace', cargos: ['ace'] },
-      { id: 'ace-6', codigo: 'VI', nome: 'Educação e Participação', bloco: 'especificos_ace', cargos: ['ace'] }
+      { id: 'lp', codigo: 'I', nome: 'Língua Portuguesa', bloco: 'basicos', cargos: ['admin', 'ace'], accent: 'border-l-blue-600', badge: 'bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-200' },
+      { id: 'mat', codigo: 'II', nome: 'Matemática', bloco: 'basicos', cargos: ['admin', 'ace'], accent: 'border-l-indigo-600', badge: 'bg-indigo-50 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200' },
+      { id: 'inf', codigo: 'III', nome: 'Informática', bloco: 'basicos', cargos: ['admin'], accent: 'border-l-sky-600', badge: 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200' },
+      { id: 'adm-1', codigo: 'I', nome: 'Atendimento e Comunicação', bloco: 'especificos_admin', cargos: ['admin'], accent: 'border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' },
+      { id: 'adm-2', codigo: 'II', nome: 'Gestão de Documentos e Processos', bloco: 'especificos_admin', cargos: ['admin'], accent: 'border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' },
+      { id: 'adm-3', codigo: 'III', nome: 'Materiais e Equipamentos', bloco: 'especificos_admin', cargos: ['admin'], accent: 'border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' },
+      { id: 'adm-4', codigo: 'IV', nome: 'Legislação e Administração Pública', bloco: 'especificos_admin', cargos: ['admin'], accent: 'border-l-amber-600', badge: 'bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200' },
+      { id: 'ace-sus', codigo: 'SUS', nome: 'Saúde Pública e SUS', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-teal-600', badge: 'bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-200' },
+      { id: 'ace-1', codigo: 'I', nome: 'Atribuições e Legislação (ACE)', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-teal-600', badge: 'bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-200' },
+      { id: 'ace-2', codigo: 'II', nome: 'Vigilância em Saúde', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-cyan-600', badge: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200' },
+      { id: 'ace-3', codigo: 'III', nome: 'Doenças Transmitidas por Vetores', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-rose-600', badge: 'bg-rose-50 text-rose-800 dark:bg-rose-950 dark:text-rose-200' },
+      { id: 'ace-4', codigo: 'IV', nome: 'Controle de Vetores e Animais', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-orange-600', badge: 'bg-orange-50 text-orange-800 dark:bg-orange-950 dark:text-orange-200' },
+      { id: 'ace-5', codigo: 'V', nome: 'Procedimentos e Equipamentos', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-amber-600', badge: 'bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200' },
+      { id: 'ace-6', codigo: 'VI', nome: 'Educação e Participação', bloco: 'especificos_ace', cargos: ['ace'], accent: 'border-l-lime-600', badge: 'bg-lime-50 text-lime-800 dark:bg-lime-950 dark:text-lime-200' }
     ];
 
     const TRILHAS = [
@@ -475,7 +519,7 @@
       chatHistory: [
         {
           role: 'model',
-          text: 'Olá! Sou seu **Mentor Especialista na Banca IBAM** para a **Prefeitura de Praia Grande**. Selecione seu cargo na barra lateral, estude as **63 trilhas do edital**, pratique com os **Flashcards IBAM** ou conecte sua nuvem **Firebase Firestore**!'
+          text: 'Olá! Sou seu **Tutor Especialista na Banca IBAM** para a **Prefeitura de Praia Grande**. Selecione seu edital na barra lateral, estude as **63 trilhas verticalizadas**, revise com as **Fichas 3D** ou conecte sua nuvem **Firebase Firestore**!'
         }
       ]
     };
@@ -599,8 +643,8 @@
         if (btnLogout) btnLogout.classList.remove('hidden');
         if (syncInd) syncInd.classList.remove('hidden');
       } else {
-        if (label) label.textContent = fbAuth ? 'Firebase (Desconectado)' : 'Firebase Firestore';
-        if (dot) dot.className = fbAuth ? 'w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0' : 'w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0';
+        if (label) label.textContent = fbAuth ? 'Nuvem (Desconectada)' : 'Nuvem Firestore';
+        if (dot) dot.className = fbAuth ? 'w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0' : 'w-2.5 h-2.5 rounded-full bg-stone-400 shrink-0';
         if (info) info.textContent = fbAuth ? 'Pronto para login com Google.' : 'Status: Modo Offline / LocalStorage';
         if (btnLogout) btnLogout.classList.add('hidden');
         if (syncInd) syncInd.classList.add('hidden');
@@ -704,7 +748,7 @@
       resetFlashDeckOrder(false);
       saveState();
       renderCurrentTab();
-      showToast(`Cargo selecionado: ${getCargoLabel(novoCargo)}`);
+      showToast(`Edital alterado: ${getCargoLabel(novoCargo)}`);
     }
 
     function applyTheme() { document.documentElement.classList.toggle('dark', state.theme === 'dark'); }
@@ -743,12 +787,12 @@
       if (selMob) selMob.value = state.cargo;
 
       const badgeCargo = document.getElementById('headerCargoBadge');
-      if (badgeCargo) badgeCargo.textContent = `Cargo: ${getCargoLabel()}`;
+      if (badgeCargo) badgeCargo.textContent = `Edital: ${getCargoLabel()}`;
 
       const trilhas = getFilteredTrilhas();
       const concluidas = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
       const statsEl = document.getElementById('headerTrailStats');
-      if (statsEl) statsEl.textContent = `${concluidas}/${trilhas.length} trilhas concluídas`;
+      if (statsEl) statsEl.textContent = `${concluidas}/${trilhas.length} tópicos concluídos`;
 
       const dominadosFlash = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
       const badgeFlash = document.getElementById('badgeFlashDesktop');
@@ -763,20 +807,20 @@
       if (badgeErros) badgeErros.textContent = errosCargo;
 
       const dot = document.getElementById('apiStatusDot');
-      if (dot) dot.className = state.apiKey ? 'w-2.5 h-2.5 rounded-full bg-emerald-500' : 'w-2.5 h-2.5 rounded-full bg-amber-500';
+      if (dot) dot.className = state.apiKey ? 'w-2.5 h-2.5 rounded-full bg-emerald-600' : 'w-2.5 h-2.5 rounded-full bg-amber-500';
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
         const active = btn.dataset.tab === currentTab;
         btn.className = active
-          ? 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold bg-brand-600 text-white shadow-sm'
-          : 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition';
+          ? 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold bg-brand-600 text-white shadow-xs'
+          : 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-paper-200/70 dark:hover:bg-stone-800 transition';
       });
 
       document.querySelectorAll('.nav-btn-mob').forEach(btn => {
         const active = btn.dataset.tab === currentTab;
         btn.className = active
-          ? 'nav-btn-mob flex flex-col items-center text-[10px] font-bold px-1.5 py-1 text-brand-600 dark:text-brand-400'
-          : 'nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1 text-slate-500 dark:text-slate-400';
+          ? 'nav-btn-mob flex flex-col items-center text-[10px] font-bold px-1.5 py-1 text-brand-600 dark:text-amber-400'
+          : 'nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1 text-stone-500 dark:text-stone-400';
       });
     }
 
@@ -835,39 +879,80 @@
         .replace(/\n/g, '<br>');
     }
 
-    // ABA 1: TRILHAS
+    // ============================================================================
+    // ABA 1: CADERNO DE ESTUDOS & TRILHAS VERTICALIZADAS (VISUAL EDITORIAL)
+    // ============================================================================
     function renderTrilhasList(container) {
       const disciplinas = getFilteredDisciplinas();
       const trilhas = getFilteredTrilhas();
+      const doneTotal = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
+      const pctEdital = trilhas.length ? Math.round((doneTotal / trilhas.length) * 100) : 0;
+      const flashDone = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
+      const qsCargo = getFilteredQuestions();
+      const qsAnswered = qsCargo.filter(q => state.answeredQuestions[q.id]).length;
+
       const blocos = [
-        { key: 'basicos', titulo: '📑 Conhecimentos Básicos Comuns' },
-        { key: 'especificos_admin', titulo: '📑 Conhecimentos Específicos — Agente Administrativo' },
-        { key: 'especificos_ace', titulo: '📑 Conhecimentos Específicos — Agente de Combate às Endemias' }
+        { key: 'basicos', titulo: 'Caderno I • Conhecimentos Básicos Comuns' },
+        { key: 'especificos_admin', titulo: 'Caderno II • Conhecimentos Específicos — Agente Administrativo' },
+        { key: 'especificos_ace', titulo: 'Caderno II • Conhecimentos Específicos — Agente de Combate às Endemias' }
       ];
+
+      const studyDashboardHero = `
+        <div class="notebook-grid bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 p-5 md:p-6 mb-6 shadow-xs">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-paper-200 dark:border-stone-800">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">Prefeitura de Praia Grande • Banca IBAM</span>
+              <h2 class="font-editorial text-xl md:text-2xl font-black text-stone-900 dark:text-white mt-0.5">Caderno Verticalizado de Estudos</h2>
+              <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">Selecione qualquer tópico abaixo para estudar a regra de ouro, gerar aula aprofundada ou resolver questões.</p>
+            </div>
+            <div class="relative w-full md:w-72 shrink-0">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-stone-400"></i>
+              <input type="text" value="${searchQuery}" oninput="searchQuery=this.value; renderCurrentTab()" placeholder="Filtrar assunto do edital..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-brand-600" />
+            </div>
+          </div>
+
+          <!-- INDICADORES DE ESTUDO -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4">
+            <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700">
+              <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                <span class="text-stone-500">Edital Estudado</span>
+                <span class="text-brand-600 dark:text-sky-400">${doneTotal}/${trilhas.length} (${pctEdital}%)</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-stone-200 dark:bg-stone-700 overflow-hidden">
+                <div class="h-full bg-brand-600 rounded-full transition-all" style="width: ${pctEdital}%"></div>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700 flex items-center justify-between">
+              <div>
+                <p class="text-[11px] font-bold text-stone-500">Questões Resolvidas</p>
+                <p class="text-base font-extrabold text-stone-900 dark:text-white">${qsAnswered} <span class="text-xs font-medium text-stone-400">de ${qsCargo.length}</span></p>
+              </div>
+              <button onclick="switchTab('simulado')" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white text-[11px] font-bold hover:bg-brand-700">Praticar</button>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700 flex items-center justify-between">
+              <div>
+                <p class="text-[11px] font-bold text-stone-500">Fichas Memorizadas</p>
+                <p class="text-base font-extrabold text-amber-700 dark:text-amber-400">${flashDone} <span class="text-xs font-medium text-stone-400">de ${trilhas.length}</span></p>
+              </div>
+              <button onclick="switchTab('flashcards')" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-[11px] font-bold hover:bg-amber-700">Revisar</button>
+            </div>
+          </div>
+        </div>
+      `;
 
       const discPills = `
         <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
-          <button onclick="activeDisciplineId='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${activeDisciplineId === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas (${trilhas.length})</button>
+          <button onclick="activeDisciplineId='all'; renderCurrentTab()" class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${activeDisciplineId === 'all' ? 'bg-brand-600 text-white shadow-2xs' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800 text-stone-600 dark:text-stone-300'}">Todas as Matérias (${trilhas.length})</button>
           ${disciplinas.map(d => {
             const count = trilhas.filter(t => t.disciplinaId === d.id).length;
-            return `<button onclick="activeDisciplineId='${d.id}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${activeDisciplineId === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d.codigo} — ${d.nome} (${count})</button>`;
+            return `<button onclick="activeDisciplineId='${d.id}'; renderCurrentTab()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition ${activeDisciplineId === d.id ? 'bg-brand-600 text-white shadow-2xs' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800 text-stone-600 dark:text-stone-300'}">${d.codigo} • ${d.nome} (${count})</button>`;
           }).join('')}
         </div>
       `;
 
-      let html = `
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
-          <div>
-            <h2 class="text-xl font-extrabold tracking-tight">Trilhas Verticalizadas do Edital</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Estude tópico a tópico, gere aulas completas com IA e salve questões inéditas.</p>
-          </div>
-          <div class="relative w-full md:w-72">
-            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-            <input type="text" value="${searchQuery}" oninput="searchQuery=this.value; renderCurrentTab()" placeholder="Buscar assunto..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500" />
-          </div>
-        </div>
-        ${discPills}
-      `;
+      let html = studyDashboardHero + discPills;
 
       blocos.forEach(bloco => {
         const discsDoBloco = disciplinas.filter(d => d.bloco === bloco.key && (activeDisciplineId === 'all' || d.id === activeDisciplineId));
@@ -878,32 +963,32 @@
           if (!trilhasDisc.length) return;
           const doneCount = trilhasDisc.filter(t => state.completedTrails.includes(t.id)).length;
           blocoHtml += `
-            <div class="mb-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-              <div class="px-4 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="mb-6 bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 border-l-4 ${disc.accent} overflow-hidden shadow-2xs">
+              <div class="px-5 py-3.5 bg-paper-100/70 dark:bg-stone-800/60 border-b border-paper-200 dark:border-stone-800 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <span class="px-2 py-0.5 rounded-md bg-brand-600 text-white text-xs font-extrabold">${disc.codigo}</span>
-                  <h3 class="font-bold text-sm">${disc.nome}</h3>
+                  <span class="px-2.5 py-0.5 rounded-md ${disc.badge} text-xs font-extrabold">${disc.codigo}</span>
+                  <h3 class="font-bold text-sm text-stone-900 dark:text-white">${disc.nome}</h3>
                 </div>
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${doneCount}/${trilhasDisc.length} concluídas</span>
+                <span class="text-xs font-bold text-stone-500 dark:text-stone-400">${doneCount}/${trilhasDisc.length} estudados</span>
               </div>
-              <div class="divide-y divide-slate-100 dark:divide-slate-800">
+              <div class="divide-y divide-paper-200/70 dark:divide-stone-800">
                 ${trilhasDisc.map((t, idx) => {
                   const isDone = state.completedTrails.includes(t.id);
                   const hasAiContent = Boolean(state.customTrailsContent[t.id]);
                   const qCount = getAllQuestions().filter(q => q.trilhaId === t.id).length;
                   return `
-                    <div onclick="openTrail('${t.id}')" class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer flex items-center justify-between gap-3 transition">
-                      <div class="flex items-start gap-3">
-                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${isDone ? '✓' : idx + 1}</div>
+                    <div onclick="openTrail('${t.id}')" class="p-4 hover:bg-paper-50 dark:hover:bg-stone-800/40 cursor-pointer flex items-center justify-between gap-3 transition">
+                      <div class="flex items-start gap-3.5">
+                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-600 text-white' : 'bg-paper-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300'}">${isDone ? '✓' : idx + 1}</div>
                         <div>
-                          <p class="text-sm font-semibold leading-snug ${isDone ? 'line-through text-slate-400' : ''}">${t.titulo}</p>
+                          <p class="text-sm font-semibold leading-snug ${isDone ? 'line-through text-stone-400' : 'text-stone-800 dark:text-stone-100'}">${t.titulo}</p>
                           <div class="flex flex-wrap items-center gap-2 mt-1.5">
-                            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">${qCount} questões</span>
-                            ${hasAiContent ? '<span class="text-[11px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold">✨ Aula IA Salva</span>' : ''}
+                            <span class="text-[11px] px-2 py-0.5 rounded bg-paper-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 font-medium">${qCount} questões</span>
+                            ${hasAiContent ? '<span class="text-[11px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-semibold">📖 Aula Anotada</span>' : ''}
                           </div>
                         </div>
                       </div>
-                      <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                      <span class="text-xs font-bold text-brand-600 dark:text-sky-400 shrink-0 hidden sm:inline">Estudar →</span>
                     </div>
                   `;
                 }).join('')}
@@ -911,7 +996,7 @@
             </div>
           `;
         });
-        if (blocoHtml) html += `<h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 mt-6">${bloco.titulo}</h3>${blocoHtml}`;
+        if (blocoHtml) html += `<h3 class="text-xs font-extrabold uppercase tracking-widest text-stone-500 mb-3 mt-6">${bloco.titulo}</h3>${blocoHtml}`;
       });
       container.innerHTML = html;
     }
@@ -937,65 +1022,65 @@
 
       container.innerHTML = `
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <button onclick="stopTrailTimer(); activeTrailId=null; renderCurrentTab()" class="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Trilhas</button>
+          <button onclick="stopTrailTimer(); activeTrailId=null; renderCurrentTab()" class="flex items-center gap-1.5 text-xs font-bold text-stone-600 dark:text-stone-300 hover:text-brand-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao Índice do Caderno</button>
           <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-mono font-bold" id="trailTimerDisplay">00:00</span>
-            <button onclick="toggleCompleteTrail('${trilha.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-900 dark:bg-brand-600 text-white'}">${isDone ? '✓ Trilha Concluída' : 'Concluir Trilha (+50 XP)'}</button>
+            <span class="px-3 py-1.5 rounded-xl bg-paper-100 dark:bg-stone-800 border border-paper-200 dark:border-stone-700 text-xs font-mono font-bold" id="trailTimerDisplay">00:00</span>
+            <button onclick="toggleCompleteTrail('${trilha.id}')" class="px-4 py-1.5 rounded-xl text-xs font-bold ${isDone ? 'bg-emerald-700 text-white' : 'bg-brand-600 hover:bg-brand-700 text-white'}">${isDone ? '✓ Tópico Concluído' : 'Marcar como Estudado (+50 XP)'}</button>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 md:p-6 shadow-sm mb-6">
-          <span class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">${disc.codigo} — ${disc.nome}</span>
-          <h2 class="text-xl font-extrabold mt-1 mb-4">${trilha.titulo}</h2>
+        <article class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 border-l-4 ${disc.accent} p-6 md:p-8 shadow-xs mb-6">
+          <span class="inline-block px-2.5 py-0.5 rounded-md ${disc.badge} text-xs font-extrabold uppercase tracking-wider">${disc.codigo} — ${disc.nome}</span>
+          <h2 class="font-editorial text-xl md:text-2xl font-black text-stone-900 dark:text-white mt-2 mb-5 leading-snug">${trilha.titulo}</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-            <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900">
-              <p class="text-xs font-extrabold text-amber-800 dark:text-amber-300 uppercase mb-1">⭐ Regra de Ouro IBAM</p>
-              <p class="text-xs leading-relaxed text-amber-950 dark:text-amber-100">${trilha.regraOuro}</p>
+            <div class="p-4 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900">
+              <p class="text-xs font-extrabold text-amber-900 dark:text-amber-300 uppercase mb-1.5">⭐ Regra de Ouro (Marca-Texto IBAM)</p>
+              <p class="text-xs md:text-sm leading-relaxed text-amber-950 dark:text-amber-100">${trilha.regraOuro}</p>
             </div>
-            <div class="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900">
-              <p class="text-xs font-extrabold text-rose-800 dark:text-rose-300 uppercase mb-1">⚠️ Armadilha Clássica IBAM</p>
-              <p class="text-xs leading-relaxed text-rose-950 dark:text-rose-100">${trilha.armadilhaIbam}</p>
+            <div class="p-4 rounded-xl bg-rose-50/90 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900">
+              <p class="text-xs font-extrabold text-rose-900 dark:text-rose-300 uppercase mb-1.5">⚠️ Onde a IBAM Tenta Derrubar</p>
+              <p class="text-xs md:text-sm leading-relaxed text-rose-950 dark:text-rose-100">${trilha.armadilhaIbam}</p>
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 mb-4">
-            <p class="text-xs font-extrabold uppercase text-slate-500 mb-1">📌 Resumo Relâmpago</p>
-            <p class="text-sm leading-relaxed">${trilha.resumo}</p>
-            <div class="flex flex-wrap gap-1.5 mt-3">${(trilha.palavrasChave || []).map(k => `<span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">#${k}</span>`).join('')}</div>
+          <div class="p-4 md:p-5 rounded-xl bg-paper-50 dark:bg-stone-800/70 border border-paper-200 dark:border-stone-700 mb-5">
+            <p class="text-xs font-extrabold uppercase tracking-wider text-stone-500 mb-1.5">📌 Fichamento Rápido</p>
+            <p class="text-sm leading-relaxed text-stone-800 dark:text-stone-100">${trilha.resumo}</p>
+            <div class="flex flex-wrap gap-1.5 mt-3">${(trilha.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-md bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-700 text-[11px] font-semibold">#${k}</span>`).join('')}</div>
           </div>
 
-          <div class="border-t border-slate-200 dark:border-slate-800 pt-4 mt-4">
+          <div class="border-t border-paper-200 dark:border-stone-800 pt-5 mt-5">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <h3 class="text-sm font-extrabold flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i> Aula Aprofundada (IA + Nuvem)</h3>
-              <button id="btnGenLesson" onclick="generateTrailLessonAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3.5 h-3.5"></i> ${savedAiHtml ? 'Regenerar Aula IA' : 'Gerar Conteúdo Completo com IA'}</button>
+              <h3 class="font-editorial text-sm font-bold flex items-center gap-2 text-stone-900 dark:text-white"><i data-lucide="book-open-check" class="w-4 h-4 text-brand-600"></i> Apostila Aprofundada do Tópico (IA)</h3>
+              <button id="btnGenLesson" onclick="generateTrailLessonAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> ${savedAiHtml ? 'Atualizar Apostila IA' : 'Gerar Apostila Completa com IA'}</button>
             </div>
-            <div id="aiLessonBox" class="text-sm prose-ai ${savedAiHtml ? 'p-4 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900' : 'text-xs text-slate-400 italic'}">
-              ${savedAiHtml ? savedAiHtml : 'Clique em "Gerar Conteúdo Completo com IA" para criar uma aula estruturada no perfil da banca IBAM sobre este tópico.'}
+            <div id="aiLessonBox" class="text-sm prose-ai ${savedAiHtml ? 'p-5 rounded-xl bg-paper-50 dark:bg-stone-800/50 border border-paper-200 dark:border-stone-700' : 'text-xs text-stone-400 italic'}">
+              ${savedAiHtml ? savedAiHtml : 'Clique em "Gerar Apostila Completa com IA" para redigir uma explicação detalhada focada na banca IBAM (salva no caderno e na nuvem).'}
             </div>
           </div>
-        </div>
+        </article>
 
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 md:p-6 shadow-sm">
+        <section class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 p-6 shadow-xs">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
             <div>
-              <h3 class="text-base font-extrabold">Questões deste Assunto (${questoesTrilha.length})</h3>
-              <p class="text-xs text-slate-500">Resolva ou gere novas questões padrão IBAM para salvar no banco.</p>
+              <h3 class="font-editorial text-base font-bold">Caderno de Exercícios do Tópico (${questoesTrilha.length})</h3>
+              <p class="text-xs text-stone-500">Resolva as questões comentadas ou peça novas questões inéditas no estilo IBAM.</p>
             </div>
-            <button id="btnGenQs" onclick="generateQuestionsForTrailAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Gerar +3 Questões IBAM (IA)</button>
+            <button id="btnGenQs" onclick="generateQuestionsForTrailAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Gerar +3 Questões IBAM (IA)</button>
           </div>
           <div id="pendingQuestionsBox" class="mb-5">${renderPendingGeneratedQuestions()}</div>
           <div class="space-y-4">
-            ${questoesTrilha.length === 0 ? '<p class="text-xs text-slate-400 italic">Nenhuma questão vinculada ainda. Clique em "Gerar +3 Questões IBAM (IA)" acima!</p>' : questoesTrilha.map((q, i) => renderQuestionCard(q, i)).join('')}
+            ${questoesTrilha.length === 0 ? '<p class="text-xs text-stone-400 italic">Nenhuma questão vinculada ainda. Clique em "Gerar +3 Questões IBAM (IA)" acima!</p>' : questoesTrilha.map((q, i) => renderQuestionCard(q, i)).join('')}
           </div>
-        </div>
+        </section>
       `;
     }
 
     function toggleCompleteTrail(trilhaId) {
       const idx = state.completedTrails.indexOf(trilhaId);
-      if (idx >= 0) { state.completedTrails.splice(idx, 1); showToast('Trilha desmarcada.'); }
-      else { state.completedTrails.push(trilhaId); state.xp += 50; showToast('Trilha concluída! +50 XP'); }
+      if (idx >= 0) { state.completedTrails.splice(idx, 1); showToast('Tópico desmarcado.'); }
+      else { state.completedTrails.push(trilhaId); state.xp += 50; showToast('Tópico estudado! +50 XP'); }
       saveState(); renderCurrentTab();
     }
 
@@ -1004,10 +1089,10 @@
       const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
       const btn = document.getElementById('btnGenLesson');
       const box = document.getElementById('aiLessonBox');
-      btn.disabled = true; btn.textContent = 'Gerando aula IBAM...';
-      box.innerHTML = '<p class="text-xs text-purple-600 font-semibold animate-pulse">Consultando especialista IBAM...</p>';
+      btn.disabled = true; btn.textContent = 'Redigindo apostila...';
+      box.innerHTML = '<p class="text-xs text-brand-600 font-semibold animate-pulse">Consultando Tutor IA e estruturando resumo de prova...</p>';
 
-      const prompt = `Atue como professor especialista na banca IBAM (Prefeitura de Praia Grande - SP). Crie uma aula objetiva e completa sobre:\nDisciplina: ${disc.nome}\nTópico: ${trilha.titulo}\nCargo(s): ${disc.cargos.map(getCargoLabel).join(' / ')}\n\nEstruture com subtítulos (###):\n### 1. Conceitos Fundamentais Cobrados pela IBAM\n### 2. Regras de Ouro e Esquema de Memorização\n### 3. Como a IBAM Tenta Derrubar o Candidato (Pegadinhas)\n### 4. Exemplo Comentado Estilo Prova`;
+      const prompt = `Atue como professor especialista na banca IBAM (Prefeitura de Praia Grande - SP). Redija uma apostila objetiva e completa sobre:\nDisciplina: ${disc.nome}\nTópico: ${trilha.titulo}\nCargo(s): ${disc.cargos.map(getCargoLabel).join(' / ')}\n\nEstruture com subtítulos (###):\n### 1. Conceitos Fundamentais Cobrados pela IBAM\n### 2. Regras de Ouro e Esquema de Memorização\n### 3. Como a IBAM Tenta Derrubar o Candidato (Pegadinhas)\n### 4. Questão Comentada Estilo Prova`;
 
       try {
         const raw = await callGeminiAPI(prompt);
@@ -1016,7 +1101,7 @@
         state.xp += 25;
         saveState();
         await syncLessonToFirestore(trilhaId, formatted);
-        showToast('Aula gerada e salva! +25 XP');
+        showToast('Apostila salva no caderno! +25 XP');
         renderCurrentTab();
       } catch (err) {
         box.innerHTML = `<p class="text-xs text-rose-600 font-semibold">Erro: ${err.message}</p>`;
@@ -1028,7 +1113,7 @@
       const trilha = TRILHAS.find(t => t.id === trilhaId);
       const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
       const btn = document.getElementById('btnGenQs');
-      btn.disabled = true; btn.textContent = 'Gerando questões...';
+      btn.disabled = true; btn.textContent = 'Elaborando questões...';
 
       const prompt = `Gere 3 questões inéditas de múltipla escolha (4 alternativas: A, B, C, D) no estilo exato da banca IBAM para Prefeitura de Praia Grande.\nDisciplina: ${disc.nome}\nAssunto: ${trilha.titulo}\nRetorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos): [{"enunciado":"...","alternativas":["A","B","C","D"],"correta":0,"incidencia":"Alta","comentario":"...","pegadinha":"...","regraOuro":"..."}]`;
 
@@ -1041,7 +1126,7 @@
           incidencia: item.incidencia || 'Alta', enunciado: item.enunciado, alternativas: item.alternativas.slice(0, 4),
           correta: Number(item.correta) || 0, comentario: item.comentario || '', pegadinha: item.pegadinha || '', regraOuro: item.regraOuro || '', origem: 'IA Gemini'
         }));
-        showToast(`${pendingGeneratedQuestions.length} questões geradas!`);
+        showToast(`${pendingGeneratedQuestions.length} questões elaboradas!`);
         renderCurrentTab();
       } catch (err) {
         showToast(`Erro ao gerar: ${err.message}`);
@@ -1052,22 +1137,22 @@
     function renderPendingGeneratedQuestions() {
       if (!pendingGeneratedQuestions.length) return '';
       return `
-        <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border-2 border-purple-300 dark:border-purple-800 space-y-3">
+        <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-300 dark:border-amber-800 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <p class="text-xs font-extrabold text-purple-800 dark:text-purple-300">✨ ${pendingGeneratedQuestions.length} Questões Geradas pela IA</p>
+            <p class="text-xs font-extrabold text-amber-900 dark:text-amber-300">✨ ${pendingGeneratedQuestions.length} Questões Novas Elaboradas pela IA</p>
             <div class="flex gap-2">
-              <button onclick="saveAllPendingQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Salvar Todas</button>
-              <button onclick="pendingGeneratedQuestions=[]; renderCurrentTab()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold">Descartar</button>
+              <button onclick="saveAllPendingQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold">Salvar Todas no Caderno</button>
+              <button onclick="pendingGeneratedQuestions=[]; renderCurrentTab()" class="px-3 py-1.5 rounded-lg bg-stone-200 dark:bg-stone-800 text-xs font-semibold">Descartar</button>
             </div>
           </div>
           ${pendingGeneratedQuestions.map((q, idx) => `
-            <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-xs">
+            <div class="p-3.5 rounded-xl bg-white dark:bg-stone-900 border border-amber-200 dark:border-amber-900 text-xs">
               <div class="flex justify-between items-start gap-2 mb-2">
                 <p class="font-bold">${idx + 1}. ${q.enunciado}</p>
                 <button onclick="saveSinglePendingQuestion(${idx})" class="shrink-0 px-2.5 py-1 rounded bg-brand-600 text-white font-bold text-[11px]">+ Salvar</button>
               </div>
-              <ul class="space-y-1 text-slate-600 dark:text-slate-300 mb-2">${q.alternativas.map((alt, aIdx) => `<li class="${aIdx === q.correta ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}">${String.fromCharCode(65 + aIdx)}) ${alt}</li>`).join('')}</ul>
-              <p class="text-[11px] text-slate-500"><strong>Comentário:</strong> ${q.comentario}</p>
+              <ul class="space-y-1 text-stone-600 dark:text-stone-300 mb-2">${q.alternativas.map((alt, aIdx) => `<li class="${aIdx === q.correta ? 'text-emerald-700 dark:text-emerald-400 font-bold' : ''}">${String.fromCharCode(65 + aIdx)}) ${alt}</li>`).join('')}</ul>
+              <p class="text-[11px] text-stone-500"><strong>Gabarito Comentado:</strong> ${q.comentario}</p>
             </div>
           `).join('')}
         </div>
@@ -1089,28 +1174,28 @@
       const ans = state.answeredQuestions[q.id];
       const letters = ['A', 'B', 'C', 'D'];
       return `
-        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">Questão ${index + 1} • Incidência ${q.incidencia || 'Alta'}</span>
-            ${q.origem ? `<span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">${q.origem}</span>` : ''}
+        <div class="p-4 md:p-5 rounded-xl border border-paper-200 dark:border-stone-800 bg-paper-50/70 dark:bg-stone-800/40">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-sky-300">Questão ${index + 1} • Incidência ${q.incidencia || 'Alta'}</span>
+            ${q.origem ? `<span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">${q.origem}</span>` : ''}
           </div>
-          <p class="text-sm font-semibold leading-relaxed mb-3">${q.enunciado}</p>
+          <p class="text-sm font-semibold leading-relaxed mb-3.5 text-stone-900 dark:text-stone-100">${q.enunciado}</p>
           <div class="space-y-2">
             ${q.alternativas.map((alt, idx) => {
-              let cls = 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-brand-500';
+              let cls = 'border-paper-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-brand-600';
               if (ans) {
-                if (idx === q.correta) cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-bold';
-                else if (idx === ans.selected && !ans.correct) cls = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200';
+                if (idx === q.correta) cls = 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-200 font-bold';
+                else if (idx === ans.selected && !ans.correct) cls = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-950 dark:text-rose-200';
               }
               return `<button onclick="answerTrailQuestion('${q.id}', ${idx})" class="w-full text-left p-3 rounded-xl border text-xs flex items-start gap-2.5 transition ${cls}"><span class="font-extrabold">${letters[idx]})</span><span>${alt}</span></button>`;
             }).join('')}
           </div>
           ${ans ? `
-            <div class="mt-3 p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs space-y-1.5">
-              <p class="font-extrabold ${ans.correct ? 'text-emerald-600' : 'text-rose-600'}">${ans.correct ? '✓ Resposta Correta! (+20 XP)' : `✗ Incorreta. Gabarito: ${letters[q.correta]}`}</p>
+            <div class="mt-3.5 p-4 rounded-xl bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-700 text-xs space-y-1.5">
+              <p class="font-extrabold ${ans.correct ? 'text-emerald-700' : 'text-rose-600'}">${ans.correct ? '✓ Resposta Correta! (+20 XP)' : `✗ Incorreta. Gabarito: ${letters[q.correta]}`}</p>
               <p><strong>Gabarito Comentado:</strong> ${q.comentario}</p>
-              ${q.pegadinha ? `<p class="text-rose-600 dark:text-rose-400"><strong>⚠️ Pegadinha IBAM:</strong> ${q.pegadinha}</p>` : ''}
-              ${q.regraOuro ? `<p class="text-amber-700 dark:text-amber-300"><strong>⭐ Regra de Ouro:</strong> ${q.regraOuro}</p>` : ''}
+              ${q.pegadinha ? `<p class="text-rose-700 dark:text-rose-400"><strong>⚠️ Pegadinha IBAM:</strong> ${q.pegadinha}</p>` : ''}
+              ${q.regraOuro ? `<p class="text-amber-800 dark:text-amber-300"><strong>⭐ Regra de Ouro:</strong> ${q.regraOuro}</p>` : ''}
             </div>
           ` : ''}
         </div>
@@ -1132,7 +1217,9 @@
       saveState(); renderCurrentTab();
     }
 
-    // ABA 2: FLASHCARDS INTERATIVOS 3D
+    // ============================================================================
+    // ABA 2: FICHAS DE REVISÃO 3D (FLASHCARDS ESTILO FICHA PAUTADA)
+    // ============================================================================
     function getFlashcardsPool() {
       let pool = getFilteredTrilhas();
       if (flashDiscFilter !== 'all') pool = pool.filter(t => t.disciplinaId === flashDiscFilter);
@@ -1163,24 +1250,24 @@
       container.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h2 class="text-xl font-extrabold">Flashcards IBAM • Regras de Ouro & Pegadinhas</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Dominados em <strong>${getCargoLabel()}</strong>: <strong>${masteredCount}/${allCargoTrilhas.length}</strong> • Clique no card (ou tecla <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Espaço</kbd>) para virar.</p>
+            <h2 class="font-editorial text-xl font-black">Fichário de Revisão Ativa • Banca IBAM</h2>
+            <p class="text-xs text-stone-500 dark:text-stone-400">Fichas memorizadas em <strong>${getCargoLabel()}</strong>: <strong>${masteredCount}/${allCargoTrilhas.length}</strong> • Toque na ficha (ou tecla <kbd class="px-1.5 py-0.5 rounded bg-paper-200 dark:bg-stone-800 font-mono text-[10px]">Espaço</kbd>) para virar.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="flashOnlyPending=!flashOnlyPending; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-xl text-xs font-bold border ${flashOnlyPending ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}">${flashOnlyPending ? '✓ Mostrando Pendentes' : 'Filtrar Pendentes'}</button>
-            <button onclick="resetFlashDeckOrder(true); renderCurrentTab(); showToast('Baralho embaralhado!')" class="px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Embaralhar</button>
+            <button onclick="flashOnlyPending=!flashOnlyPending; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-xl text-xs font-bold border ${flashOnlyPending ? 'bg-amber-600 text-white border-amber-600' : 'bg-white dark:bg-stone-900 border-paper-200 dark:border-stone-700'}">${flashOnlyPending ? '✓ Apenas Pendentes' : 'Filtrar Pendentes'}</button>
+            <button onclick="resetFlashDeckOrder(true); renderCurrentTab(); showToast('Fichário embaralhado!')" class="px-3 py-1.5 rounded-xl bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Embaralhar</button>
           </div>
         </div>
 
         <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
-          <button onclick="flashDiscFilter='all'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${flashDiscFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas (${allCargoTrilhas.length})</button>
-          ${disciplinas.map(d => `<button onclick="flashDiscFilter='${d.id}'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${flashDiscFilter === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d.codigo} — ${d.nome}</button>`).join('')}
+          <button onclick="flashDiscFilter='all'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${flashDiscFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800'}">Todas (${allCargoTrilhas.length})</button>
+          ${disciplinas.map(d => `<button onclick="flashDiscFilter='${d.id}'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${flashDiscFilter === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800'}">${d.codigo} • ${d.nome}</button>`).join('')}
         </div>
 
         ${!currentCard ? `
-          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-10 text-center space-y-3">
-            <p class="text-base font-extrabold text-emerald-600">🎉 Você dominou todos os Flashcards deste filtro!</p>
-            <button onclick="flashOnlyPending=false; resetFlashDeckOrder(false); renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Mostrar Todos os Cards</button>
+          <div class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 p-10 text-center space-y-3">
+            <p class="font-editorial text-base font-bold text-emerald-700">🎉 Todas as fichas deste filtro já foram memorizadas!</p>
+            <button onclick="flashOnlyPending=false; resetFlashDeckOrder(false); renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Revisar Todas as Fichas</button>
           </div>
         ` : renderSingleFlashcardStage(currentCard, flashIndex, deck.length)}
       `;
@@ -1193,35 +1280,35 @@
 
       return `
         <div class="max-w-3xl mx-auto">
-          <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
-            <span>Card ${idx + 1} de ${total}</span>
-            <span>${isMastered ? '✅ Dominado' : '⏳ Em revisão'}</span>
+          <div class="flex items-center justify-between text-xs font-bold text-stone-500 mb-2">
+            <span>Ficha ${idx + 1} de ${total}</span>
+            <span>${isMastered ? '✅ Memorizada' : '📖 Em estudo'}</span>
           </div>
-          <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mb-5">
+          <div class="w-full h-2 rounded-full bg-paper-200 dark:bg-stone-800 overflow-hidden mb-5">
             <div class="h-full bg-brand-600 transition-all duration-300" style="width: ${progressPct}%"></div>
           </div>
 
           <div class="flashcard-scene cursor-pointer select-none mb-5" onclick="flipFlashcard()">
             <div id="flashcardInner" class="flashcard-inner ${flashFlipped ? 'is-flipped' : ''}">
-              <div class="flashcard-face bg-white dark:bg-slate-900 rounded-3xl border-2 ${isMastered ? 'border-emerald-400 dark:border-emerald-800' : 'border-slate-200 dark:border-slate-800'} p-6 md:p-8 shadow-md flex flex-col justify-between">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-extrabold">${disc.codigo} — ${disc.nome}</span>
-                  <span class="text-[11px] font-bold text-slate-400 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Clique para virar</span>
+              <div class="flashcard-face bg-white dark:bg-stone-900 rounded-3xl border-2 ${isMastered ? 'border-emerald-500 dark:border-emerald-800' : 'border-paper-200 dark:border-stone-800'} p-6 md:p-8 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-rose-200/70 dark:border-stone-800">
+                  <span class="px-2.5 py-1 rounded-lg ${disc.badge} text-xs font-extrabold">${disc.codigo} — ${disc.nome}</span>
+                  <span class="text-[11px] font-bold text-stone-400 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Virar ficha</span>
                 </div>
-                <div class="my-6 text-center space-y-4">
-                  <h3 class="text-lg md:text-xl font-extrabold leading-snug">${card.titulo}</h3>
-                  <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-left">
-                    <p class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-300 mb-1">⚠️ Atenção à Armadilha IBAM (Como evitar o erro?)</p>
+                <div class="my-5 text-center space-y-4">
+                  <h3 class="font-editorial text-lg md:text-xl font-bold leading-snug text-stone-900 dark:text-white">${card.titulo}</h3>
+                  <div class="p-4 rounded-2xl bg-rose-50/90 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-left">
+                    <p class="text-[11px] font-extrabold uppercase tracking-wider text-rose-800 dark:text-rose-300 mb-1">⚠️ Pegadinha da Banca (Como não cair?)</p>
                     <p class="text-xs md:text-sm text-rose-950 dark:text-rose-100 leading-relaxed">${card.armadilhaIbam}</p>
                   </div>
                 </div>
-                <div class="flex flex-wrap justify-center gap-1.5">${(card.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300">#${k}</span>`).join('')}</div>
+                <div class="flex flex-wrap justify-center gap-1.5">${(card.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-full bg-paper-100 dark:bg-stone-800 text-[11px] font-semibold text-stone-600 dark:text-stone-300">#${k}</span>`).join('')}</div>
               </div>
 
-              <div class="flashcard-face flashcard-back bg-gradient-to-br from-slate-900 to-brand-950 text-white rounded-3xl border-2 border-brand-500 p-6 md:p-8 shadow-lg flex flex-col justify-between">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="px-2.5 py-1 rounded-lg bg-white/15 text-amber-300 text-xs font-extrabold">⭐ REGRA DE OURO IBAM</span>
-                  <span class="text-[11px] font-semibold text-slate-300 flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Voltar frente</span>
+              <div class="flashcard-face flashcard-back bg-gradient-to-br from-brand-900 to-stone-900 text-white rounded-3xl border-2 border-amber-400/60 p-6 md:p-8 shadow-md flex flex-col justify-between">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-white/15">
+                  <span class="px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-300 text-xs font-extrabold">⭐ REGRA DE OURO IBAM</span>
+                  <span class="text-[11px] font-semibold text-stone-300 flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Frente</span>
                 </div>
                 <div class="my-5 space-y-4">
                   <div class="p-4 rounded-2xl bg-amber-400/15 border border-amber-300/40">
@@ -1229,22 +1316,22 @@
                   </div>
                   <div class="p-4 rounded-2xl bg-white/10">
                     <p class="text-[11px] font-extrabold uppercase tracking-wider text-sky-300 mb-1">📌 Síntese para a Prova</p>
-                    <p class="text-xs md:text-sm text-slate-100 leading-relaxed">${card.resumo}</p>
+                    <p class="text-xs md:text-sm text-stone-100 leading-relaxed">${card.resumo}</p>
                   </div>
                 </div>
-                <div class="flex justify-between items-center text-[11px] text-slate-300">
-                  <span class="truncate pr-2">Tópico: ${card.titulo}</span>
-                  <button onclick="event.stopPropagation(); openTrailFromFlashcard('${card.id}')" class="shrink-0 underline font-bold text-amber-300 hover:text-amber-200">Abrir Trilha →</button>
+                <div class="flex justify-between items-center text-[11px] text-stone-300">
+                  <span class="truncate pr-2">Assunto: ${card.titulo}</span>
+                  <button onclick="event.stopPropagation(); openTrailFromFlashcard('${card.id}')" class="shrink-0 underline font-bold text-amber-300 hover:text-amber-200">Abrir Caderno →</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <button onclick="prevFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5"><i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior</button>
-            <button onclick="markFlashcardStatus('${card.id}', false)" class="py-3 px-3 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 hover:opacity-90 text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Revisar Depois</button>
-            <button onclick="markFlashcardStatus('${card.id}', true)" class="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> ${isMastered ? 'Dominado ✓' : 'Dominei (+10 XP)'}</button>
-            <button onclick="nextFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">Próximo <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+            <button onclick="prevFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800 hover:bg-paper-100 text-xs font-bold flex items-center justify-center gap-1.5"><i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior</button>
+            <button onclick="markFlashcardStatus('${card.id}', false)" class="py-3 px-3 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 hover:opacity-90 text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Revisar Depois</button>
+            <button onclick="markFlashcardStatus('${card.id}', true)" class="py-3 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> ${isMastered ? 'Memorizada ✓' : 'Dominei (+10 XP)'}</button>
+            <button onclick="nextFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800 hover:bg-paper-100 text-xs font-bold flex items-center justify-center gap-1.5">Próxima <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
           </div>
         </div>
       `;
@@ -1256,9 +1343,9 @@
     function markFlashcardStatus(trilhaId, mastered) {
       const already = state.masteredFlashcards.includes(trilhaId);
       if (mastered) {
-        if (!already) { state.masteredFlashcards.push(trilhaId); state.xp += 10; showToast('Flashcard dominado! +10 XP'); }
+        if (!already) { state.masteredFlashcards.push(trilhaId); state.xp += 10; showToast('Ficha memorizada! +10 XP'); }
       } else {
-        state.masteredFlashcards = state.masteredFlashcards.filter(id => id !== trilhaId); showToast('Marcado para revisão futura.');
+        state.masteredFlashcards = state.masteredFlashcards.filter(id => id !== trilhaId); showToast('Marcada para revisão futura.');
       }
       saveState();
       const deck = getOrderedFlashcards();
@@ -1280,60 +1367,60 @@
       const discs = [...new Set(RADAR.filter(r => matchCargo(r.cargos)).map(r => r.disciplina))];
       container.innerHTML = `
         <div class="mb-5">
-          <h2 class="text-xl font-extrabold">Radar de Pegadinhas & Regras de Ouro IBAM</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Armadilhas recorrentes da banca para <strong>${getCargoLabel()}</strong>.</p>
+          <h2 class="font-editorial text-xl font-black">Mapa de Pegadinhas & Regras de Ouro IBAM</h2>
+          <p class="text-xs text-stone-500 dark:text-stone-400">Armadilhas clássicas da banca catalogadas para <strong>${getCargoLabel()}</strong>.</p>
         </div>
         <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
-          <button onclick="radarFilter='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold ${radarFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas</button>
-          ${discs.map(d => `<button onclick="radarFilter='${d}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${radarFilter === d ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d}</button>`).join('')}
+          <button onclick="radarFilter='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold ${radarFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800'}">Todas</button>
+          ${discs.map(d => `<button onclick="radarFilter='${d}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${radarFilter === d ? 'bg-brand-600 text-white' : 'bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800'}">${d}</button>`).join('')}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           ${cards.map(c => `
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
+            <div class="bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 p-5 shadow-2xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">${c.disciplina}</span>
-                  <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">Incidência ${c.incidencia}</span>
+                  <span class="text-[11px] font-bold px-2.5 py-0.5 rounded bg-paper-100 dark:bg-stone-800">${c.disciplina}</span>
+                  <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">Incidência ${c.incidencia}</span>
                 </div>
-                <h3 class="font-extrabold text-sm mb-2">${c.titulo}</h3>
-                <p class="text-xs text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl mb-2"><strong>⚠️ Como a IBAM derruba:</strong> ${c.pegadinha}</p>
-                <p class="text-xs text-emerald-800 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl"><strong>⭐ Regra de Ouro:</strong> ${c.regraOuro}</p>
+                <h3 class="font-editorial font-bold text-sm mb-2.5 text-stone-900 dark:text-white">${c.titulo}</h3>
+                <p class="text-xs text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-3 rounded-xl mb-2"><strong>⚠️ Como a IBAM derruba:</strong> ${c.pegadinha}</p>
+                <p class="text-xs text-emerald-900 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-xl"><strong>⭐ Regra de Ouro:</strong> ${c.regraOuro}</p>
               </div>
-              <button onclick="sendToMentor('Treine comigo com 2 questões rápidas estilo IBAM sobre: ${c.titulo.replace(/'/g, '')}')" class="mt-4 w-full py-2 rounded-xl bg-slate-900 dark:bg-brand-600 hover:opacity-90 text-white text-xs font-bold">Treinar esta Regra com Mentor IA</button>
+              <button onclick="sendToMentor('Treine comigo com 2 questões rápidas estilo IBAM sobre: ${c.titulo.replace(/'/g, '')}')" class="mt-4 w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Praticar com Tutor IA</button>
             </div>
           `).join('')}
         </div>
       `;
     }
 
-    // ABA 4: MENTOR IA
+    // ABA 4: TUTOR IA
     function renderMentor(container) {
       container.innerHTML = `
-        <div class="flex flex-col h-[calc(100vh-11rem)] md:h-[calc(100vh-6rem)] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-          <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-slate-50 dark:bg-slate-800/50">
+        <div class="flex flex-col h-[calc(100vh-11rem)] md:h-[calc(100vh-6.5rem)] bg-white dark:bg-stone-900 rounded-2xl border border-paper-200 dark:border-stone-800 overflow-hidden shadow-xs">
+          <div class="px-4 py-3 border-b border-paper-200 dark:border-stone-800 flex flex-wrap items-center justify-between gap-2 bg-paper-100/80 dark:bg-stone-800/50">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center"><i data-lucide="bot" class="w-5 h-5"></i></div>
+              <div class="w-8 h-8 rounded-xl bg-brand-600 text-amber-200 flex items-center justify-center"><i data-lucide="graduation-cap" class="w-5 h-5"></i></div>
               <div>
-                <h2 class="text-sm font-extrabold">Mentor Especialista IBAM • Praia Grande</h2>
-                <p class="text-[11px] text-slate-500">Foco: <strong>${getCargoLabel()}</strong> • Persistido no LocalStorage + Firestore</p>
+                <h2 class="font-editorial text-sm font-bold">Tutor Especialista IBAM • Praia Grande</h2>
+                <p class="text-[11px] text-stone-500">Foco: <strong>${getCargoLabel()}</strong> • Salvo no Caderno & Firestore</p>
               </div>
             </div>
-            <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40">Limpar Chat</button>
+            <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40">Limpar Conversa</button>
           </div>
-          <div class="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex gap-2 overflow-x-auto bg-white dark:bg-slate-900">
-            <button onclick="sendToMentor('Quais são os 5 assuntos mais cobrados pela banca IBAM para ${getCargoLabel()} em Praia Grande e suas maiores pegadinhas?')" class="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[11px] font-bold whitespace-nowrap">🎯 Top 5 Assuntos IBAM</button>
-            <button onclick="analyzeErrorsWithMentor()" class="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-[11px] font-bold whitespace-nowrap">🩺 Analisar Meu Caderno de Erros</button>
-            <button onclick="sendToMentor('Crie um ciclo de revisões de 7 dias focado nos tópicos críticos do edital para ${getCargoLabel()}.')" class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold whitespace-nowrap">📅 Plano de Revisão 7 Dias</button>
+          <div class="px-4 py-2 border-b border-paper-200 dark:border-stone-800 flex gap-2 overflow-x-auto bg-paper-50 dark:bg-stone-900">
+            <button onclick="sendToMentor('Quais são os 5 assuntos mais cobrados pela banca IBAM para ${getCargoLabel()} em Praia Grande e suas maiores pegadinhas?')" class="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-sky-300 text-[11px] font-bold whitespace-nowrap">🎯 Top 5 Assuntos IBAM</button>
+            <button onclick="analyzeErrorsWithMentor()" class="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-800 dark:text-rose-300 text-[11px] font-bold whitespace-nowrap">🩺 Diagnosticar Meu Caderno de Erros</button>
+            <button onclick="sendToMentor('Crie um ciclo de revisões de 7 dias focado nos tópicos críticos do edital para ${getCargoLabel()}.')" class="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[11px] font-bold whitespace-nowrap">📅 Cronograma 7 Dias</button>
           </div>
-          <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3">
+          <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3 bg-paper-50/40 dark:bg-stone-950/40">
             ${state.chatHistory.map(msg => `
               <div class="flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}">
-                <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${msg.role === 'user' ? 'bg-brand-600 text-white font-medium' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 prose-ai'}">${msg.role === 'user' ? msg.text : formatSimpleMarkdown(msg.text)}</div>
+                <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${msg.role === 'user' ? 'bg-brand-600 text-white font-medium' : 'bg-white dark:bg-stone-800 border border-paper-200 dark:border-stone-700 text-stone-800 dark:text-stone-100 prose-ai'}">${msg.role === 'user' ? msg.text : formatSimpleMarkdown(msg.text)}</div>
               </div>
             `).join('')}
           </div>
-          <form onsubmit="handleChatSubmit(event)" class="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
-            <input type="text" id="chatInput" placeholder="Pergunte sobre regras da IBAM, pegadinhas, leis ou peça questões..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          <form onsubmit="handleChatSubmit(event)" class="p-3 border-t border-paper-200 dark:border-stone-800 flex gap-2 bg-white dark:bg-stone-900">
+            <input type="text" id="chatInput" placeholder="Tire dúvidas sobre leis, gramática, matemática ou peça questões IBAM..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-600" />
             <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="send" class="w-4 h-4"></i> Enviar</button>
           </form>
         </div>
@@ -1341,7 +1428,7 @@
       const box = document.getElementById('chatMessagesBox'); if (box) box.scrollTop = box.scrollHeight;
     }
 
-    function clearChatHistory() { state.chatHistory = [DEFAULT_STATE.chatHistory[0]]; saveState(); renderCurrentTab(); showToast('Histórico reiniciado.'); }
+    function clearChatHistory() { state.chatHistory = [DEFAULT_STATE.chatHistory[0]]; saveState(); renderCurrentTab(); showToast('Conversa reiniciada.'); }
     function analyzeErrorsWithMentor() {
       const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
       if (!wrongQs.length) { sendToMentor('Meu Caderno de Erros está vazio. Monte um mini-simulado diagnóstico de 3 questões padrão IBAM!'); return; }
@@ -1352,10 +1439,10 @@
       if (currentTab !== 'mentor') { currentTab = 'mentor'; updateGlobalUI(); }
       state.chatHistory.push({ role: 'user', text: promptText }); saveState(); renderCurrentTab();
       const box = document.getElementById('chatMessagesBox');
-      if (box) { box.innerHTML += `<div class="flex justify-start"><div class="rounded-2xl px-4 py-3 text-xs bg-slate-100 dark:bg-slate-800 animate-pulse">Analisando com foco na banca IBAM...</div></div>`; box.scrollTop = box.scrollHeight; }
-      const sys = `Você é um mentor especialista na banca IBAM preparando candidatos para a Prefeitura de Praia Grande (Cargo: ${getCargoLabel()}). Destaque regras mais cobradas, pegadinhas de 4 alternativas (A-D) e dicas diretas.`;
+      if (box) { box.innerHTML += `<div class="flex justify-start"><div class="rounded-2xl px-4 py-3 text-xs bg-white dark:bg-stone-800 border border-paper-200 animate-pulse">Analisando com foco na banca IBAM...</div></div>`; box.scrollTop = box.scrollHeight; }
+      const sys = `Você é um tutor especialista na banca IBAM preparando candidatos para a Prefeitura de Praia Grande (Cargo: ${getCargoLabel()}). Destaque regras mais cobradas, pegadinhas de 4 alternativas (A-D) e dicas diretas.`;
       try {
-        const contextPrompt = state.chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Estudante' : 'Mentor IBAM'}: ${m.text}`).join('\n\n');
+        const contextPrompt = state.chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Estudante' : 'Tutor IBAM'}: ${m.text}`).join('\n\n');
         const reply = await callGeminiAPI(contextPrompt, sys);
         state.chatHistory.push({ role: 'model', text: reply }); saveState(); renderCurrentTab();
       } catch (err) {
@@ -1372,29 +1459,29 @@
       const totalDisponivel = getFilteredQuestions().length;
       container.innerHTML = `
         <div class="mb-5">
-          <h2 class="text-xl font-extrabold">Simulado por Edital • Banca IBAM</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Banco ativo para <strong>${getCargoLabel()}</strong>: <strong>${totalDisponivel} questões</strong> disponíveis.</p>
+          <h2 class="font-editorial text-xl font-black">Simulado Oficial • Estilo Banca IBAM</h2>
+          <p class="text-xs text-stone-500 dark:text-stone-400">Banco ativo para <strong>${getCargoLabel()}</strong>: <strong>${totalDisponivel} questões</strong> disponíveis.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Edital Admin</span><h3 class="font-extrabold text-base mt-2">Simulado Agente Administrativo</h3><p class="text-xs text-slate-500 mt-1">Conhecimentos Básicos (LP, Matemática, Informática) + Específicas Admin.</p></div>
-            <button onclick="startPresetSimulado('admin', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Iniciar Simulado Admin (20q)</button>
+          <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800 shadow-2xs flex flex-col justify-between">
+            <div><span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-900">Edital Admin</span><h3 class="font-editorial font-bold text-base mt-2">Simulado Agente Administrativo</h3><p class="text-xs text-stone-500 mt-1">Conhecimentos Básicos (LP, Matemática, Informática) + Específicas Admin.</p></div>
+            <button onclick="startPresetSimulado('admin', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold">Iniciar Prova Admin (20q)</button>
           </div>
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-teal-100 text-teal-800">Edital Endemias</span><h3 class="font-extrabold text-base mt-2">Simulado Agente de Endemias</h3><p class="text-xs text-slate-500 mt-1">LP e Matemática (sem Informática) + SUS, Lei 11.350/06, Vetores e EPIs.</p></div>
-            <button onclick="startPresetSimulado('ace', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold">Iniciar Simulado Endemias (20q)</button>
+          <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800 shadow-2xs flex flex-col justify-between">
+            <div><span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-teal-100 text-teal-900">Edital Endemias</span><h3 class="font-editorial font-bold text-base mt-2">Simulado Agente de Endemias</h3><p class="text-xs text-stone-500 mt-1">LP e Matemática (sem Informática) + SUS, Lei 11.350/06, Vetores e EPIs.</p></div>
+            <button onclick="startPresetSimulado('ace', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold">Iniciar Prova Endemias (20q)</button>
           </div>
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-brand-100 text-brand-800">Treino Integrado</span><h3 class="font-extrabold text-base mt-2">Simulado Geral (Ambos os Cargos)</h3><p class="text-xs text-slate-500 mt-1">Mescla todas as disciplinas comuns e específicas dos dois cargos.</p></div>
-            <button onclick="startPresetSimulado('ambos', 30)" class="mt-4 w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Iniciar Simulado Geral (30q)</button>
+          <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800 shadow-2xs flex flex-col justify-between">
+            <div><span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-brand-100 text-brand-900">Treino Integrado</span><h3 class="font-editorial font-bold text-base mt-2">Simulado Geral (Ambos os Cargos)</h3><p class="text-xs text-stone-500 mt-1">Mescla todas as disciplinas comuns e específicas dos dois cargos.</p></div>
+            <button onclick="startPresetSimulado('ambos', 30)" class="mt-4 w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Iniciar Prova Geral (30q)</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h3 class="font-extrabold text-sm mb-3">Configurar Simulado Personalizado</h3>
+        <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800 shadow-2xs">
+          <h3 class="font-editorial font-bold text-sm mb-3">Montar Caderno de Prova Personalizado</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-semibold mb-1">Filtro por Disciplina / Bloco</label>
-              <select id="simDiscSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <select id="simDiscSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800">
                 <option value="all">Todas do Cargo Atual (${getCargoLabel()})</option>
                 <option value="basicos">Apenas Conhecimentos Básicos</option>
                 <option value="especificos">Apenas Conhecimentos Específicos</option>
@@ -1403,11 +1490,11 @@
             </div>
             <div>
               <label class="block text-xs font-semibold mb-1">Quantidade Máxima</label>
-              <select id="simQtySelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+              <select id="simQtySelect" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-paper-50 dark:bg-stone-800">
                 <option value="5">5 questões</option><option value="10" selected>10 questões</option><option value="20">20 questões</option><option value="40">40 questões</option>
               </select>
             </div>
-            <div class="flex items-end"><button onclick="startCustomSimulado()" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold">Gerar Prova Agora</button></div>
+            <div class="flex items-end"><button onclick="startCustomSimulado()" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Gerar Caderno de Prova</button></div>
           </div>
         </div>
       `;
@@ -1430,7 +1517,7 @@
       else if (filter === 'especificos') pool = pool.filter(q => q.bloco !== 'basicos');
       else if (filter !== 'all') pool = pool.filter(q => q.disciplinaId === filter);
       if (!pool.length) { showToast('Nenhuma questão encontrada.'); return; }
-      launchSimulado(shuffleArray(pool).slice(0, qty), 'Simulado Personalizado');
+      launchSimulado(shuffleArray(pool).slice(0, qty), 'Caderno de Prova Personalizado');
     }
     function launchSimulado(questions, titulo) {
       simuladoState = { active: true, finished: false, titulo, questions, answers: {}, secondsElapsed: 0 };
@@ -1446,18 +1533,18 @@
     function renderSimuladoActive(container) {
       const letters = ['A', 'B', 'C', 'D'];
       container.innerHTML = `
-        <div class="sticky top-14 z-10 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 mb-4 flex items-center justify-between shadow-sm">
-          <div><h2 class="text-sm font-extrabold">${simuladoState.titulo}</h2><p class="text-xs text-slate-500">${Object.keys(simuladoState.answers).length} de ${simuladoState.questions.length} respondidas</p></div>
-          <div class="flex items-center gap-3"><span id="simTimer" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">00:00</span><button onclick="finishSimulado()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Finalizar Prova</button></div>
+        <div class="sticky top-14 z-10 bg-white dark:bg-stone-900 p-3.5 rounded-2xl border border-paper-200 dark:border-stone-800 mb-4 flex items-center justify-between shadow-xs">
+          <div><h2 class="font-editorial text-sm font-bold">${simuladoState.titulo}</h2><p class="text-xs text-stone-500">${Object.keys(simuladoState.answers).length} de ${simuladoState.questions.length} respondidas</p></div>
+          <div class="flex items-center gap-3"><span id="simTimer" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-paper-100 dark:bg-stone-800">00:00</span><button onclick="finishSimulado()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold">Entregar Gabarito</button></div>
         </div>
         <div class="space-y-4">
           ${simuladoState.questions.map((q, idx) => {
             const chosen = simuladoState.answers[idx];
             return `
-              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800">
                 <p class="text-xs font-bold text-brand-600 mb-1">Questão ${idx + 1}</p>
                 <p class="text-sm font-semibold mb-3">${q.enunciado}</p>
-                <div class="space-y-2">${q.alternativas.map((alt, aIdx) => `<button onclick="simuladoState.answers[${idx}]=${aIdx}; renderCurrentTab()" class="w-full text-left p-3 rounded-xl border text-xs flex gap-2 ${chosen === aIdx ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/60 font-bold' : 'border-slate-200 dark:border-slate-700'}"><span class="font-extrabold">${letters[aIdx]})</span><span>${alt}</span></button>`).join('')}</div>
+                <div class="space-y-2">${q.alternativas.map((alt, aIdx) => `<button onclick="simuladoState.answers[${idx}]=${aIdx}; renderCurrentTab()" class="w-full text-left p-3 rounded-xl border text-xs flex gap-2 ${chosen === aIdx ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/60 font-bold' : 'border-paper-200 dark:border-stone-700'}"><span class="font-extrabold">${letters[aIdx]})</span><span>${alt}</span></button>`).join('')}</div>
               </div>
             `;
           }).join('')}
@@ -1483,34 +1570,34 @@
       const specHits = specQs.filter(x => simuladoState.answers[x.i] === x.q.correta).length;
 
       container.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 mb-6">
+        <div class="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-paper-200 dark:border-stone-800 mb-6">
           <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <div><h2 class="text-xl font-extrabold">Resultado: ${simuladoState.titulo}</h2><p class="text-xs text-slate-500">Você acertou <strong>${simuladoState.hits} de ${total}</strong> questões (${pct}%) • +${simuladoState.hits * 15} XP</p></div>
+            <div><h2 class="font-editorial text-xl font-black">Folha de Desempenho: ${simuladoState.titulo}</h2><p class="text-xs text-stone-500">Você acertou <strong>${simuladoState.hits} de ${total}</strong> questões (${pct}%) • +${simuladoState.hits * 15} XP</p></div>
             <button onclick="simuladoState=null; renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Novo Simulado</button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800"><p class="font-bold">Conhecimentos Básicos</p><p class="text-lg font-extrabold text-brand-600">${basicHits}/${basicQs.length}</p></div>
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800"><p class="font-bold">Conhecimentos Específicos</p><p class="text-lg font-extrabold text-emerald-600">${specHits}/${specQs.length}</p></div>
+            <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800 border border-paper-200 dark:border-stone-700"><p class="font-bold">Conhecimentos Básicos</p><p class="text-lg font-extrabold text-brand-600">${basicHits}/${basicQs.length}</p></div>
+            <div class="p-3.5 rounded-xl bg-paper-50 dark:bg-stone-800 border border-paper-200 dark:border-stone-700"><p class="font-bold">Conhecimentos Específicos</p><p class="text-lg font-extrabold text-emerald-700">${specHits}/${specQs.length}</p></div>
           </div>
         </div>
         <div class="space-y-3">
           ${simuladoState.questions.map((q, idx) => {
             const chosen = simuladoState.answers[idx]; const ok = chosen === q.correta;
-            return `<div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border ${ok ? 'border-emerald-300 dark:border-emerald-900' : 'border-rose-300 dark:border-rose-900'} text-xs"><p class="font-bold mb-1">${idx + 1}. ${q.enunciado}</p><p class="${ok ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'} mb-1">Sua resposta: ${chosen !== undefined ? letters[chosen] : 'Em branco'} | Gabarito: ${letters[q.correta]}</p><p class="text-slate-600 dark:text-slate-300">${q.comentario}</p></div>`;
+            return `<div class="bg-white dark:bg-stone-900 p-4 rounded-2xl border ${ok ? 'border-emerald-300 dark:border-emerald-900' : 'border-rose-300 dark:border-rose-900'} text-xs"><p class="font-bold mb-1">${idx + 1}. ${q.enunciado}</p><p class="${ok ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'} mb-1">Sua resposta: ${chosen !== undefined ? letters[chosen] : 'Em branco'} | Gabarito: ${letters[q.correta]}</p><p class="text-stone-600 dark:text-stone-300">${q.comentario}</p></div>`;
           }).join('')}
         </div>
       `;
     }
 
-    // ABA 6: CADERNO DE ERROS & ABA 7: PROGRESSO
+    // ABA 6: CADERNO DE ERROS & ABA 7: DESEMPENHO
     function renderErros(container) {
       const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
       container.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-          <div><h2 class="text-xl font-extrabold">Caderno de Erros Inteligente (${wrongQs.length})</h2><p class="text-xs text-slate-500">Questões erradas para <strong>${getCargoLabel()}</strong>.</p></div>
-          ${wrongQs.length > 0 ? `<button onclick="analyzeErrorsWithMentor()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Diagnosticar Erros com IA</button>` : ''}
+          <div><h2 class="font-editorial text-xl font-black">Caderno de Erros (${wrongQs.length})</h2><p class="text-xs text-stone-500">Questões erradas para revisão ativa em <strong>${getCargoLabel()}</strong>.</p></div>
+          ${wrongQs.length > 0 ? `<button onclick="analyzeErrorsWithMentor()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Diagnosticar Erros com Tutor IA</button>` : ''}
         </div>
-        ${wrongQs.length === 0 ? '<div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">Seu Caderno de Erros está zerado para este cargo!</div>' : `<div class="space-y-4">${wrongQs.map((q, idx) => renderQuestionCard(q, idx)).join('')}</div>`}
+        ${wrongQs.length === 0 ? '<div class="bg-white dark:bg-stone-900 p-8 rounded-2xl border border-paper-200 dark:border-stone-800 text-center text-xs text-stone-500">Seu Caderno de Erros está limpo para este cargo!</div>' : `<div class="space-y-4">${wrongQs.map((q, idx) => renderQuestionCard(q, idx)).join('')}</div>`}
       `;
     }
 
@@ -1520,27 +1607,27 @@
       const pct = trilhas.length ? Math.round((done / trilhas.length) * 100) : 0;
       const flashDone = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
       container.innerHTML = `
-        <div class="mb-5"><h2 class="text-xl font-extrabold">Painel de Evolução & Banco de Dados</h2><p class="text-xs text-slate-500">Gerencie suas questões geradas por IA, pacotes JSON e sincronização Firebase Firestore.</p></div>
+        <div class="mb-5"><h2 class="font-editorial text-xl font-black">Painel de Desempenho & Acervo</h2><p class="text-xs text-stone-500">Acompanhe sua evolução no edital, exporte backups em JSON e sincronize com o Firebase Firestore.</p></div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">XP Total</p><p class="text-2xl font-extrabold text-amber-500">${state.xp}</p></div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Trilhas (${getCargoLabel()})</p><p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p></div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Flashcards Dominados</p><p class="text-2xl font-extrabold text-indigo-600">${flashDone}/${trilhas.length}</p></div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Banco Total de Questões</p><p class="text-2xl font-extrabold text-emerald-600">${getAllQuestions().length}</p></div>
+          <div class="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-paper-200 dark:border-stone-800"><p class="text-xs text-stone-500">Pontuação Acumulada</p><p class="text-2xl font-extrabold text-amber-600">${state.xp} XP</p></div>
+          <div class="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-paper-200 dark:border-stone-800"><p class="text-xs text-stone-500">Tópicos (${getCargoLabel()})</p><p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p></div>
+          <div class="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-paper-200 dark:border-stone-800"><p class="text-xs text-stone-500">Fichas Memorizadas</p><p class="text-2xl font-extrabold text-indigo-700">${flashDone}/${trilhas.length}</p></div>
+          <div class="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-paper-200 dark:border-stone-800"><p class="text-xs text-stone-500">Acervo de Questões</p><p class="text-2xl font-extrabold text-emerald-700">${getAllQuestions().length}</p></div>
         </div>
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div><h3 class="font-bold text-sm">Importação JSON, Firebase Firestore & Backup</h3><p class="text-xs text-slate-500">Importe pacotes extras de questões em JSON, sincronize com a nuvem ou restaure backups.</p></div>
+        <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-paper-200 dark:border-stone-800 flex flex-wrap items-center justify-between gap-3">
+          <div><h3 class="font-bold text-sm">Importação JSON, Firebase Firestore & Manutenção</h3><p class="text-xs text-stone-500">Importe pacotes extras de questões em JSON, sincronize com a nuvem ou restaure backups.</p></div>
           <div class="flex flex-wrap gap-2">
             <button onclick="openModal('modalJson')" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Importar / Exportar JSON</button>
             <button onclick="openModal('modalFirebase')" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">Configurar Firebase</button>
-            <button onclick="resetAllProgress()" class="px-4 py-2 rounded-xl bg-rose-100 text-rose-700 text-xs font-bold">Zerar Progresso</button>
+            <button onclick="resetAllProgress()" class="px-4 py-2 rounded-xl bg-rose-100 text-rose-800 text-xs font-bold">Zerar Caderno</button>
           </div>
         </div>
       `;
     }
 
     function resetAllProgress() {
-      if (!confirm('Deseja realmente zerar seu progresso, flashcards dominados, aulas IA e histórico de chat?')) return;
-      localStorage.removeItem(STORAGE_STATE_KEY); state = structuredClone(DEFAULT_STATE); applyTheme(); saveState(); renderCurrentTab(); showToast('Progresso reiniciado.');
+      if (!confirm('Deseja realmente zerar seu progresso, fichas memorizadas, apostilas IA e histórico de conversa?')) return;
+      localStorage.removeItem(STORAGE_STATE_KEY); state = structuredClone(DEFAULT_STATE); applyTheme(); saveState(); renderCurrentTab(); showToast('Caderno reiniciado.');
     }
 
     // JSON IMPORT / EXPORT
