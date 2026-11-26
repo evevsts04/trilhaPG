@@ -35,6 +35,24 @@
     .prose-ai ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
     .prose-ai li { margin-bottom: 0.3rem; }
     .prose-ai strong { font-weight: 700; }
+
+    /* Animação 3D de virada do Flashcard */
+    .flashcard-scene { perspective: 1200px; }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      min-height: 310px;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
@@ -65,6 +83,10 @@
     <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
       <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
         <i data-lucide="map" class="w-4 h-4"></i> Trilhas do Edital
+      </button>
+      <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition justify-between">
+        <span class="flex items-center gap-3"><i data-lucide="layers" class="w-4 h-4"></i> Flashcards IBAM</span>
+        <span id="badgeFlashDesktop" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold">0/0</span>
       </button>
       <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
         <i data-lucide="radar" class="w-4 h-4"></i> Radar de Pegadinhas IBAM
@@ -148,20 +170,23 @@
 
   <!-- NAVEGAÇÃO INFERIOR MOBILE -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 z-30">
-    <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
-      <i data-lucide="map" class="w-5 h-5 mb-0.5"></i> Trilhas
+    <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="map" class="w-4 h-4 mb-0.5"></i> Trilhas
     </button>
-    <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
-      <i data-lucide="radar" class="w-5 h-5 mb-0.5"></i> Radar
+    <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="layers" class="w-4 h-4 mb-0.5"></i> Cards
     </button>
-    <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
-      <i data-lucide="bot" class="w-5 h-5 mb-0.5"></i> Mentor IA
+    <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="radar" class="w-4 h-4 mb-0.5"></i> Radar
     </button>
-    <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
-      <i data-lucide="file-check-2" class="w-5 h-5 mb-0.5"></i> Simulado
+    <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="bot" class="w-4 h-4 mb-0.5"></i> Mentor
     </button>
-    <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
-      <i data-lucide="alert-triangle" class="w-5 h-5 mb-0.5"></i> Erros
+    <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="file-check-2" class="w-4 h-4 mb-0.5"></i> Simulado
+    </button>
+    <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1">
+      <i data-lucide="alert-triangle" class="w-4 h-4 mb-0.5"></i> Erros
     </button>
   </nav>
 
@@ -219,7 +244,7 @@
 
         <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
           <p class="font-bold mb-1">2. Sincronização de Banco & Aulas na Nuvem</p>
-          <p class="text-slate-500 dark:text-slate-400 mb-2">Envie suas questões customizadas e aulas geradas por IA para o Firestore ou restaure em outro dispositivo.</p>
+          <p class="text-slate-500 dark:text-slate-400 mb-2">Envie suas questões customizadas, flashcards dominados e aulas IA para o Firestore.</p>
           <div class="flex flex-wrap gap-2">
             <button onclick="pushAllToFirestore()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Enviar Dados ao Firestore</button>
             <button onclick="pullFromFirestoreManual(false)" class="px-3.5 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold">Baixar Dados do Firestore</button>
@@ -266,12 +291,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // ============================================================================
-    // CONFIGURAÇÃO OPCIONAL FIXA DO FIREBASE (COLE SEU OBJETO AQUI SE DESEJAR)
-    // ============================================================================
     const DEFAULT_FIREBASE_CONFIG = null;
-
-    const STORAGE_STATE_KEY = 'trilha_pg_single_v1';
+    const STORAGE_STATE_KEY = 'trilha_pg_single_v2';
     const STORAGE_FB_CONFIG_KEY = 'trilha_pg_fb_config_v1';
 
     // ============================================================================
@@ -295,10 +316,9 @@
     ];
 
     // ============================================================================
-    // 2. TODAS AS 63 TRILHAS VERTICALIZADAS DO EDITAL
+    // 2. TODAS AS 63 TRILHAS VERTICALIZADAS DO EDITAL (BASE DOS FLASHCARDS)
     // ============================================================================
     const TRILHAS = [
-      // I — LÍNGUA PORTUGUESA (7)
       { id: 'lp-1', disciplinaId: 'lp', titulo: 'Leitura, compreensão e interpretação de textos', regraOuro: 'Compreensão está explícita no texto; interpretação exige dedução lógica sem extrapolar.', armadilhaIbam: 'Alternativas verdadeiras na vida real, mas ausentes ou extrapoladas em relação ao texto-base.', resumo: 'Sublinhe termos restritivos (apenas, sempre, nunca) e busque a paráfrase fiel ao parágrafo.', palavrasChave: ['Compreensão', 'Interpretação', 'Paráfrase'] },
       { id: 'lp-2', disciplinaId: 'lp', titulo: 'Informações explícitas e implícitas; finalidade do texto', regraOuro: 'Pressupostos são marcados por palavras do texto; subentendidos dependem do contexto.', armadilhaIbam: 'Trocar texto expositivo/informativo por injuntivo (instrucional) na finalidade.', resumo: 'Identifique o gênero textual para cravar a finalidade: informar, convencer, instruir ou entreter.', palavrasChave: ['Pressuposto', 'Subentendido', 'Finalidade'] },
       { id: 'lp-3', disciplinaId: 'lp', titulo: 'Vocabulário: sinônimos, antônimos, sentido contextual', regraOuro: 'O sentido do vocábulo na IBAM é sempre definido pelo contexto da frase.', armadilhaIbam: 'Cobrar parônimos clássicos: ratificar/retificar, eminente/iminente, descrição/discrição.', resumo: 'Substitua o termo grifado pela alternativa mantendo classe gramatical e sentido.', palavrasChave: ['Polissemia', 'Parônimos', 'Contexto'] },
@@ -307,7 +327,6 @@
       { id: 'lp-6', disciplinaId: 'lp', titulo: 'Concordância nominal e verbal', regraOuro: 'HAVER (= existir) e FAZER (= tempo decorrido) são impessoais e ficam no singular.', armadilhaIbam: 'Sujeito posposto ao verbo e partícula apassivadora SE ("Vendem-se imóveis").', resumo: 'Localize o núcleo do sujeito antes de flexionar o verbo; "anexo" e "incluso" concordam com o nome.', palavrasChave: ['Verbo Haver', 'Partícula SE', 'Sujeito Posposto'] },
       { id: 'lp-7', disciplinaId: 'lp', titulo: 'Organização e sequência lógica de frases', regraOuro: 'Coesão referencial (este/esse/aquele) e sequencial (conectivos) garantem progressão lógica.', armadilhaIbam: 'Ordenação de períodos ou troca de conectivos invertendo causa e consequência.', resumo: 'Use "esse/isso" para retomar o que já foi dito (anáfora) e "este/isto" para anunciar (catáfora).', palavrasChave: ['Coesão', 'Coerência', 'Anáfora'] },
 
-      // II — MATEMÁTICA (9)
       { id: 'mat-1', disciplinaId: 'mat', titulo: 'Números: naturais, inteiros, decimais, frações', regraOuro: 'Na divisão de frações, conserva-se a primeira e multiplica-se pelo inverso da segunda.', armadilhaIbam: 'Esquecer de igualar casas decimais ou deslocar a vírgula na divisão de decimais.', resumo: 'Na soma/subtração de frações heterogêneas, calcule o MMC dos denominadores.', palavrasChave: ['Frações', 'Decimais', 'Inteiros'] },
       { id: 'mat-2', disciplinaId: 'mat', titulo: 'Operações fundamentais e resolução de problemas', regraOuro: 'Precedência: Parênteses -> Potências/Raízes -> Multiplicação/Divisão -> Adição/Subtração.', armadilhaIbam: 'Divisão com resto em problemas de transporte/embalagem (exige arredondar para cima).', resumo: 'Traduza o enunciado em equação de 1º grau e confira exatamente o que a pergunta pede.', palavrasChave: ['PEMDAS', 'Equação 1º Grau', 'Resto'] },
       { id: 'mat-3', disciplinaId: 'mat', titulo: 'Múltiplos e divisores', regraOuro: 'MMC resolve encontros periódicos simultâneos; MDC resolve divisão em partes máximas iguais.', armadilhaIbam: 'Aplicar MDC quando o problema pede quando duas equipes voltarão a sair juntas (MMC).', resumo: 'Fatore simultaneamente: MMC usa todos os fatores; MDC usa apenas os divisores comuns.', palavrasChave: ['MMC', 'MDC', 'Fatoração'] },
@@ -318,7 +337,6 @@
       { id: 'mat-8', disciplinaId: 'mat', titulo: 'Perímetro e área de figuras planas simples', regraOuro: 'Perímetro = soma dos lados externos; Área triângulo = (b × h)/2; retângulo = b × h.', armadilhaIbam: 'Misturar centímetros e metros na mesma figura antes de calcular a área.', resumo: 'Converta todas as dimensões para a mesma unidade no primeiro passo.', palavrasChave: ['Perímetro', 'Área', 'Geometria Plana'] },
       { id: 'mat-9', disciplinaId: 'mat', titulo: 'Interpretação de dados em situações cotidianas', regraOuro: 'Leia eixos, legendas e escalas antes de calcular médias ou variações.', armadilhaIbam: 'Confundir diferença absoluta entre barras com crescimento percentual.', resumo: 'Média aritmética = soma dos elementos ÷ quantidade de elementos.', palavrasChave: ['Gráficos', 'Tabelas', 'Média Aritmética'] },
 
-      // III — INFORMÁTICA (8 - SOMENTE AGENTE ADMINISTRATIVO)
       { id: 'inf-1', disciplinaId: 'inf', titulo: 'Noções de computador e sistemas operacionais', regraOuro: 'RAM é volátil (perde dados ao desligar); ROM e SSD/HD são não voláteis.', armadilhaIbam: 'Classificar SSD/HD apenas como entrada ou saída (são dispositivos híbridos/armazenamento).', resumo: 'Atalhos Windows: Win+E (Explorador), Win+D (Desktop), Win+L (Bloquear).', palavrasChave: ['Hardware', 'Memória RAM', 'Windows'] },
       { id: 'inf-2', disciplinaId: 'inf', titulo: 'Arquivos e pastas: criação, cópia, movimentação, renomeação e exclusão', regraOuro: 'Shift + Delete exclui permanentemente sem enviar o arquivo para a Lixeira.', armadilhaIbam: 'Arrastar na mesma unidade move; arrastar para outra unidade (pendrive) copia.', resumo: 'Caracteres proibidos em nomes no Windows: \\ / : * ? " < > |', palavrasChave: ['Shift+Delete', 'Explorador', 'Extensões'] },
       { id: 'inf-3', disciplinaId: 'inf', titulo: 'Processadores de texto: edição e formatação', regraOuro: 'No MS Word (PT-BR): Ctrl+B = Salvar; Ctrl+S = Sublinhado; Ctrl+N = Negrito.', armadilhaIbam: 'Cobrar Ctrl+S como atalho para salvar no Word em português.', resumo: 'Ctrl+Enter insere quebra de página; Ctrl+J aplica alinhamento justificado.', palavrasChave: ['MS Word', 'Atalhos PT-BR', 'Formatação'] },
@@ -328,7 +346,6 @@
       { id: 'inf-7', disciplinaId: 'inf', titulo: 'Arquivos PDF', regraOuro: 'PDF preserva layout e fontes em qualquer dispositivo e suporta assinatura digital.', armadilhaIbam: 'Afirmar que arquivos PDF não permitem restrição por senha ou assinatura.', resumo: 'Padrão oficial para publicação de editais, diários oficiais e processos eletrônicos.', palavrasChave: ['PDF', 'Assinatura Digital', 'Portabilidade'] },
       { id: 'inf-8', disciplinaId: 'inf', titulo: 'Segurança: senhas, cópias de segurança, reconhecimento de links e mensagens suspeitas', regraOuro: 'Phishing usa engenharia social/link falso para roubar senhas; Ransomware sequestra dados.', armadilhaIbam: 'Confundir Phishing (isca/engenharia social) com Ransomware (criptografia com resgate).', resumo: 'Combine senhas fortes com autenticação em dois fatores (2FA) e backups periódicos.', palavrasChave: ['Phishing', 'Ransomware', 'Backup', '2FA'] },
 
-      // ESPECÍFICAS — AGENTE ADMINISTRATIVO (13)
       { id: 'adm-1-1', disciplinaId: 'adm-1', titulo: 'Atendimento presencial, telefônico e eletrônico', regraOuro: 'Cortesia, presteza, escuta ativa, clareza e isonomia no tratamento ao cidadão.', armadilhaIbam: 'Transferir chamadas telefônicas sem avisar o cidadão ou anunciar o assunto ao receptor.', resumo: 'Identifique-se, ouça sem interromper e registre encaminhamentos.', palavrasChave: ['Cortesia', 'Escuta Ativa', 'Atendimento'] },
       { id: 'adm-1-2', disciplinaId: 'adm-1', titulo: 'Identificação e registro de solicitações', regraOuro: 'Todo requerimento deve ser protocolado com número, data, objeto e dados do requerente.', armadilhaIbam: 'Recusar protocolo por juízo prévio do atendente de que o pedido será indeferido.', resumo: 'O protocolo assegura rastreabilidade e direito constitucional de petição.', palavrasChave: ['Protocolo', 'Direito de Petição', 'Rastreabilidade'] },
       { id: 'adm-1-3', disciplinaId: 'adm-1', titulo: 'Redação de documentos: ofícios, memorandos, correspondências, mensagens eletrônicas e relatórios simples', regraOuro: 'Fechos oficiais (MRPR): "Respeitosamente," (autoridade superior) e "Atenciosamente," (igual/inferior).', armadilhaIbam: 'Usar "Cordialmente" ou "Atenciosamente" para autoridades superiores.', resumo: 'O Padrão Ofício unificou ofício, aviso e memorando na 3ª edição do MRPR.', palavrasChave: ['Padrão Ofício', 'Fechos Oficiais', 'MRPR'] },
@@ -343,7 +360,6 @@
       { id: 'adm-4-1', disciplinaId: 'adm-4', titulo: 'Princípios da Administração Pública — art. 37, caput, da CF/88', regraOuro: 'LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência.', armadilhaIbam: 'Confundir Legalidade Administrativa (só faz o que a lei autoriza) com Legalidade Privada.', resumo: 'Art. 37, §1º veda promoção pessoal de autoridades em publicidade oficial.', palavrasChave: ['LIMPE', 'Art. 37 CF/88', 'Legalidade Estrita'] },
       { id: 'adm-4-2', disciplinaId: 'adm-4', titulo: 'Deveres funcionais do público — arts. 5º a 9º da Lei Complementar Municipal nº 97/2023', regraOuro: 'Deveres: zelo, dedicação, lealdade, assiduidade, pontualidade, urbanidade, moralidade e sigilo.', armadilhaIbam: 'Dizer que o dever de obediência obriga cumprir ordem manifestamente ilegal.', resumo: 'O servidor deve cumprir ordens legais e representar contra ilegalidade ou abuso.', palavrasChave: ['LC 97/2023', 'Deveres Funcionais', 'Ordem Ilegal'] },
 
-      // ESPECÍFICAS — AGENTE DE COMBATE ÀS ENDEMIAS (26)
       { id: 'ace-sus-1', disciplinaId: 'ace-sus', titulo: 'Princípios e diretrizes do SUS — Lei nº 8.080/1990 (arts. 2º a 7º)', regraOuro: 'O dever do Estado de prover saúde NÃO exclui o das pessoas, família, empresas e sociedade.', armadilhaIbam: 'Suprimir o advérbio "NÃO" no art. 2º, §2º da Lei 8.080/90.', resumo: 'Art. 7º: Universalidade, Integralidade, Equidade, Descentralização e Participação Social.', palavrasChave: ['Lei 8.080/90', 'Universalidade', 'Integralidade'] },
       { id: 'ace-sus-2', disciplinaId: 'ace-sus', titulo: 'Lei nº 8.142/1990 (arts. 1º e 2º)', regraOuro: 'Conferência de Saúde = a cada 4 anos. Conselho de Saúde = permanente e deliberativo (50% usuários).', armadilhaIbam: 'Inverter periodicidade e caráter deliberativo entre Conferência e Conselho.', resumo: 'Art. 2º disciplina os repasses regulares e automáticos do Fundo Nacional de Saúde.', palavrasChave: ['Lei 8.142/90', 'Conselho de Saúde', 'Conferência'] },
       { id: 'ace-sus-3', disciplinaId: 'ace-sus', titulo: 'Organização das ações de saúde', regraOuro: 'Rede regionalizada e hierarquizada com Atenção Primária como porta de entrada preferencial.', armadilhaIbam: 'Confundir hierarquização técnica de complexidade com subordinação política entre entes.', resumo: 'Fluxo assistencial organizado por referência e contrarreferência.', palavrasChave: ['Regionalização', 'Hierarquização', 'Porta de Entrada'] },
@@ -449,6 +465,7 @@
       geminiModel: 'gemini-2.5-flash',
       xp: 0,
       completedTrails: [],
+      masteredFlashcards: [], // IDs das trilhas dominadas nos Flashcards
       answeredQuestions: {},
       errorNotebook: [],
       customTrailsContent: {},
@@ -456,7 +473,7 @@
       chatHistory: [
         {
           role: 'model',
-          text: 'Olá! Sou seu **Mentor Especialista na Banca IBAM** para a **Prefeitura de Praia Grande**. Selecione seu cargo na barra lateral, estude as **63 trilhas do edital**, gere aulas/questões inéditas com IA ou conecte sua nuvem **Firebase Firestore**!'
+          text: 'Olá! Sou seu **Mentor Especialista na Banca IBAM** para a **Prefeitura de Praia Grande**. Selecione seu cargo na barra lateral, estude as **63 trilhas do edital**, pratique com os **Flashcards IBAM** ou conecte sua nuvem **Firebase Firestore**!'
         }
       ]
     };
@@ -473,6 +490,14 @@
     let simuladoTimerInterval = null;
     let pendingGeneratedQuestions = [];
 
+    // Estado dos Flashcards
+    let flashDiscFilter = 'all';
+    let flashOnlyPending = false;
+    let flashDeckOrder = [];
+    let flashIndex = 0;
+    let flashFlipped = false;
+
+    // Variáveis Firebase
     let fbApp = null;
     let fbAuth = null;
     let fbDb = null;
@@ -482,7 +507,12 @@
       try {
         const raw = localStorage.getItem(STORAGE_STATE_KEY);
         if (!raw) return structuredClone(DEFAULT_STATE);
-        return { ...structuredClone(DEFAULT_STATE), ...JSON.parse(raw) };
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(DEFAULT_STATE),
+          ...parsed,
+          masteredFlashcards: Array.isArray(parsed.masteredFlashcards) ? parsed.masteredFlashcards : []
+        };
       } catch (e) {
         return structuredClone(DEFAULT_STATE);
       }
@@ -665,7 +695,12 @@
         const userDoc = await fbDb.collection('usuarios').doc(fbUser.uid).get();
         if (userDoc.exists) {
           const cloud = userDoc.data();
-          state = { ...state, ...cloud, apiKey: state.apiKey };
+          state = {
+            ...state,
+            ...cloud,
+            masteredFlashcards: Array.isArray(cloud.masteredFlashcards) ? cloud.masteredFlashcards : state.masteredFlashcards,
+            apiKey: state.apiKey
+          };
         }
 
         const aulasSnap = await fbDb.collection('usuarios').doc(fbUser.uid).collection('aulas_ia').get();
@@ -727,6 +762,8 @@
       state.cargo = novoCargo;
       activeDisciplineId = 'all';
       activeTrailId = null;
+      flashDiscFilter = 'all';
+      resetFlashDeckOrder();
       saveState();
       renderCurrentTab();
       showToast(`Cargo selecionado: ${getCargoLabel(novoCargo)}`);
@@ -795,6 +832,10 @@
       const statsEl = document.getElementById('headerTrailStats');
       if (statsEl) statsEl.textContent = `${concluidas}/${trilhas.length} trilhas concluídas`;
 
+      const dominadosFlash = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
+      const badgeFlash = document.getElementById('badgeFlashDesktop');
+      if (badgeFlash) badgeFlash.textContent = `${dominadosFlash}/${trilhas.length}`;
+
       const xpEl = document.getElementById('headerXp');
       if (xpEl) xpEl.textContent = `${state.xp} XP`;
 
@@ -820,8 +861,8 @@
       document.querySelectorAll('.nav-btn-mob').forEach(btn => {
         const active = btn.dataset.tab === currentTab;
         btn.className = active
-          ? 'nav-btn-mob flex flex-col items-center text-[11px] font-bold px-2 py-1 text-brand-600 dark:text-brand-400'
-          : 'nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1 text-slate-500 dark:text-slate-400';
+          ? 'nav-btn-mob flex flex-col items-center text-[10px] font-bold px-1.5 py-1 text-brand-600 dark:text-brand-400'
+          : 'nav-btn-mob flex flex-col items-center text-[10px] font-medium px-1.5 py-1 text-slate-500 dark:text-slate-400';
       });
     }
 
@@ -829,6 +870,9 @@
       stopTrailTimer();
       currentTab = tab;
       activeTrailId = null;
+      if (tab === 'flashcards' && flashDeckOrder.length === 0) {
+        resetFlashDeckOrder();
+      }
       updateGlobalUI();
       renderCurrentTab();
     }
@@ -840,6 +884,8 @@
       if (currentTab === 'trilhas') {
         if (activeTrailId) renderTrailDetail(main, activeTrailId);
         else renderTrilhasList(main);
+      } else if (currentTab === 'flashcards') {
+        renderFlashcards(main);
       } else if (currentTab === 'radar') {
         renderRadar(main);
       } else if (currentTab === 'mentor') {
@@ -1331,7 +1377,244 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     // ============================================================================
-    // ABA 2: RADAR DE PEGADINHAS IBAM
+    // NOVA ABA: FLASHCARDS INTERATIVOS (63 REGRAS DE OURO & ARMADILHAS IBAM)
+    // ============================================================================
+    function getFlashcardsPool() {
+      let pool = getFilteredTrilhas();
+      if (flashDiscFilter !== 'all') {
+        pool = pool.filter(t => t.disciplinaId === flashDiscFilter);
+      }
+      if (flashOnlyPending) {
+        pool = pool.filter(t => !state.masteredFlashcards.includes(t.id));
+      }
+      return pool;
+    }
+
+    function resetFlashDeckOrder(shuffle = false) {
+      const pool = getFlashcardsPool();
+      const ids = pool.map(t => t.id);
+      flashDeckOrder = shuffle ? shuffleArray(ids) : ids;
+      flashIndex = 0;
+      flashFlipped = false;
+    }
+
+    function getOrderedFlashcards() {
+      const pool = getFlashcardsPool();
+      const poolMap = new Map(pool.map(t => [t.id, t]));
+      const ordered = flashDeckOrder.map(id => poolMap.get(id)).filter(Boolean);
+      // Garante sincronia se o filtro mudou
+      if (ordered.length !== pool.length) {
+        flashDeckOrder = pool.map(t => t.id);
+        flashIndex = 0;
+        flashFlipped = false;
+        return pool;
+      }
+      return ordered;
+    }
+
+    function renderFlashcards(container) {
+      const disciplinas = getFilteredDisciplinas();
+      const allCargoTrilhas = getFilteredTrilhas();
+      const masteredCount = allCargoTrilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
+      const deck = getOrderedFlashcards();
+
+      if (flashIndex >= deck.length) flashIndex = Math.max(0, deck.length - 1);
+      const currentCard = deck[flashIndex];
+
+      container.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-extrabold">Flashcards IBAM • Regras de Ouro & Pegadinhas</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Dominados em <strong>${getCargoLabel()}</strong>: <strong>${masteredCount}/${allCargoTrilhas.length}</strong> • Clique no card (ou tecla <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Espaço</kbd>) para virar.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="flashOnlyPending=!flashOnlyPending; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-xl text-xs font-bold border ${flashOnlyPending ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}">
+              ${flashOnlyPending ? '✓ Mostrando Pendentes' : 'Filtrar Pendentes'}
+            </button>
+            <button onclick="resetFlashDeckOrder(true); renderCurrentTab(); showToast('Baralho embaralhado!')" class="px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Embaralhar
+            </button>
+          </div>
+        </div>
+
+        <!-- FILTRO POR DISCIPLINA -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
+          <button onclick="flashDiscFilter='all'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${flashDiscFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
+            Todas (${allCargoTrilhas.length})
+          </button>
+          ${disciplinas.map(d => `
+            <button onclick="flashDiscFilter='${d.id}'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${flashDiscFilter === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
+              ${d.codigo} — ${d.nome}
+            </button>
+          `).join('')}
+        </div>
+
+        ${!currentCard ? `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-10 text-center space-y-3">
+            <p class="text-base font-extrabold text-emerald-600">🎉 Você dominou todos os Flashcards deste filtro!</p>
+            <p class="text-xs text-slate-500">Desative "Filtrar Pendentes" ou escolha outra disciplina para revisar novamente.</p>
+            <button onclick="flashOnlyPending=false; resetFlashDeckOrder(false); renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Mostrar Todos os Cards</button>
+          </div>
+        ` : renderSingleFlashcardStage(currentCard, flashIndex, deck.length)}
+      `;
+    }
+
+    function renderSingleFlashcardStage(card, idx, total) {
+      const disc = DISCIPLINAS.find(d => d.id === card.disciplinaId) || DISCIPLINAS[0];
+      const isMastered = state.masteredFlashcards.includes(card.id);
+      const progressPct = Math.round(((idx + 1) / total) * 100);
+
+      return `
+        <div class="max-w-3xl mx-auto">
+          <!-- BARRA DE PROGRESSO DO BARALHO -->
+          <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
+            <span>Card ${idx + 1} de ${total}</span>
+            <span>${isMastered ? '✅ Dominado' : '⏳ Em revisão'}</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mb-5">
+            <div class="h-full bg-brand-600 transition-all duration-300" style="width: ${progressPct}%"></div>
+          </div>
+
+          <!-- CARD 3D INTERATIVO -->
+          <div class="flashcard-scene cursor-pointer select-none mb-5" onclick="flipFlashcard()">
+            <div id="flashcardInner" class="flashcard-inner ${flashFlipped ? 'is-flipped' : ''}">
+              
+              <!-- FRENTE: TÓPICO + ARMADILHA IBAM -->
+              <div class="flashcard-face bg-white dark:bg-slate-900 rounded-3xl border-2 ${isMastered ? 'border-emerald-400 dark:border-emerald-800' : 'border-slate-200 dark:border-slate-800'} p-6 md:p-8 shadow-md flex flex-col justify-between">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-extrabold">${disc.codigo} — ${disc.nome}</span>
+                  <span class="text-[11px] font-bold text-slate-400 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Clique para virar</span>
+                </div>
+
+                <div class="my-6 text-center space-y-4">
+                  <h3 class="text-lg md:text-xl font-extrabold leading-snug">${card.titulo}</h3>
+                  <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-left">
+                    <p class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 dark:text-rose-300 mb-1">⚠️ Atenção à Armadilha IBAM (Como evitar o erro?)</p>
+                    <p class="text-xs md:text-sm text-rose-950 dark:text-rose-100 leading-relaxed">${card.armadilhaIbam}</p>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-1.5">
+                  ${(card.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300">#${k}</span>`).join('')}
+                </div>
+              </div>
+
+              <!-- VERSO: REGRA DE OURO + RESUMO RELÂMPAGO -->
+              <div class="flashcard-face flashcard-back bg-gradient-to-br from-slate-900 to-brand-950 text-white rounded-3xl border-2 border-brand-500 p-6 md:p-8 shadow-lg flex flex-col justify-between">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="px-2.5 py-1 rounded-lg bg-white/15 text-amber-300 text-xs font-extrabold">⭐ REGRA DE OURO IBAM</span>
+                  <span class="text-[11px] font-semibold text-slate-300 flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Voltar frente</span>
+                </div>
+
+                <div class="my-5 space-y-4">
+                  <div class="p-4 rounded-2xl bg-amber-400/15 border border-amber-300/40">
+                    <p class="text-sm md:text-base font-bold text-amber-200 leading-relaxed">${card.regraOuro}</p>
+                  </div>
+                  <div class="p-4 rounded-2xl bg-white/10">
+                    <p class="text-[11px] font-extrabold uppercase tracking-wider text-sky-300 mb-1">📌 Síntese para a Prova</p>
+                    <p class="text-xs md:text-sm text-slate-100 leading-relaxed">${card.resumo}</p>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center text-[11px] text-slate-300">
+                  <span>Tópico: ${card.titulo}</span>
+                  <button onclick="event.stopPropagation(); openTrailFromFlashcard('${card.id}')" class="underline font-bold text-amber-300 hover:text-amber-200">Abrir Trilha & Questões →</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- CONTROLES DE NAVEGAÇÃO E AUTOAVALIAÇÃO -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <button onclick="prevFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior
+            </button>
+            <button onclick="markFlashcardStatus('${card.id}', false)" class="py-3 px-3 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 hover:opacity-90 text-xs font-extrabold flex items-center justify-center gap-1.5">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i> Revisar Depois
+            </button>
+            <button onclick="markFlashcardStatus('${card.id}', true)" class="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i> ${isMastered ? 'Dominado ✓' : 'Dominei (+10 XP)'}
+            </button>
+            <button onclick="nextFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">
+              Próximo <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function flipFlashcard() {
+      flashFlipped = !flashFlipped;
+      const el = document.getElementById('flashcardInner');
+      if (el) el.classList.toggle('is-flipped', flashFlipped);
+    }
+
+    function nextFlashcard() {
+      const deck = getOrderedFlashcards();
+      if (!deck.length) return;
+      flashIndex = (flashIndex + 1) % deck.length;
+      flashFlipped = false;
+      renderCurrentTab();
+    }
+
+    function prevFlashcard() {
+      const deck = getOrderedFlashcards();
+      if (!deck.length) return;
+      flashIndex = (flashIndex - 1 + deck.length) % deck.length;
+      flashFlipped = false;
+      renderCurrentTab();
+    }
+
+    function markFlashcardStatus(trilhaId, mastered) {
+      const alreadyMastered = state.masteredFlashcards.includes(trilhaId);
+      if (mastered) {
+        if (!alreadyMastered) {
+          state.masteredFlashcards.push(trilhaId);
+          state.xp += 10;
+          showToast('Flashcard dominado! +10 XP');
+        }
+      } else {
+        state.masteredFlashcards = state.masteredFlashcards.filter(id => id !== trilhaId);
+        showToast('Marcado para revisão futura.');
+      }
+      saveState();
+
+      const deck = getOrderedFlashcards();
+      if (deck.length > 0 && !flashOnlyPending) {
+        flashIndex = (flashIndex + 1) % deck.length;
+      }
+      flashFlipped = false;
+      renderCurrentTab();
+    }
+
+    function openTrailFromFlashcard(trilhaId) {
+      currentTab = 'trilhas';
+      activeTrailId = trilhaId;
+      pendingGeneratedQuestions = [];
+      startTrailTimer();
+      updateGlobalUI();
+      renderCurrentTab();
+    }
+
+    // Atalhos de teclado na aba Flashcards
+    document.addEventListener('keydown', (e) => {
+      if (currentTab !== 'flashcards') return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipFlashcard();
+      } else if (e.code === 'ArrowRight') {
+        nextFlashcard();
+      } else if (e.code === 'ArrowLeft') {
+        prevFlashcard();
+      }
+    });
+
+    // ============================================================================
+    // ABA 3: RADAR DE PEGADINHAS IBAM
     // ============================================================================
     function renderRadar(container) {
       const cards = RADAR.filter(r => matchCargo(r.cargos) && (radarFilter === 'all' || r.disciplina === radarFilter));
@@ -1372,7 +1655,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     // ============================================================================
-    // ABA 3: MENTOR IA ESPECIALISTA IBAM
+    // ABA 4: MENTOR IA ESPECIALISTA IBAM
     // ============================================================================
     function renderMentor(container) {
       container.innerHTML = `
@@ -1475,7 +1758,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     // ============================================================================
-    // ABA 4: SIMULADO POR EDITAL
+    // ABA 5: SIMULADO POR EDITAL
     // ============================================================================
     function renderSimulado(container) {
       if (simuladoState && simuladoState.active) { renderSimuladoActive(container); return; }
@@ -1698,7 +1981,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     // ============================================================================
-    // ABA 5: CADERNO DE ERROS
+    // ABA 6: CADERNO DE ERROS
     // ============================================================================
     function renderErros(container) {
       const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
@@ -1719,12 +2002,13 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     // ============================================================================
-    // ABA 6: PROGRESSO & BANCO
+    // ABA 7: PROGRESSO & BANCO
     // ============================================================================
     function renderProgresso(container) {
       const trilhas = getFilteredTrilhas();
       const done = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
       const pct = trilhas.length ? Math.round((done / trilhas.length) * 100) : 0;
+      const flashDone = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
 
       container.innerHTML = `
         <div class="mb-5">
@@ -1742,8 +2026,8 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
             <p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p>
           </div>
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <p class="text-xs text-slate-500">Aulas IA Salvas</p>
-            <p class="text-2xl font-extrabold text-purple-600">${Object.keys(state.customTrailsContent).length}</p>
+            <p class="text-xs text-slate-500">Flashcards Dominados</p>
+            <p class="text-2xl font-extrabold text-indigo-600">${flashDone}/${trilhas.length}</p>
           </div>
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
             <p class="text-xs text-slate-500">Banco Total de Questões</p>
@@ -1766,7 +2050,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     function resetAllProgress() {
-      if (!confirm('Deseja realmente zerar seu progresso, aulas IA e histórico de chat?')) return;
+      if (!confirm('Deseja realmente zerar seu progresso, flashcards dominados, aulas IA e histórico de chat?')) return;
       localStorage.removeItem(STORAGE_STATE_KEY);
       state = structuredClone(DEFAULT_STATE);
       applyTheme();
@@ -1813,7 +2097,6 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       try {
         const parsed = JSON.parse(raw);
 
-        // Caso 1: Array direto de questões ou { questoes: [...] }
         const qArray = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.questoes) ? parsed.questoes : null);
         if (qArray) {
           const valid = normalizeQuestionsList(qArray, 'JSON Importado');
@@ -1827,9 +2110,12 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
           return;
         }
 
-        // Caso 2: Backup completo do progresso do usuário
         if (parsed && typeof parsed === 'object' && ('completedTrails' in parsed || 'chatHistory' in parsed)) {
-          state = { ...structuredClone(DEFAULT_STATE), ...parsed };
+          state = {
+            ...structuredClone(DEFAULT_STATE),
+            ...parsed,
+            masteredFlashcards: Array.isArray(parsed.masteredFlashcards) ? parsed.masteredFlashcards : []
+          };
           applyTheme();
           saveState();
           closeModal('modalJson');
@@ -1875,6 +2161,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       applyTheme();
       const savedFb = getSavedFirebaseConfig();
       if (savedFb) initFirebase(savedFb);
+      resetFlashDeckOrder(false);
       updateGlobalUI();
       renderCurrentTab();
     });
