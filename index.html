@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trilha PG • Especialista IBAM (Admin & Endemias)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#1e3a8a'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    .prose-ai h3 { font-size: 1.05rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.35rem; color: #1d4ed8; }
+    .dark .prose-ai h3 { color: #60a5fa; }
+    .prose-ai p { margin-bottom: 0.65rem; line-height: 1.6; }
+    .prose-ai ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    .prose-ai li { margin-bottom: 0.3rem; }
+    .prose-ai strong { font-weight: 700; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col md:flex-row transition-colors duration-200">
+
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-30">
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold shadow-sm">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight leading-tight">Trilha PG • IBAM</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Praia Grande • Edital & Nuvem</p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Cargo Alvo</label>
+        <select id="cargoSelectDesktop" onchange="setCargo(this.value)" class="w-full text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="admin">Agente Administrativo</option>
+          <option value="ace">Agente de Combate às Endemias</option>
+          <option value="ambos">Ambos os Cargos (Completo)</option>
+        </select>
+      </div>
+    </div>
+
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="map" class="w-4 h-4"></i> Trilhas do Edital
+      </button>
+      <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="radar" class="w-4 h-4"></i> Radar de Pegadinhas IBAM
+      </button>
+      <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="bot" class="w-4 h-4"></i> Mentor IA (Especialista)
+      </button>
+      <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="file-check-2" class="w-4 h-4"></i> Simulado por Edital
+      </button>
+      <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition justify-between">
+        <span class="flex items-center gap-3"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Caderno de Erros</span>
+        <span id="badgeErrosDesktop" class="text-xs px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 font-bold">0</span>
+      </button>
+      <button onclick="switchTab('progresso')" data-tab="progresso" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Progresso & Banco
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+      <button onclick="openModal('modalFirebase')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition">
+        <span class="flex items-center gap-2 truncate"><i data-lucide="cloud" class="w-4 h-4 text-sky-500 shrink-0"></i> <span id="firebaseUserLabel" class="truncate">Firebase Firestore</span></span>
+        <span id="firebaseStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+      </button>
+      <button onclick="openModal('modalApi')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition">
+        <span class="flex items-center gap-2"><i data-lucide="key-round" class="w-4 h-4 text-brand-600"></i> Chave API Gemini</span>
+        <span id="apiStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+      </button>
+      <div class="flex gap-2">
+        <button onclick="openModal('modalJson')" class="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition">
+          <i data-lucide="file-json" class="w-3.5 h-3.5"></i> JSON / Backup
+        </button>
+        <button onclick="toggleTheme()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition" title="Alternar Tema">
+          <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:inline text-amber-400"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="flex-1 md:pl-72 flex flex-col min-h-screen pb-20 md:pb-6">
+    <header class="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 py-3">
+      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 md:hidden">
+          <select id="cargoSelectMobile" onchange="setCargo(this.value)" class="text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2 py-1.5">
+            <option value="admin">Agente Administrativo</option>
+            <option value="ace">Agente Combate Endemias</option>
+            <option value="ambos">Ambos os Cargos</option>
+          </select>
+        </div>
+
+        <div class="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+          <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300 font-bold" id="headerCargoBadge">Cargo: Agente Administrativo</span>
+          <span id="headerTrailStats">0/37 trilhas concluídas</span>
+          <span id="syncIndicator" class="hidden px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">☁️ Sincronizado</span>
+        </div>
+
+        <div class="flex items-center gap-2 ml-auto">
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-bold">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i> <span id="headerXp">0 XP</span>
+          </div>
+          <button onclick="openModal('modalFirebase')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Firebase">
+            <i data-lucide="cloud" class="w-4 h-4 text-sky-500"></i>
+          </button>
+          <button onclick="openModal('modalApi')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Chave API">
+            <i data-lucide="key-round" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openModal('modalJson')" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700" title="Importar/Exportar JSON">
+            <i data-lucide="file-json" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleTheme()" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+            <i data-lucide="sun-moon" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6" id="mainContainer"></main>
+  </div>
+
+  <!-- NAVEGAÇÃO INFERIOR MOBILE -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-2 z-30">
+    <button onclick="switchTab('trilhas')" data-tab="trilhas" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
+      <i data-lucide="map" class="w-5 h-5 mb-0.5"></i> Trilhas
+    </button>
+    <button onclick="switchTab('radar')" data-tab="radar" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
+      <i data-lucide="radar" class="w-5 h-5 mb-0.5"></i> Radar
+    </button>
+    <button onclick="switchTab('mentor')" data-tab="mentor" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
+      <i data-lucide="bot" class="w-5 h-5 mb-0.5"></i> Mentor IA
+    </button>
+    <button onclick="switchTab('simulado')" data-tab="simulado" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
+      <i data-lucide="file-check-2" class="w-5 h-5 mb-0.5"></i> Simulado
+    </button>
+    <button onclick="switchTab('erros')" data-tab="erros" class="nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1">
+      <i data-lucide="alert-triangle" class="w-5 h-5 mb-0.5"></i> Erros
+    </button>
+  </nav>
+
+  <!-- MODAL CONFIGURAÇÃO DE CHAVE API GEMINI -->
+  <div id="modalApi" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="key-round" class="w-5 h-5 text-brand-600"></i> Chave API Gemini</h2>
+        <button onclick="closeModal('modalApi')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+        Sua chave do Google AI Studio permanece armazenada exclusivamente no <strong>localStorage</strong> do seu navegador (nunca é enviada para a nuvem).
+      </p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold mb-1">API Key</label>
+          <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1">Modelo</label>
+          <select id="inputGeminiModel" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+            <option value="gemini-2.5-flash">gemini-2.5-flash (Recomendado - Rápido)</option>
+            <option value="gemini-2.5-pro">gemini-2.5-pro (Análise Profunda)</option>
+            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button onclick="clearApiKey()" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40">Remover</button>
+        <button onclick="saveApiConfig()" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white">Salvar Chave</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FIREBASE AUTH & FIRESTORE -->
+  <div id="modalFirebase" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="cloud" class="w-5 h-5 text-sky-500"></i> Integração Firebase Firestore</h2>
+        <button onclick="closeModal('modalFirebase')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
+          <p class="font-bold mb-1">1. Credenciais do Projeto Firebase (firebaseConfig JSON)</p>
+          <p class="text-slate-500 dark:text-slate-400 mb-2">Cole o JSON <code>firebaseConfig</code> do seu projeto no Firebase Console:</p>
+          <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"></textarea>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button onclick="saveFirebaseConfigFromUI()" class="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold">Salvar Config & Inicializar</button>
+            <button onclick="loginWithGoogleFirebase()" class="px-3.5 py-2 rounded-lg bg-slate-900 dark:bg-brand-600 text-white font-bold">Entrar com Google</button>
+            <button onclick="logoutFirebase()" id="btnLogoutFirebase" class="hidden px-3.5 py-2 rounded-lg bg-rose-600 text-white font-bold">Sair</button>
+          </div>
+          <p id="firebaseAuthInfo" class="mt-2 text-[11px] font-semibold text-slate-500">Status: Modo Offline / LocalStorage</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
+          <p class="font-bold mb-1">2. Sincronização de Banco & Aulas na Nuvem</p>
+          <p class="text-slate-500 dark:text-slate-400 mb-2">Envie suas questões customizadas e aulas geradas por IA para o Firestore ou restaure em outro dispositivo.</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="pushAllToFirestore()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Enviar Dados ao Firestore</button>
+            <button onclick="pullFromFirestoreManual(false)" class="px-3.5 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold">Baixar Dados do Firestore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMPORTAR / EXPORTAR JSON -->
+  <div id="modalJson" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-xl w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="file-json" class="w-5 h-5 text-brand-600"></i> Gerenciador JSON (Questões & Backup)</h2>
+        <button onclick="closeModal('modalJson')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="p-3.5 rounded-xl bg-brand-50/70 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-900">
+          <p class="font-bold text-brand-800 dark:text-brand-300 mb-1">1. Importar Pacote de Questões ou Backup (.json)</p>
+          <p class="text-slate-600 dark:text-slate-300 mb-2">Selecione um arquivo JSON de questões extras ou backup completo do estudante:</p>
+          <input type="file" id="jsonFileInput" accept=".json" onchange="handleJsonFileUpload(event)" class="block w-full mb-2 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-700" />
+          <textarea id="jsonPasteArea" rows="5" placeholder='Cole aqui o conteúdo JSON ou selecione o arquivo acima...' class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-[11px]"></textarea>
+          <button onclick="importFromTextarea()" class="mt-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">Processar & Salvar JSON</button>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
+          <p class="font-bold mb-1">2. Exportar Dados</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button onclick="exportCustomQuestionsJSON()" class="px-3 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700">Exportar Questões IA/Extras (.json)</button>
+            <button onclick="exportFullBackupJSON()" class="px-3 py-2 rounded-lg bg-slate-700 text-white font-semibold hover:bg-slate-600">Backup Completo (Progresso + Chat)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden px-4 py-3 rounded-xl shadow-lg text-xs font-bold text-white bg-slate-900 dark:bg-brand-600 transition-all"></div>
+
+  <!-- FIREBASE SDK COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ============================================================================
+    // CONFIGURAÇÃO OPCIONAL FIXA DO FIREBASE (COLE SEU OBJETO AQUI SE DESEJAR)
+    // ============================================================================
+    const DEFAULT_FIREBASE_CONFIG = null;
+
+    const STORAGE_STATE_KEY = 'trilha_pg_single_v1';
+    const STORAGE_FB_CONFIG_KEY = 'trilha_pg_fb_config_v1';
+
+    // ============================================================================
+    // 1. DISCIPLINAS DO EDITAL (14 DISCIPLINAS)
+    // ============================================================================
+    const DISCIPLINAS = [
+      { id: 'lp', codigo: 'I', nome: 'Língua Portuguesa', bloco: 'basicos', cargos: ['admin', 'ace'] },
+      { id: 'mat', codigo: 'II', nome: 'Matemática', bloco: 'basicos', cargos: ['admin', 'ace'] },
+      { id: 'inf', codigo: 'III', nome: 'Informática', bloco: 'basicos', cargos: ['admin'] },
+      { id: 'adm-1', codigo: 'I', nome: 'Atendimento e Comunicação', bloco: 'especificos_admin', cargos: ['admin'] },
+      { id: 'adm-2', codigo: 'II', nome: 'Gestão de Documentos e Processos', bloco: 'especificos_admin', cargos: ['admin'] },
+      { id: 'adm-3', codigo: 'III', nome: 'Materiais e Equipamentos', bloco: 'especificos_admin', cargos: ['admin'] },
+      { id: 'adm-4', codigo: 'IV', nome: 'Legislação e Administração Pública', bloco: 'especificos_admin', cargos: ['admin'] },
+      { id: 'ace-sus', codigo: 'SUS', nome: 'Saúde Pública e SUS', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-1', codigo: 'I', nome: 'Atribuições e Legislação (ACE)', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-2', codigo: 'II', nome: 'Vigilância em Saúde', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-3', codigo: 'III', nome: 'Doenças Transmitidas por Vetores', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-4', codigo: 'IV', nome: 'Controle de Vetores e Animais', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-5', codigo: 'V', nome: 'Procedimentos e Equipamentos', bloco: 'especificos_ace', cargos: ['ace'] },
+      { id: 'ace-6', codigo: 'VI', nome: 'Educação e Participação', bloco: 'especificos_ace', cargos: ['ace'] }
+    ];
+
+    // ============================================================================
+    // 2. TODAS AS 63 TRILHAS VERTICALIZADAS DO EDITAL
+    // ============================================================================
+    const TRILHAS = [
+      // I — LÍNGUA PORTUGUESA (7)
+      { id: 'lp-1', disciplinaId: 'lp', titulo: 'Leitura, compreensão e interpretação de textos', regraOuro: 'Compreensão está explícita no texto; interpretação exige dedução lógica sem extrapolar.', armadilhaIbam: 'Alternativas verdadeiras na vida real, mas ausentes ou extrapoladas em relação ao texto-base.', resumo: 'Sublinhe termos restritivos (apenas, sempre, nunca) e busque a paráfrase fiel ao parágrafo.', palavrasChave: ['Compreensão', 'Interpretação', 'Paráfrase'] },
+      { id: 'lp-2', disciplinaId: 'lp', titulo: 'Informações explícitas e implícitas; finalidade do texto', regraOuro: 'Pressupostos são marcados por palavras do texto; subentendidos dependem do contexto.', armadilhaIbam: 'Trocar texto expositivo/informativo por injuntivo (instrucional) na finalidade.', resumo: 'Identifique o gênero textual para cravar a finalidade: informar, convencer, instruir ou entreter.', palavrasChave: ['Pressuposto', 'Subentendido', 'Finalidade'] },
+      { id: 'lp-3', disciplinaId: 'lp', titulo: 'Vocabulário: sinônimos, antônimos, sentido contextual', regraOuro: 'O sentido do vocábulo na IBAM é sempre definido pelo contexto da frase.', armadilhaIbam: 'Cobrar parônimos clássicos: ratificar/retificar, eminente/iminente, descrição/discrição.', resumo: 'Substitua o termo grifado pela alternativa mantendo classe gramatical e sentido.', palavrasChave: ['Polissemia', 'Parônimos', 'Contexto'] },
+      { id: 'lp-4', disciplinaId: 'lp', titulo: 'Ortografia e acentuação', regraOuro: 'Proparoxítonas são todas acentuadas; paroxítonas em ditongo crescente levam acento.', armadilhaIbam: 'Manter acento abolido pelo Acordo Ortográfico: ideia, heroico, assembleia, voo, enjoo.', resumo: 'Revise hiatos (saúde, saída — mas não feiura) e emprego de porquês, mal/mau e sessão/seção/cessão.', palavrasChave: ['Acentuação', 'Acordo Ortográfico', 'Porquês'] },
+      { id: 'lp-5', disciplinaId: 'lp', titulo: 'Classes de palavras e emprego correto', regraOuro: 'Conjunções definem a relação lógica entre orações (concessão, causa, condição, conclusão).', armadilhaIbam: 'Trocar o valor semântico de "conquanto" (concessiva = embora) por conclusiva.', resumo: 'Diferencie pronome relativo "que" (= o qual) de conjunção integrante "que" (= ISSO).', palavrasChave: ['Conjunções', 'Pronome Relativo', 'Morfologia'] },
+      { id: 'lp-6', disciplinaId: 'lp', titulo: 'Concordância nominal e verbal', regraOuro: 'HAVER (= existir) e FAZER (= tempo decorrido) são impessoais e ficam no singular.', armadilhaIbam: 'Sujeito posposto ao verbo e partícula apassivadora SE ("Vendem-se imóveis").', resumo: 'Localize o núcleo do sujeito antes de flexionar o verbo; "anexo" e "incluso" concordam com o nome.', palavrasChave: ['Verbo Haver', 'Partícula SE', 'Sujeito Posposto'] },
+      { id: 'lp-7', disciplinaId: 'lp', titulo: 'Organização e sequência lógica de frases', regraOuro: 'Coesão referencial (este/esse/aquele) e sequencial (conectivos) garantem progressão lógica.', armadilhaIbam: 'Ordenação de períodos ou troca de conectivos invertendo causa e consequência.', resumo: 'Use "esse/isso" para retomar o que já foi dito (anáfora) e "este/isto" para anunciar (catáfora).', palavrasChave: ['Coesão', 'Coerência', 'Anáfora'] },
+
+      // II — MATEMÁTICA (9)
+      { id: 'mat-1', disciplinaId: 'mat', titulo: 'Números: naturais, inteiros, decimais, frações', regraOuro: 'Na divisão de frações, conserva-se a primeira e multiplica-se pelo inverso da segunda.', armadilhaIbam: 'Esquecer de igualar casas decimais ou deslocar a vírgula na divisão de decimais.', resumo: 'Na soma/subtração de frações heterogêneas, calcule o MMC dos denominadores.', palavrasChave: ['Frações', 'Decimais', 'Inteiros'] },
+      { id: 'mat-2', disciplinaId: 'mat', titulo: 'Operações fundamentais e resolução de problemas', regraOuro: 'Precedência: Parênteses -> Potências/Raízes -> Multiplicação/Divisão -> Adição/Subtração.', armadilhaIbam: 'Divisão com resto em problemas de transporte/embalagem (exige arredondar para cima).', resumo: 'Traduza o enunciado em equação de 1º grau e confira exatamente o que a pergunta pede.', palavrasChave: ['PEMDAS', 'Equação 1º Grau', 'Resto'] },
+      { id: 'mat-3', disciplinaId: 'mat', titulo: 'Múltiplos e divisores', regraOuro: 'MMC resolve encontros periódicos simultâneos; MDC resolve divisão em partes máximas iguais.', armadilhaIbam: 'Aplicar MDC quando o problema pede quando duas equipes voltarão a sair juntas (MMC).', resumo: 'Fatore simultaneamente: MMC usa todos os fatores; MDC usa apenas os divisores comuns.', palavrasChave: ['MMC', 'MDC', 'Fatoração'] },
+      { id: 'mat-4', disciplinaId: 'mat', titulo: 'Razão, proporção e regra de três simples', regraOuro: 'Analise se as grandezas são diretas ou inversas ANTES de multiplicar.', armadilhaIbam: 'Multiplicar cruzado em problemas de trabalhadores × dias ou velocidade × tempo (inversas!).', resumo: 'Se uma grandeza aumenta e a outra diminui na mesma razão, inverta uma fração.', palavrasChave: ['Proporção', 'Grandezas Inversas', 'Regra de Três'] },
+      { id: 'mat-5', disciplinaId: 'mat', titulo: 'Porcentagem', regraOuro: 'Aumentos/descontos sucessivos multiplicam fatores: +20% e -20% = 1,20 × 0,80 = 0,96 (-4%).', armadilhaIbam: 'Somar ou subtrair taxas percentuais diretamente sem considerar a nova base.', resumo: 'Aumento de i% = ×(1 + i/100); desconto de i% = ×(1 - i/100).', palavrasChave: ['Fator Multiplicativo', 'Sucessivos', 'Desconto'] },
+      { id: 'mat-6', disciplinaId: 'mat', titulo: 'Sistema monetário brasileiro', regraOuro: 'R$ 1,00 = 100 centavos; subtraia a entrada antes de parcelar o saldo devedor.', armadilhaIbam: 'Calcular juros ou parcelamento sobre o valor total ignorando a entrada paga à vista.', resumo: 'Alinhe vírgula abaixo de vírgula nas operações financeiras.', palavrasChave: ['Real', 'Troco', 'Parcelamento'] },
+      { id: 'mat-7', disciplinaId: 'mat', titulo: 'Unidades de medida: comprimento, massa, capacidade, área e tempo', regraOuro: '1 m³ = 1.000 Litros | 1 hora = 60 minutos | 1,5 h = 1h 30min.', armadilhaIbam: 'Converter 2,4 horas como 2h 40min (o correto é 0,4 × 60 = 24 min -> 2h 24min).', resumo: 'Em área (m² para cm²), cada degrau da escada métrica desloca 2 casas decimais.', palavrasChave: ['Litros e m³', 'Horas Decimais', 'Conversão'] },
+      { id: 'mat-8', disciplinaId: 'mat', titulo: 'Perímetro e área de figuras planas simples', regraOuro: 'Perímetro = soma dos lados externos; Área triângulo = (b × h)/2; retângulo = b × h.', armadilhaIbam: 'Misturar centímetros e metros na mesma figura antes de calcular a área.', resumo: 'Converta todas as dimensões para a mesma unidade no primeiro passo.', palavrasChave: ['Perímetro', 'Área', 'Geometria Plana'] },
+      { id: 'mat-9', disciplinaId: 'mat', titulo: 'Interpretação de dados em situações cotidianas', regraOuro: 'Leia eixos, legendas e escalas antes de calcular médias ou variações.', armadilhaIbam: 'Confundir diferença absoluta entre barras com crescimento percentual.', resumo: 'Média aritmética = soma dos elementos ÷ quantidade de elementos.', palavrasChave: ['Gráficos', 'Tabelas', 'Média Aritmética'] },
+
+      // III — INFORMÁTICA (8 - SOMENTE AGENTE ADMINISTRATIVO)
+      { id: 'inf-1', disciplinaId: 'inf', titulo: 'Noções de computador e sistemas operacionais', regraOuro: 'RAM é volátil (perde dados ao desligar); ROM e SSD/HD são não voláteis.', armadilhaIbam: 'Classificar SSD/HD apenas como entrada ou saída (são dispositivos híbridos/armazenamento).', resumo: 'Atalhos Windows: Win+E (Explorador), Win+D (Desktop), Win+L (Bloquear).', palavrasChave: ['Hardware', 'Memória RAM', 'Windows'] },
+      { id: 'inf-2', disciplinaId: 'inf', titulo: 'Arquivos e pastas: criação, cópia, movimentação, renomeação e exclusão', regraOuro: 'Shift + Delete exclui permanentemente sem enviar o arquivo para a Lixeira.', armadilhaIbam: 'Arrastar na mesma unidade move; arrastar para outra unidade (pendrive) copia.', resumo: 'Caracteres proibidos em nomes no Windows: \\ / : * ? " < > |', palavrasChave: ['Shift+Delete', 'Explorador', 'Extensões'] },
+      { id: 'inf-3', disciplinaId: 'inf', titulo: 'Processadores de texto: edição e formatação', regraOuro: 'No MS Word (PT-BR): Ctrl+B = Salvar; Ctrl+S = Sublinhado; Ctrl+N = Negrito.', armadilhaIbam: 'Cobrar Ctrl+S como atalho para salvar no Word em português.', resumo: 'Ctrl+Enter insere quebra de página; Ctrl+J aplica alinhamento justificado.', palavrasChave: ['MS Word', 'Atalhos PT-BR', 'Formatação'] },
+      { id: 'inf-4', disciplinaId: 'inf', titulo: 'Planilhas eletrônicas: operações elementares', regraOuro: 'Dois-pontos (A1:A5) = ATÉ (intervalo contínuo); ponto e vírgula (A1;A5) = E.', armadilhaIbam: 'Trocar =SOMA(A1;A4) por =SOMA(A1:A4) ou esquecer $ na referência absoluta ($A$1).', resumo: 'Toda fórmula no Excel inicia com "=" (SOMA, MÉDIA, MÁXIMO, MÍNIMO, SE).', palavrasChave: ['Excel', 'Intervalos', 'Referência Absoluta'] },
+      { id: 'inf-5', disciplinaId: 'inf', titulo: 'Internet: navegação e pesquisa', regraOuro: 'HTTPS usa criptografia SSL/TLS. Navegação anônima não oculta seu IP do provedor/empresa.', armadilhaIbam: 'Afirmar que a aba anônima torna o usuário invisível na rede institucional.', resumo: 'Operadores Google: aspas ("") = termo exato; menos (-) = exclui palavra.', palavrasChave: ['HTTPS', 'Intranet', 'Navegação Anônima'] },
+      { id: 'inf-6', disciplinaId: 'inf', titulo: 'Correio eletrônico: envio e recebimento de mensagens e anexos', regraOuro: 'Destinatários em CCO ficam ocultos e NÃO recebem respostas de "Responder a todos".', armadilhaIbam: 'Incluir destinatários em CCO no "Responder a todos".', resumo: 'SMTP envia e-mails; IMAP sincroniza no servidor; POP3 baixa para o dispositivo.', palavrasChave: ['CC e CCO', 'SMTP', 'IMAP/POP3'] },
+      { id: 'inf-7', disciplinaId: 'inf', titulo: 'Arquivos PDF', regraOuro: 'PDF preserva layout e fontes em qualquer dispositivo e suporta assinatura digital.', armadilhaIbam: 'Afirmar que arquivos PDF não permitem restrição por senha ou assinatura.', resumo: 'Padrão oficial para publicação de editais, diários oficiais e processos eletrônicos.', palavrasChave: ['PDF', 'Assinatura Digital', 'Portabilidade'] },
+      { id: 'inf-8', disciplinaId: 'inf', titulo: 'Segurança: senhas, cópias de segurança, reconhecimento de links e mensagens suspeitas', regraOuro: 'Phishing usa engenharia social/link falso para roubar senhas; Ransomware sequestra dados.', armadilhaIbam: 'Confundir Phishing (isca/engenharia social) com Ransomware (criptografia com resgate).', resumo: 'Combine senhas fortes com autenticação em dois fatores (2FA) e backups periódicos.', palavrasChave: ['Phishing', 'Ransomware', 'Backup', '2FA'] },
+
+      // ESPECÍFICAS — AGENTE ADMINISTRATIVO (13)
+      { id: 'adm-1-1', disciplinaId: 'adm-1', titulo: 'Atendimento presencial, telefônico e eletrônico', regraOuro: 'Cortesia, presteza, escuta ativa, clareza e isonomia no tratamento ao cidadão.', armadilhaIbam: 'Transferir chamadas telefônicas sem avisar o cidadão ou anunciar o assunto ao receptor.', resumo: 'Identifique-se, ouça sem interromper e registre encaminhamentos.', palavrasChave: ['Cortesia', 'Escuta Ativa', 'Atendimento'] },
+      { id: 'adm-1-2', disciplinaId: 'adm-1', titulo: 'Identificação e registro de solicitações', regraOuro: 'Todo requerimento deve ser protocolado com número, data, objeto e dados do requerente.', armadilhaIbam: 'Recusar protocolo por juízo prévio do atendente de que o pedido será indeferido.', resumo: 'O protocolo assegura rastreabilidade e direito constitucional de petição.', palavrasChave: ['Protocolo', 'Direito de Petição', 'Rastreabilidade'] },
+      { id: 'adm-1-3', disciplinaId: 'adm-1', titulo: 'Redação de documentos: ofícios, memorandos, correspondências, mensagens eletrônicas e relatórios simples', regraOuro: 'Fechos oficiais (MRPR): "Respeitosamente," (autoridade superior) e "Atenciosamente," (igual/inferior).', armadilhaIbam: 'Usar "Cordialmente" ou "Atenciosamente" para autoridades superiores.', resumo: 'O Padrão Ofício unificou ofício, aviso e memorando na 3ª edição do MRPR.', palavrasChave: ['Padrão Ofício', 'Fechos Oficiais', 'MRPR'] },
+      { id: 'adm-1-4', disciplinaId: 'adm-1', titulo: 'Princípios: clareza, objetividade, impessoalidade e correção', regraOuro: 'Impessoalidade veda opiniões pessoais e promoção de agentes; clareza evita ambiguidade.', armadilhaIbam: 'Confundir impessoalidade com ausência de assinatura/identificação do signatário.', resumo: 'Atributos oficiais: clareza, precisão, objetividade, concisão, impessoalidade e formalidade.', palavrasChave: ['Clareza', 'Impessoalidade', 'Objetividade'] },
+      { id: 'adm-2-1', disciplinaId: 'adm-2', titulo: 'Recebimento, protocolo, classificação e tramitação', regraOuro: 'Correspondência marcada como Confidencial/Reservada/Particular NÃO é aberta pelo protocolo.', armadilhaIbam: 'Abrir envelope confidencial para digitalizar no setor de protocolo.', resumo: 'Registra-se pelos dados externos e entrega-se fechado ao destinatário.', palavrasChave: ['Protocolo', 'Tramitação', 'Sigilo'] },
+      { id: 'adm-2-2', disciplinaId: 'adm-2', titulo: 'Arquivamento de documentos', regraOuro: 'Três Idades: Corrente (frequente), Intermediário (aguarda prazo) e Permanente (definitivo).', armadilhaIbam: 'Afirmar que documentos do arquivo permanente podem ser eliminados.', resumo: 'Documentos permanentes são inalienáveis, imprescritíveis e jamais descartados.', palavrasChave: ['Três Idades', 'Arquivo Permanente', 'Temporalidade'] },
+      { id: 'adm-2-3', disciplinaId: 'adm-2', titulo: 'Organização de agenda e rotinas administrativas', regraOuro: 'Priorize tarefas por Urgência × Importância e confirme pautas e horários com antecedência.', armadilhaIbam: 'Alterar agenda oficial sem comunicar participantes ou sem margem de deslocamento.', resumo: 'Checklists e controle de prazos evitam perda de prazos administrativos.', palavrasChave: ['Agenda', 'Priorização', 'Prazos'] },
+      { id: 'adm-2-4', disciplinaId: 'adm-2', titulo: 'Sistemas de informação', regraOuro: 'Dado é o elemento bruto; Informação é o dado tratado e contextualizado para decisão.', armadilhaIbam: 'Inverter os conceitos de dado e informação em questões conceituais.', resumo: 'Sistemas eletrônicos de processo garantem celeridade, rastreabilidade e transparência.', palavrasChave: ['Dado vs Informação', 'Processo Digital', 'Gestão'] },
+      { id: 'adm-2-5', disciplinaId: 'adm-2', titulo: 'Proteção de dados pessoais', regraOuro: 'LGPD protege pessoa natural; dados sensíveis incluem saúde, biometria, religião e origem racial.', armadilhaIbam: 'Expor CPF completo ou dados médicos de cidadãos em listas públicas sem anonimização.', resumo: 'O tratamento pelo poder público exige finalidade pública e base legal.', palavrasChave: ['LGPD', 'Dado Sensível', 'Anonimização'] },
+      { id: 'adm-3-1', disciplinaId: 'adm-3', titulo: 'Organização, utilização e conservação de materiais e equipamentos', regraOuro: 'Consumo: durabilidade até 2 anos ou perde identidade física. Permanente: > 2 anos (tombamento).', armadilhaIbam: 'Classificar toner de impressora ou resma de papel como material permanente.', resumo: 'No almoxarifado, usa-se PEPS (Primeiro que Entra, Primeiro que Sai).', palavrasChave: ['Consumo vs Permanente', 'Tombamento', 'PEPS'] },
+      { id: 'adm-3-2', disciplinaId: 'adm-3', titulo: 'Noções de fluxo de documentos', regraOuro: 'Toda movimentação física de processo exige guia de remessa/carga com recibo de entrega.', armadilhaIbam: 'Eliminar documentos públicos sem Tabela de Temporalidade e edital da CPAD.', resumo: 'O registro de carga identifica quem detém a custódia do processo.', palavrasChave: ['Fluxo Documental', 'Guia de Remessa', 'Custódia'] },
+      { id: 'adm-4-1', disciplinaId: 'adm-4', titulo: 'Princípios da Administração Pública — art. 37, caput, da CF/88', regraOuro: 'LIMPE: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência.', armadilhaIbam: 'Confundir Legalidade Administrativa (só faz o que a lei autoriza) com Legalidade Privada.', resumo: 'Art. 37, §1º veda promoção pessoal de autoridades em publicidade oficial.', palavrasChave: ['LIMPE', 'Art. 37 CF/88', 'Legalidade Estrita'] },
+      { id: 'adm-4-2', disciplinaId: 'adm-4', titulo: 'Deveres funcionais do público — arts. 5º a 9º da Lei Complementar Municipal nº 97/2023', regraOuro: 'Deveres: zelo, dedicação, lealdade, assiduidade, pontualidade, urbanidade, moralidade e sigilo.', armadilhaIbam: 'Dizer que o dever de obediência obriga cumprir ordem manifestamente ilegal.', resumo: 'O servidor deve cumprir ordens legais e representar contra ilegalidade ou abuso.', palavrasChave: ['LC 97/2023', 'Deveres Funcionais', 'Ordem Ilegal'] },
+
+      // ESPECÍFICAS — AGENTE DE COMBATE ÀS ENDEMIAS (26)
+      { id: 'ace-sus-1', disciplinaId: 'ace-sus', titulo: 'Princípios e diretrizes do SUS — Lei nº 8.080/1990 (arts. 2º a 7º)', regraOuro: 'O dever do Estado de prover saúde NÃO exclui o das pessoas, família, empresas e sociedade.', armadilhaIbam: 'Suprimir o advérbio "NÃO" no art. 2º, §2º da Lei 8.080/90.', resumo: 'Art. 7º: Universalidade, Integralidade, Equidade, Descentralização e Participação Social.', palavrasChave: ['Lei 8.080/90', 'Universalidade', 'Integralidade'] },
+      { id: 'ace-sus-2', disciplinaId: 'ace-sus', titulo: 'Lei nº 8.142/1990 (arts. 1º e 2º)', regraOuro: 'Conferência de Saúde = a cada 4 anos. Conselho de Saúde = permanente e deliberativo (50% usuários).', armadilhaIbam: 'Inverter periodicidade e caráter deliberativo entre Conferência e Conselho.', resumo: 'Art. 2º disciplina os repasses regulares e automáticos do Fundo Nacional de Saúde.', palavrasChave: ['Lei 8.142/90', 'Conselho de Saúde', 'Conferência'] },
+      { id: 'ace-sus-3', disciplinaId: 'ace-sus', titulo: 'Organização das ações de saúde', regraOuro: 'Rede regionalizada e hierarquizada com Atenção Primária como porta de entrada preferencial.', armadilhaIbam: 'Confundir hierarquização técnica de complexidade com subordinação política entre entes.', resumo: 'Fluxo assistencial organizado por referência e contrarreferência.', palavrasChave: ['Regionalização', 'Hierarquização', 'Porta de Entrada'] },
+      { id: 'ace-sus-4', disciplinaId: 'ace-sus', titulo: 'Atenção primária e vigilância em saúde', regraOuro: 'Integração obrigatória entre Vigilância em Saúde e Atenção Primária (ACS + ACE) no território.', armadilhaIbam: 'Tratar o trabalho do ACE como desvinculado da UBS/ESF da área.', resumo: 'Trabalho conjunto acelera a notificação e o bloqueio de focos.', palavrasChave: ['Atenção Primária', 'ACS e ACE', 'Vigilância'] },
+      { id: 'ace-sus-5', disciplinaId: 'ace-sus', titulo: 'Territorialização', regraOuro: 'Reconhecimento vivo do espaço geográfico, ambiental, epidemiológico e social (território-processo).', armadilhaIbam: 'Reduzir territorialização a um mapa estático de ruas.', resumo: 'Identifica microáreas de risco e Pontos Estratégicos (borracharias, ferros-velhos).', palavrasChave: ['Território-Processo', 'Microáreas', 'Pontos Estratégicos'] },
+      { id: 'ace-sus-6', disciplinaId: 'ace-sus', titulo: 'Promoção da saúde e prevenção de doenças', regraOuro: 'Prevenção evita agravos específicos; Promoção atua nos determinantes sociais e qualidade de vida.', armadilhaIbam: 'Confundir prevenção primária (eliminar criadouros) com secundária (diagnóstico precoce).', resumo: 'Saneamento básico e manejo ambiental são pilares estruturais.', palavrasChave: ['Promoção', 'Prevenção', 'Determinantes Sociais'] },
+      { id: 'ace-sus-7', disciplinaId: 'ace-sus', titulo: 'Educação em saúde', regraOuro: 'Abordagem dialógica e participativa que valoriza o saber comunitário e gera corresponsabilidade.', armadilhaIbam: 'Adotar postura autoritária ou culpar o morador durante a visita.', resumo: 'Ensinar na prática a inspeção semanal de 10 minutos nos depósitos domiciliares.', palavrasChave: ['Educação Dialógica', 'Corresponsabilização', 'Visita'] },
+      { id: 'ace-sus-8', disciplinaId: 'ace-sus', titulo: 'Participação comunitária e trabalho integrado', regraOuro: 'Engajamento contínuo da comunidade e ações intersetoriais (limpeza urbana, escolas).', armadilhaIbam: 'Achar que o fumacê substitui a eliminação mecânica feita pelos moradores.', resumo: 'Mutirões e comitês locais sustentam a redução da infestação predial.', palavrasChave: ['Controle Social', 'Intersetorialidade', 'Mutirões'] },
+      { id: 'ace-1-1', disciplinaId: 'ace-1', titulo: 'Arts. 4º, 4º-A e 4º-B da Lei Federal nº 11.350/2006', regraOuro: 'Art. 4º: vigilância, prevenção e controle de doenças. Art. 4º-A: atuação integrada entre ACS e ACE.', armadilhaIbam: 'Proibir o ACS de identificar focos ou dispensar capacitação no art. 4º-B.', resumo: 'Art. 4º-B autoriza atividades de apoio/assistenciais específicas mediante capacitação.', palavrasChave: ['Lei 11.350/06', 'Art. 4º-A', 'Atribuições ACE'] },
+      { id: 'ace-2-1', disciplinaId: 'ace-2', titulo: 'Vigilância epidemiológica', regraOuro: 'Conhecimento, detecção ou prevenção de mudanças nos determinantes para controlar doenças/agravos.', armadilhaIbam: 'Trocar o conceito legal de Vigilância Epidemiológica com o de Vigilância Sanitária.', resumo: 'Baseia-se na notificação compulsória, investigação epidemiológica e bloqueio.', palavrasChave: ['Art. 6º Lei 8.080', 'Notificação', 'Bloqueio'] },
+      { id: 'ace-2-2', disciplinaId: 'ace-2', titulo: 'Vigilância ambiental', regraOuro: 'Monitora fatores biológicos (vetores/reservatórios) e não biológicos (água, solo, ar) do ambiente.', armadilhaIbam: 'Restringir a vigilância ambiental exclusivamente ao Aedes aegypti.', resumo: 'Abrange qualidade da água para consumo, roedores, vetores e animais peçonhentos.', palavrasChave: ['Vigilância Ambiental', 'Água e Solo', 'Fatores Bióticos'] },
+      { id: 'ace-3-1', disciplinaId: 'ace-3', titulo: 'Aedes aegypti: hábitos e criadouros', regraOuro: 'Hábito diurno; apenas a FÊMEA pica (hematófaga); ovos resistem até 450 dias no seco.', armadilhaIbam: 'Afirmar que o macho pica ou que secar o recipiente mata os ovos do Aedes.', resumo: 'Ciclo holometábolo (ovo -> larva -> pupa -> adulto) dura cerca de 7 a 10 dias.', palavrasChave: ['Hematofagia Feminina', 'Ovos 450 dias', 'Ciclo 7-10 dias'] },
+      { id: 'ace-3-2', disciplinaId: 'ace-3', titulo: 'Dengue, chikungunya e zika: transmissão, sintomas e sinais', regraOuro: 'Dengue: febre alta + dor retro-orbital; Chikungunya: artralgia intensa; Zika: exantema pruriginoso.', armadilhaIbam: 'Desconhecer sinais de alarme da dengue (dor abdominal intensa e vômitos persistentes).', resumo: 'Zika também apresenta transmissão vertical (síndrome congênita) e sexual.', palavrasChave: ['Arboviroses', 'Sinais de Alarme', 'Chikungunya/Zika'] },
+      { id: 'ace-3-3', disciplinaId: 'ace-3', titulo: 'Reconhecimento e encaminhamento de casos suspeitos', regraOuro: 'Orientar hidratação oral imediata, encaminhar à UBS/UPA e contraindicar AAS e anti-inflamatórios.', armadilhaIbam: 'Indicar AAS ou ibuprofeno para febre suspeita de dengue (risco hemorrágico!).', resumo: 'Comunicar a vigilância para desencadear investigação e bloqueio focal.', palavrasChave: ['Proibido AAS', 'Hidratação', 'Encaminhamento'] },
+      { id: 'ace-3-4', disciplinaId: 'ace-3', titulo: 'Prevenção: malária, leishmanioses e leptospirose', regraOuro: 'Leptospirose = urina de rato; Leishmaniose = mosquito-palha (Lutzomyia); Malária = Anopheles.', armadilhaIbam: 'Trocar os vetores entre malária, leishmaniose e dengue.', resumo: 'Prevenir leptospirose: evitar lama de enchente, usar EPIs e combater roedores.', palavrasChave: ['Leptospirose', 'Mosquito-Palha', 'Anopheles'] },
+      { id: 'ace-4-1', disciplinaId: 'ace-4', titulo: 'Controle ambiental de roedores', regraOuro: 'Antirratização (eliminar acesso, abrigo, água e alimento — 4 As) antecede a desratização.', armadilhaIbam: 'Aplicar raticida sem antes remover lixo, entulho e fontes de alimento.', resumo: 'Espécies urbanas: ratazana (Rattus norvegicus), rato de telhado e camundongo.', palavrasChave: ['Antirratização', '4 As', 'Desratização'] },
+      { id: 'ace-4-2', disciplinaId: 'ace-4', titulo: 'Inspeção de imóveis e abordagem de moradores', regraOuro: 'Inspeção padronizada do peridomicílio para o intradomicílio, sempre com autorização.', armadilhaIbam: 'Forçar entrada em imóvel fechado ou recusado sem seguir rito legal (Lei 13.301/16).', resumo: 'Identifique-se com crachá, explique o procedimento e convide o morador a acompanhar.', palavrasChave: ['Peridomicílio', 'Abordagem Ética', 'Imóvel Fechado'] },
+      { id: 'ace-4-3', disciplinaId: 'ace-4', titulo: 'Identificação, eliminação e tratamento de criadouros', regraOuro: 'Prioridade nº 1 é eliminação física/vedação; larvicida só em depósitos não elimináveis.', armadilhaIbam: 'Aplicar larvicida em latas/garrafas descartáveis que deveriam ser recolhidas.', resumo: 'Depósitos classificam-se nos grupos A1/A2, B, C, D1/D2 e E.', palavrasChave: ['Eliminação Física', 'Tratamento Focal', 'Depósitos'] },
+      { id: 'ace-4-4', disciplinaId: 'ace-4', titulo: 'Controle: mecânico, biológico e químico de vetores', regraOuro: 'Mecânico: eliminação; Biológico: peixes/Bti; Químico: larvicidas e UBV (só adulto em voo).', armadilhaIbam: 'Usar fumacê (UBV) como rotina preventiva ou dizer que mata larvas.', resumo: 'UBV não tem efeito residual e é restrito a bloqueio de surtos.', palavrasChave: ['Controle Mecânico', 'Bti', 'UBV/Fumacê'] },
+      { id: 'ace-4-5', disciplinaId: 'ace-4', titulo: 'Animais peçonhentos: prevenção de agravos', regraOuro: 'Peçonhento inocula veneno (escorpião, serpente). Conduta: água e sabão + hospital urgente.', armadilhaIbam: 'Fazer torniquete, cortar ou sugar o local da picada.', resumo: 'Manter quintais limpos e vedar ralos/frestas previne escorpiões (Tityus serrulatus).', palavrasChave: ['Escorpião', 'Proibido Torniquete', 'Soroterapia'] },
+      { id: 'ace-5-1', disciplinaId: 'ace-5', titulo: 'Equipamentos e técnicas de trabalho', regraOuro: 'Kit: lanterna, espelho, pesca-larva, pipeta, tubitos com álcool 70% e lápis grafite.', armadilhaIbam: 'Escrever etiqueta interna de tubito com caneta esferográfica (tinta dissolve no álcool).', resumo: 'Lanterna e espelho permitem inspecionar locais escuros e elevados.', palavrasChave: ['Pesca-Larva', 'Álcool 70%', 'Etiqueta a Lápis'] },
+      { id: 'ace-5-2', disciplinaId: 'ace-5', titulo: 'Coleta e identificação de amostras entomológicas', regraOuro: 'Cada imóvel deve ter tubitos individualizados com álcool 70% e etiqueta a lápis.', armadilhaIbam: 'Misturar larvas de imóveis diferentes no mesmo tubito (distorce o IIP e Índice de Breteau).', resumo: 'IIP = (Imóveis positivos ÷ Imóveis inspecionados) × 100.', palavrasChave: ['LIRAa', 'Índice de Breteau', 'IIP'] },
+      { id: 'ace-5-3', disciplinaId: 'ace-5', titulo: 'Registros, relatórios e situações de risco', regraOuro: 'Preencher boletim diário no ato da visita, registrando trabalhados, fechados e recusados.', armadilhaIbam: 'Preencher relatórios de memória no fim da semana ou omitir imóveis fechados.', resumo: 'Diante de risco (cães soltos, violência), recuar com segurança e acionar supervisão.', palavrasChave: ['Boletim Diário', 'Indicadores', 'Segurança'] },
+      { id: 'ace-5-4', disciplinaId: 'ace-5', titulo: 'Equipamentos de proteção individual', regraOuro: 'Pela NR-06, o órgão público fornece gratuitamente o EPI; o servidor deve usar e conservar.', armadilhaIbam: 'Afirmar que o agente custeia seu próprio EPI.', resumo: 'Inclui boné árabe, protetor solar, calçado fechado, luvas e respirador adequado.', palavrasChave: ['NR-06', 'Fornecimento Gratuito', 'EPI'] },
+      { id: 'ace-6-1', disciplinaId: 'ace-6', titulo: 'Mobilização comunitária', regraOuro: 'Articulação contínua entre saúde, escolas, lideranças e moradores como protagonistas.', armadilhaIbam: 'Confundir mobilização com entrega passiva de panfletos sem diálogo.', resumo: 'Ações coletivas fortalecem a vigilância permanente no bairro.', palavrasChave: ['Mobilização', 'Lideranças', 'Protagonismo'] },
+      { id: 'ace-6-2', disciplinaId: 'ace-6', titulo: 'Educação em saúde e controle de vetores', regraOuro: 'Vistoria semanal (10 min) e esfregar bordas internas de pratos/bebedouros com bucha.', armadilhaIbam: 'Orientar apenas a trocar a água sem esfregar as paredes onde ficam os ovos aderidos.', resumo: 'Interrompe o ciclo de 7 a 10 dias do Aedes antes de virar mosquito adulto.', palavrasChave: ['Esfregar Bordas', 'Ciclo Semanal', 'Ovos Aderidos'] }
+    ];
+
+    // ============================================================================
+    // 3. RADAR DE PEGADINHAS IBAM (13 CARDS)
+    // ============================================================================
+    const RADAR = [
+      { id: 'rad-1', cargos: ['admin', 'ace'], disciplina: 'Língua Portuguesa', incidencia: 'Altíssima', titulo: 'Verbo HAVER impessoal vs. EXISTIR', pegadinha: 'Colocar sujeito no plural após "haver" ("Houveram falhas") para induzir concordância.', regraOuro: 'HAVER (= existir) fica sempre no singular; EXISTIR concorda com o sujeito.' },
+      { id: 'rad-2', cargos: ['admin', 'ace'], disciplina: 'Língua Portuguesa', incidencia: 'Alta', titulo: 'Novo Acordo Ortográfico: Ditongos Abertos', pegadinha: 'Manter acento em paroxítonas como "idéia", "assembléia" e "heróico".', regraOuro: 'Ditongos abertos ÉI e ÓI perderam acento nas paroxítonas (ideia, heroico), mas mantiveram nas oxítonas (papéis, herói).' },
+      { id: 'rad-3', cargos: ['admin', 'ace'], disciplina: 'Matemática', incidencia: 'Altíssima', titulo: 'Regra de Três Inversamente Proporcional', pegadinha: 'Multiplicar cruzado em problemas de trabalhadores × dias.', regraOuro: 'Mais agentes = MENOS dias. Multiplique em linha reta (inversamente proporcional).' },
+      { id: 'rad-4', cargos: ['admin', 'ace'], disciplina: 'Matemática', incidencia: 'Alta', titulo: 'Horas Decimais e Metros Cúbicos', pegadinha: 'Dizer que 2,4h = 2h40min ou que 1 m³ = 100 litros.', regraOuro: '0,4h × 60 = 24 min (2h24min). E 1 m³ = 1.000 litros.' },
+      { id: 'rad-5', cargos: ['admin'], disciplina: 'Informática', incidencia: 'Altíssima', titulo: 'Atalhos do Word PT-BR (Ctrl+B vs Ctrl+S)', pegadinha: 'Cobrar Ctrl+S para salvar no Word em português.', regraOuro: 'No Word PT-BR: Ctrl+B salva; Ctrl+S sublinha; Ctrl+N aplica negrito.' },
+      { id: 'rad-6', cargos: ['admin'], disciplina: 'Informática', incidencia: 'Alta', titulo: 'Operadores no Excel (: vs ;)', pegadinha: 'Trocar =SOMA(A1:A4) por =SOMA(A1;A4).', regraOuro: 'Dois-pontos (:) = ATÉ (intervalo contínuo). Ponto e vírgula (;) = E (células isoladas).' },
+      { id: 'rad-7', cargos: ['admin'], disciplina: 'Específicas Admin', incidencia: 'Altíssima', titulo: 'Legalidade Pública vs. Privada (Art. 37 CF/88)', pegadinha: 'Dizer que o servidor pode fazer tudo que a lei não proíbe.', regraOuro: 'Na Administração Pública, o agente SÓ pode fazer o que a lei autoriza ou determina.' },
+      { id: 'rad-8', cargos: ['admin'], disciplina: 'Específicas Admin', incidencia: 'Altíssima', titulo: 'Ordem Manifestamente Ilegal (LC 97/2023)', pegadinha: 'Afirmar que o dever de obediência alcança ordens manifestamente ilegais.', regraOuro: 'O servidor deve cumprir ordens legais, EXCETO quando manifestamente ilegais.' },
+      { id: 'rad-9', cargos: ['admin'], disciplina: 'Específicas Admin', incidencia: 'Alta', titulo: 'Arquivo Permanente (3ª Idade)', pegadinha: 'Dizer que documentos permanentes podem ser descartados após 20 anos.', regraOuro: 'Documentos do arquivo permanente JAMAIS são eliminados.' },
+      { id: 'rad-10', cargos: ['ace'], disciplina: 'Saúde Pública e SUS', incidencia: 'Altíssima', titulo: 'Conselho vs. Conferência de Saúde (Lei 8.142/90)', pegadinha: 'Inverter periodicidade e caráter deliberativo.', regraOuro: 'Conferência = a cada 4 anos. Conselho = permanente e deliberativo (50% usuários).' },
+      { id: 'rad-11', cargos: ['ace'], disciplina: 'Doenças e Vetores (ACE)', incidencia: 'Altíssima', titulo: 'Ovos do Aedes e Contraindicação de AAS', pegadinha: 'Dizer que secar o prato mata os ovos ou indicar AAS na dengue.', regraOuro: 'Ovos resistem até 450 dias no seco (esfregar com bucha!). AAS é proibido na dengue.' },
+      { id: 'rad-12', cargos: ['ace'], disciplina: 'Controle de Vetores (ACE)', incidencia: 'Altíssima', titulo: 'Fumacê (UBV) vs. Controle Mecânico', pegadinha: 'Tratar o UBV como rotina ou dizer que mata larvas.', regraOuro: 'UBV atinge apenas adultos em voo, sem efeito residual, só em bloqueio de surtos.' },
+      { id: 'rad-13', cargos: ['ace'], disciplina: 'Procedimentos e EPIs (ACE)', incidencia: 'Alta', titulo: 'Etiqueta a Lápis e Acidentes Peçonhentos', pegadinha: 'Usar caneta em álcool 70% ou torniquete em picada.', regraOuro: 'Tubito leva etiqueta a LÁPIS. Acidente peçonhento: água e sabão + hospital (sem torniquete).' }
+    ];
+
+    // ============================================================================
+    // 4. BANCO INTEGRADO DE QUESTÕES IBAM (42 QUESTÕES COMENTADAS)
+    // ============================================================================
+    const QUESTOES_SEED = [
+      { id: 'q-lp-1', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-6', incidencia: 'Altíssima', enunciado: 'Assinale a alternativa em que a concordância verbal está inteiramente de acordo com a norma-padrão:', alternativas: ['Houveram muitas solicitações protocoladas na secretaria durante o mutirão.', 'Fazem dois anos que os agentes iniciaram o mapeamento do bairro.', 'Deve haver soluções mais eficazes para reduzir os focos nos terrenos baldios.', 'Aluga-se salas comerciais próximas ao paço municipal.'], correta: 2, comentario: 'Na locução "deve haver", o verbo principal "haver" (= existir) é impessoal e mantém o auxiliar no singular.', pegadinha: 'Flexionar "houveram" ou "fazem" (tempo) no plural.', regraOuro: 'HAVER (= existir) e FAZER (= tempo) ficam sempre no singular.' },
+      { id: 'q-lp-2', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-4', incidencia: 'Alta', enunciado: 'Assinale a alternativa em que todas as palavras estão acentuadas corretamente conforme o Acordo Ortográfico:', alternativas: ['Ideia, heroico, assembleia, voo.', 'Idéia, heróico, assembléia, vôo.', 'Ideia, heróico, assembleia, voo.', 'Idéia, heroico, assembléia, enjôo.'], correta: 0, comentario: 'Ditongos abertos "ei" e "oi" em paroxítonas e o hiato "oo" perderam o acento.', pegadinha: 'Misturar grafias antigas com atuais.', regraOuro: 'Paroxítonas com ditongo aberto ÉI/ÓI e palavras terminadas em OO não têm acento.' },
+      { id: 'q-lp-3', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-5', incidencia: 'Alta', enunciado: 'Em "Conquanto os relatórios tenham sido entregues no prazo, a chefia solicitou revisão", o conectivo destacado indica:', alternativas: ['Causa.', 'Concessão.', 'Conclusão.', 'Condição.'], correta: 1, comentario: '"Conquanto" equivale a "embora" (conjunção concessiva).', pegadinha: 'Confundir "conquanto" (concessiva) com "portanto" (conclusiva).', regraOuro: 'Conquanto = Embora (concessão).' },
+      { id: 'q-lp-4', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-3', incidencia: 'Média', enunciado: 'Assinale a alternativa com emprego correto do vocábulo destacado:', alternativas: ['O servidor precisou retificar o ofício porque havia um erro na data.', 'O fiscal agiu com muita descrição ao colher o depoimento sigiloso.', 'O acidente era eminente, pois o muro estava prestes a cair.', 'A sessão de protocolo foi transferida para o térreo.'], correta: 0, comentario: 'Retificar = corrigir. Nas demais: discrição, iminente e seção.', pegadinha: 'Uso de parônimos recorrentes na IBAM.', regraOuro: 'Retificar = cOrrigir; Ratificar = confirmAr.' },
+      { id: 'q-lp-5', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-7', incidencia: 'Alta', enunciado: 'Assinale a alternativa em que o pronome demonstrativo estabelece coesão referencial adequada:', alternativas: ['Protocolamos dois requerimentos ontem: o de isenção e o de revisão; este último já foi deferido.', 'Protocolamos dois requerimentos ontem: o de isenção e o de revisão; aquele último já foi deferido.', 'O relatório precisa ser revisado, pois isto documento contém dados sigilosos.', 'Recebemos o ofício ontem; este documento aí em sua mesa chegou hoje.'], correta: 0, comentario: 'Na enumeração anterior, "este" retoma o último elemento citado (mais próximo).', pegadinha: 'Trocar "este" (mais próximo) por "aquele" (mais distante).', regraOuro: 'ESTE = último citado (próximo); AQUELE = primeiro citado (distante).' },
+      { id: 'q-mat-1', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-4', incidencia: 'Altíssima', enunciado: 'Uma equipe com 6 agentes digitaliza um lote de processos em 10 dias úteis. No mesmo ritmo, em quantos dias úteis 15 agentes digitalizarão o mesmo lote?', alternativas: ['25 dias.', '6 dias.', '4 dias.', '5 dias.'], correta: 2, comentario: 'Grandezas inversamente proporcionais: 6 × 10 = 15 × x → x = 4 dias.', pegadinha: 'Fazer regra de três direta e marcar 25 dias.', regraOuro: 'Mais trabalhadores = menos tempo (multiplique em linha).' },
+      { id: 'q-mat-2', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-5', incidencia: 'Altíssima', enunciado: 'Um insumo sofreu aumento de 20% e, no mês seguinte, desconto de 20% sobre o novo preço. Em relação ao valor inicial, o preço final ficou:', alternativas: ['Igual ao valor inicial.', '4% menor que o valor inicial.', '4% maior que o valor inicial.', '2% menor que o valor inicial.'], correta: 1, comentario: '1,20 × 0,80 = 0,96 → queda de 4%.', pegadinha: 'Achar que +20% e -20% se anulam.', regraOuro: 'Multiplique os fatores: 1,20 × 0,80 = 0,96 (-4%).' },
+      { id: 'q-mat-3', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-3', incidencia: 'Alta', enunciado: 'A equipe A faz vistoria a cada 12 dias e a equipe B a cada 18 dias. Saindo juntas hoje, voltarão a sair juntas depois de:', alternativas: ['6 dias.', '30 dias.', '36 dias.', '72 dias.'], correta: 2, comentario: 'MMC(12, 18) = 36 dias.', pegadinha: 'Calcular MDC(12, 18) = 6.', regraOuro: 'Encontro periódico simultâneo = MMC.' },
+      { id: 'q-mat-4', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-7', incidencia: 'Alta', enunciado: 'Um reservatório de 2,5 m³ está com 60% de sua capacidade ocupada. Quantos litros de água há nele?', alternativas: ['150 litros.', '1.500 litros.', '2.500 litros.', '15.000 litros.'], correta: 1, comentario: '2,5 m³ = 2.500 L. 60% de 2.500 = 1.500 litros.', pegadinha: 'Multiplicar m³ por 100 em vez de 1.000.', regraOuro: '1 m³ = 1.000 litros.' },
+      { id: 'q-mat-5', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-2', incidencia: 'Altíssima', enunciado: 'Uma equipe precisa transportar 142 frascos de larvicida em caixas que comportam, no máximo, 12 frascos cada. Qual a quantidade mínima de caixas necessárias?', alternativas: ['11 caixas.', '12 caixas.', '10 caixas.', '13 caixas.'], correta: 1, comentario: '142 ÷ 12 = 11 caixas cheias (132 frascos) + 10 frascos restantes = 12 caixas.', pegadinha: 'Ignorar o resto da divisão e marcar 11 caixas.', regraOuro: 'Em transporte total, qualquer resto diferente de zero exige +1 recipiente.' },
+      { id: 'q-mat-6', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'mat', trilhaId: 'mat-8', incidencia: 'Alta', enunciado: 'Uma sala retangular de arquivo possui 6 metros de comprimento por 450 centímetros de largura. Qual a área total da sala em m²?', alternativas: ['2.700 m².', '27 m².', '21 m².', '270 m².'], correta: 1, comentario: '450 cm = 4,5 m. Área = 6 × 4,5 = 27 m².', pegadinha: 'Multiplicar 6 × 450 sem converter centímetros.', regraOuro: 'Iguale todas as unidades antes de calcular a área.' },
+      { id: 'q-inf-1', cargos: ['admin'], bloco: 'basicos', disciplinaId: 'inf', trilhaId: 'inf-4', incidencia: 'Altíssima', enunciado: 'No Excel (PT-BR), com A1=10, A2=20, A3=30 e A4=40, qual o resultado de =MÉDIA(A1;A4)?', alternativas: ['25.', '50.', '10.', '40.'], correta: 0, comentario: '(10 + 40) / 2 = 25.', pegadinha: 'Confundir MÉDIA com SOMA (= 50).', regraOuro: 'Ponto e vírgula (;) separa argumentos individuais.' },
+      { id: 'q-inf-2', cargos: ['admin'], bloco: 'basicos', disciplinaId: 'inf', trilhaId: 'inf-2', incidencia: 'Alta', enunciado: 'No Windows, selecionar um arquivo na pasta Documentos (C:) e pressionar SHIFT + DELETE provoca:', alternativas: ['Envio do arquivo para a Lixeira.', 'Exclusão permanente sem passar pela Lixeira.', 'Criação de atalho na Área de Trabalho.', 'Renomeação imediata.'], correta: 1, comentario: 'Shift + Delete ignora a Lixeira.', pegadinha: 'Confundir Delete simples com Shift + Delete.', regraOuro: 'Shift + Delete = exclusão permanente.' },
+      { id: 'q-inf-3', cargos: ['admin'], bloco: 'basicos', disciplinaId: 'inf', trilhaId: 'inf-6', incidencia: 'Alta', enunciado: 'Num e-mail enviado com o gestor em "Para", o secretário em "CC" e o jurídico em "CCO", se o gestor clicar em "Responder a todos", receberão:', alternativas: ['Remetente, secretário (CC) e jurídico (CCO).', 'Apenas remetente original e secretário (CC).', 'Apenas remetente original.', 'Apenas jurídico (CCO).'], correta: 1, comentario: 'Destinatários em CCO não recebem "Responder a todos".', pegadinha: 'Incluir o CCO na resposta coletiva.', regraOuro: 'Quem está em CCO permanece oculto e fora do "Responder a todos".' },
+      { id: 'q-inf-4', cargos: ['admin'], bloco: 'basicos', disciplinaId: 'inf', trilhaId: 'inf-8', incidencia: 'Alta', enunciado: 'E-mail falso do suporte solicitando clique urgente em link para atualizar senha institucional caracteriza:', alternativas: ['Firewall.', 'Backup incremental.', 'Phishing.', 'Desfragmentação.'], correta: 2, comentario: 'Phishing usa engenharia social para capturar credenciais.', pegadinha: 'Confundir Phishing com Ransomware.', regraOuro: 'Isca falsa para roubar senha = Phishing.' },
+      { id: 'q-inf-5', cargos: ['admin'], bloco: 'basicos', disciplinaId: 'inf', trilhaId: 'inf-3', incidencia: 'Altíssima', enunciado: 'No Microsoft Word (configuração padrão em português), qual combinação de atalho salva o documento atual?', alternativas: ['Ctrl + S', 'Ctrl + B', 'Ctrl + N', 'Ctrl + I'], correta: 1, comentario: 'No MS Word PT-BR: Ctrl + B salva; Ctrl + S sublinha; Ctrl + N aplica negrito.', pegadinha: 'Marcar Ctrl + S (atalho de salvar em inglês).', regraOuro: 'Word PT-BR: Ctrl + B = Salvar | Ctrl + S = Sublinhado.' },
+      { id: 'q-adm-1', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-1', trilhaId: 'adm-1-3', incidencia: 'Altíssima', enunciado: 'Segundo o Manual de Redação da Presidência da República, o fecho adequado em ofício dirigido a autoridade superior é:', alternativas: ['Atenciosamente,', 'Cordialmente,', 'Respeitosamente,', 'Saudações,'], correta: 2, comentario: '"Respeitosamente," é obrigatório para autoridades superiores.', pegadinha: 'Marcar "Atenciosamente" ou "Cordialmente".', regraOuro: 'Superior = Respeitosamente; Igual/inferior = Atenciosamente.' },
+      { id: 'q-adm-2', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-1', trilhaId: 'adm-1-4', incidencia: 'Alta', enunciado: 'O atributo da redação oficial que veda impressões individuais ou promoção pessoal denomina-se:', alternativas: ['Prolixidade.', 'Impessoalidade.', 'Subjetividade.', 'Informalidade.'], correta: 1, comentario: 'A comunicação oficial é feita em nome do serviço público.', pegadinha: 'Confundir impessoalidade com anonimato do signatário.', regraOuro: 'Redação oficial é impessoal no conteúdo e identificada na assinatura.' },
+      { id: 'q-adm-3', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-1', trilhaId: 'adm-1-1', incidencia: 'Média', enunciado: 'Ao transferir uma ligação telefônica institucional para outro departamento, o atendente deve:', alternativas: ['Transferir imediatamente sem falar nada.', 'Informar ao cidadão o setor de destino e anunciar o assunto ao receptor.', 'Pedir para ligar no dia seguinte.', 'Fornecer o celular pessoal do chefe.'], correta: 1, comentario: 'Boas práticas exigem informar o cidadão e contextualizar o setor receptor.', pegadinha: 'Transferir "às cegas".', regraOuro: 'Informe o cidadão e anuncie o assunto antes de transferir.' },
+      { id: 'q-adm-4', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-1', trilhaId: 'adm-1-2', incidencia: 'Média', enunciado: 'Diante de requerimento escrito de cidadão que provavelmente será indeferido pela chefia, o protocolo deve:', alternativas: ['Recusar o recebimento.', 'Registrar o protocolo, entregar o comprovante e encaminhar ao setor competente.', 'Guardar na gaveta.', 'Indeferir verbalmente.'], correta: 1, comentario: 'Direito de petição impede recusa prévia pelo protocolo.', pegadinha: 'Atribuir poder decisório de mérito ao atendente.', regraOuro: 'Protocolo registra e tramita; autoridade decide.' },
+      { id: 'q-adm-5', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-2', trilhaId: 'adm-2-2', incidencia: 'Altíssima', enunciado: 'Documentos sem vigência imediata que aguardam cumprimento de prazo prescricional antes da destinação final pertencem ao arquivo:', alternativas: ['Corrente.', 'Intermediário.', 'Permanente.', 'Setorial ativo.'], correta: 1, comentario: 'Arquivo Intermediário (2ª idade) guarda documentos que aguardam prazos da Tabela de Temporalidade.', pegadinha: 'Confundir intermediário com permanente.', regraOuro: 'Corrente (frequente) -> Intermediário (aguarda prazo) -> Permanente (definitivo).' },
+      { id: 'q-adm-6', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-2', trilhaId: 'adm-2-1', incidencia: 'Alta', enunciado: 'Ao receber envelope lacrado marcado como "CONFIDENCIAL" dirigido ao Secretário, o protocolo deve:', alternativas: ['Abrir e digitalizar.', 'Registrar pelos dados externos e encaminhar fechado ao destinatário.', 'Devolver ao remetente.', 'Arquivar no protocolo.'], correta: 1, comentario: 'Correspondências sigilosas não são abertas pelo protocolo.', pegadinha: 'Violar envelope confidencial sob pretexto de registro.', regraOuro: 'Correspondência confidencial segue FECHADA ao destinatário.' },
+      { id: 'q-adm-7', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-2', trilhaId: 'adm-2-5', incidencia: 'Alta', enunciado: 'Pela LGPD, constitui dado pessoal sensível aquele referente a:', alternativas: ['Nome e cargo público.', 'Número de protocolo geral.', 'Saúde, origem racial/étnica, convicção religiosa ou biometria.', 'CNPJ de fornecedor.'], correta: 2, comentario: 'Art. 5º, II, LGPD enumera os dados pessoais sensíveis.', pegadinha: 'Classificar dados de pessoa jurídica como dado pessoal.', regraOuro: 'Saúde, biometria, religião e origem racial são dados sensíveis.' },
+      { id: 'q-adm-8', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-2', trilhaId: 'adm-2-4', incidencia: 'Média', enunciado: 'O número "142" isolado é um(a) __________, enquanto "142 processos autuados em novembro" é um(a) __________:', alternativas: ['informação / dado', 'dado / informação', 'software / hardware', 'arquivo / protocolo'], correta: 1, comentario: 'Dado é bruto; informação é dado contextualizado.', pegadinha: 'Inverter a ordem das lacunas.', regraOuro: 'Dado = bruto; Informação = dado contextualizado.' },
+      { id: 'q-adm-9', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-3', trilhaId: 'adm-3-1', incidencia: 'Alta', enunciado: 'Resmas de papel e toners são materiais de __________, enquanto computadores e mesas são materiais __________:', alternativas: ['uso permanente / de consumo', 'consumo / permanentes', 'tombamento / descartáveis', 'ativo intangível / de expediente'], correta: 1, comentario: 'Material permanente tem durabilidade > 2 anos e recebe tombamento.', pegadinha: 'Classificar toner como permanente.', regraOuro: 'Papel/toner = Consumo; Computador/mobiliário = Permanente.' },
+      { id: 'q-adm-10', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-3', trilhaId: 'adm-3-2', incidencia: 'Média', enunciado: 'Para controlar a custódia na tramitação física de processos entre setores, utiliza-se:', alternativas: ['Recado verbal.', 'Guia de remessa ou registro de carga com aceite do recebedor.', 'Descarte da capa.', 'Envio sem identificação.'], correta: 1, comentario: 'Guia de remessa/carga garante responsabilização.', pegadinha: 'Dispensar recibo na tramitação interna.', regraOuro: 'Tramitação exige registro de saída e aceite de recebimento.' },
+      { id: 'q-adm-11', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-4', trilhaId: 'adm-4-1', incidencia: 'Altíssima', enunciado: 'Segundo o art. 37, caput, da CF/88, a Administração Pública obedecerá aos princípios de:', alternativas: ['Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência.', 'Legalidade, Pessoalidade, Sigilo Absoluto, Economicidade e Celeridade.', 'Supremacia Privada, Moralidade, Publicidade, Lucratividade e Eficiência.', 'Legalidade, Impessoalidade, Arbitrariedade, Publicidade e Hierarquia.'], correta: 0, comentario: 'Princípios expressos do caput do art. 37 da CF/88 (LIMPE).', pegadinha: 'Inserir "Pessoalidade" ou "Sigilo Absoluto".', regraOuro: 'Art. 37, caput, CF/88 = LIMPE.' },
+      { id: 'q-adm-12', cargos: ['admin'], bloco: 'especificos_admin', disciplinaId: 'adm-4', trilhaId: 'adm-4-2', incidencia: 'Altíssima', enunciado: 'Sobre os deveres funcionais (arts. 5º a 9º da Lei Complementar Municipal nº 97/2023), assinale a CORRETA:', alternativas: ['O servidor deve cumprir ordens superiores mesmo quando manifestamente ilegais.', 'São deveres o zelo, dedicação, assiduidade, pontualidade, urbanidade, moralidade e sigilo.', 'O dever de sigilo cessa fora do expediente.', 'Assiduidade aplica-se apenas ao estágio probatório.'], correta: 1, comentario: 'O dever de obediência não abrange ordens manifestamente ilegais.', pegadinha: 'Obrigar cumprimento de ordem manifestamente ilegal.', regraOuro: 'Obediência hierárquica NÃO alcança ordens manifestamente ilegais.' },
+      { id: 'q-ace-1', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-sus', trilhaId: 'ace-sus-1', incidencia: 'Altíssima', enunciado: 'Nos termos do art. 2º, § 2º, da Lei nº 8.080/1990, o dever do Estado de garantir a saúde:', alternativas: ['Exclui o das pessoas, família, empresas e sociedade.', 'Não exclui o das pessoas, da família, das empresas e da sociedade.', 'Aplica-se apenas a segurados do INSS.', 'Isenta proprietários de imóveis de deveres sanitários.'], correta: 1, comentario: 'Literalidade do art. 2º, § 2º da Lei nº 8.080/90.', pegadinha: 'Suprimir o advérbio "NÃO".', regraOuro: 'Dever do Estado NÃO exclui o das pessoas, família, empresas e sociedade.' },
+      { id: 'q-ace-2', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-sus', trilhaId: 'ace-sus-2', incidencia: 'Altíssima', enunciado: 'Conforme a Lei nº 8.142/1990, sobre as instâncias colegiadas do SUS, assinale a CORRETA:', alternativas: ['A Conferência é permanente e deliberativa.', 'O Conselho reúne-se a cada 4 anos sem poder deliberativo.', 'O Conselho de Saúde tem caráter permanente e deliberativo, com 50% de representação dos usuários.', 'Usuários representam 25% no Conselho.'], correta: 2, comentario: 'Conselho é permanente/deliberativo (paritário: 50% usuários); Conferência ocorre a cada 4 anos.', pegadinha: 'Inverter Conselho e Conferência.', regraOuro: 'Conselho = permanente/deliberativo (50% usuários). Conferência = a cada 4 anos.' },
+      { id: 'q-ace-3', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-sus', trilhaId: 'ace-sus-5', incidencia: 'Alta', enunciado: 'No processo de territorialização em saúde, borracharias, ferros-velhos, cemitérios e terrenos baldios com acúmulo de recipientes são classificados como:', alternativas: ['Unidades de terapia intensiva.', 'Pontos Estratégicos (PE).', 'Zonas livres de vigilância.', 'Áreas exclusivamente rurais.'], correta: 1, comentario: 'Pontos Estratégicos concentram depósitos preferenciais para desova e exigem visita quinzenal.', pegadinha: 'Confundir Pontos Estratégicos com imóveis residenciais comuns.', regraOuro: 'Borracharias, ferros-velhos e cemitérios = Pontos Estratégicos.' },
+      { id: 'q-ace-4', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-1', trilhaId: 'ace-1-1', incidencia: 'Altíssima', enunciado: 'Segundo a Lei Federal nº 11.350/2006 (art. 4º-A), o ACS e o ACE:', alternativas: ['Atuam de forma estritamente separada.', 'Realizarão atividades de forma integrada, desenvolvendo mobilizações sociais e identificação de focos de vetores no território.', 'Estão dispensados de capacitação no art. 4º-B.', 'Atuam apenas em hospitais.'], correta: 1, comentario: 'O art. 4º-A determina a atuação integrada entre ACS e ACE.', pegadinha: 'Proibir integração entre ACS e ACE.', regraOuro: 'Art. 4º-A da Lei 11.350/06: atuação integrada entre ACS e ACE.' },
+      { id: 'q-ace-5', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-2', trilhaId: 'ace-2-1', incidencia: 'Alta', enunciado: 'O conjunto de ações que proporciona o conhecimento, detecção ou prevenção de mudanças nos determinantes da saúde para recomendar medidas de controle de doenças define a:', alternativas: ['Vigilância Sanitária.', 'Assistência Farmacêutica.', 'Vigilância Epidemiológica.', 'Auditoria Hospitalar.'], correta: 2, comentario: 'Conceito legal do art. 6º, § 2º da Lei nº 8.080/90.', pegadinha: 'Trocar por Vigilância Sanitária.', regraOuro: 'Detecção para controle de doenças/agravos = Vigilância Epidemiológica.' },
+      { id: 'q-ace-6', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-3', trilhaId: 'ace-3-1', incidencia: 'Altíssima', enunciado: 'Sobre o Aedes aegypti, assinale a alternativa CORRETA:', alternativas: ['Macho e fêmea são hematófagos.', 'Tem hábito estritamente noturno.', 'Apenas a fêmea é hematófaga e seus ovos resistem até 450 dias em ambiente seco.', 'O ciclo completo dura no mínimo 45 dias.'], correta: 2, comentario: 'Somente a fêmea pica; ovos resistem à dessecação por até 450 dias; ciclo dura 7 a 10 dias.', pegadinha: 'Afirmar que secar o recipiente mata os ovos.', regraOuro: 'Só a FÊMEA é hematófaga; ovos resistem até 450 dias no seco.' },
+      { id: 'q-ace-7', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-3', trilhaId: 'ace-3-3', incidencia: 'Altíssima', enunciado: 'Morador com suspeita de dengue apresenta dor abdominal intensa e contínua e vômitos persistentes. O ACE deve:', alternativas: ['Indicar ácido acetilsalicílico (AAS) e repouso em casa.', 'Reconhecer os sinais de alarme, orientar hidratação oral e encaminhar urgentemente à unidade de saúde.', 'Aguardar 7 dias.', 'Aplicar UBV dentro do quarto.'], correta: 1, comentario: 'Dor abdominal intensa e vômitos persistentes são sinais de alarme; AAS é contraindicado.', pegadinha: 'Indicar AAS/anti-inflamatórios.', regraOuro: 'Sinais de alarme -> encaminhamento imediato + proibido AAS.' },
+      { id: 'q-ace-8', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-3', trilhaId: 'ace-3-4', incidencia: 'Alta', enunciado: 'Assinale a relação CORRETA entre doença e transmissão:', alternativas: ['Leptospirose — mosquito Anopheles.', 'Leishmaniose Visceral — flebotomíneo / mosquito-palha (Lutzomyia longipalpis).', 'Malária — urina de roedores.', 'Dengue — caramujo Biomphalaria.'], correta: 1, comentario: 'Leishmaniose = mosquito-palha; Leptospirose = urina de rato; Malária = Anopheles.', pegadinha: 'Embaralhar os vetores.', regraOuro: 'Leptospirose = rato; Leishmaniose = mosquito-palha; Malária = Anopheles.' },
+      { id: 'q-ace-9', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-4', trilhaId: 'ace-4-4', incidencia: 'Altíssima', enunciado: 'A aplicação espacial de inseticida a Ultra Baixo Volume (UBV / "fumacê"):', alternativas: ['Elimina ovos e larvas dentro de caixas d’água.', 'Possui efeito residual de 6 meses.', 'Atinge apenas mosquitos adultos alados em voo e restringe-se a bloqueio de surtos.', 'Dispensa controle mecânico.'], correta: 2, comentario: 'UBV não mata larvas nem tem efeito residual.', pegadinha: 'Afirmar que o fumacê mata larvas.', regraOuro: 'UBV = apenas adulto em voo, sem efeito residual, só bloqueio.' },
+      { id: 'q-ace-10', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-4', trilhaId: 'ace-4-1', incidencia: 'Alta', enunciado: 'As medidas ambientais preventivas de eliminar acesso, abrigo, água e alimento (4 As) contra roedores chamam-se:', alternativas: ['Desratização química.', 'Antirratização.', 'Nebulização térmica.', 'Tratamento focal.'], correta: 1, comentario: 'Antirratização = manejo ambiental preventivo.', pegadinha: 'Confundir antirratização com desratização.', regraOuro: 'Prevenção ambiental (4 As) = Antirratização.' },
+      { id: 'q-ace-11', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-4', trilhaId: 'ace-4-5', incidencia: 'Alta', enunciado: 'Em acidente por picada de escorpião amarelo (Tityus serrulatus), a primeira conduta é:', alternativas: ['Fazer torniquete acima da picada.', 'Cortar e sugar o veneno.', 'Lavar com água e sabão, manter repouso e levar imediatamente ao hospital de referência.', 'Aplicar pó de café.'], correta: 2, comentario: 'Torniquetes e cortes são contraindicados.', pegadinha: 'Marcar práticas populares perigosas.', regraOuro: 'Água e sabão + repouso + hospital imediato.' },
+      { id: 'q-ace-12', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-5', trilhaId: 'ace-5-2', incidencia: 'Altíssima', enunciado: 'Na coleta de larvas para laboratório, o procedimento CORRETO é:', alternativas: ['Misturar larvas de vários imóveis com etiqueta a caneta.', 'Acondicionar em tubito com álcool 70% e etiqueta interna escrita a lápis grafite.', 'Enviar secas em envelope.', 'Usar óleo diesel.'], correta: 1, comentario: 'O álcool dissolve tinta de caneta; a escrita deve ser a lápis grafite.', pegadinha: 'Uso de caneta esferográfica dentro do álcool 70%.', regraOuro: 'Álcool 70% + etiqueta interna a LÁPIS grafite.' },
+      { id: 'q-ace-13', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-5', trilhaId: 'ace-5-4', incidencia: 'Alta', enunciado: 'Sobre os Equipamentos de Proteção Individual (EPIs) do Agente de Combate às Endemias, assinale a CORRETA:', alternativas: ['O agente deve comprar seus EPIs com recursos próprios.', 'Cabe ao ente público fornecer gratuitamente EPI adequado ao risco e em perfeito estado, e ao servidor utilizá-lo e conservá-lo.', 'Protetor solar e boné árabe são dispensáveis sob sol forte.', 'Luvas são usadas apenas no escritório.'], correta: 1, comentario: 'Pela NR-06, o fornecimento é gratuito pelo órgão público.', pegadinha: 'Transferir o custo do EPI ao servidor.', regraOuro: 'EPI é gratuito pelo ente público; usar e conservar é dever do servidor.' },
+      { id: 'q-ace-14', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-6', trilhaId: 'ace-6-2', incidencia: 'Altíssima', enunciado: 'Por que o ACE orienta esfregar com bucha as bordas internas dos pratos de plantas e bebedouros além de trocar a água?', alternativas: ['Para dar brilho ao recipiente.', 'Porque os ovos do Aedes ficam aderidos às paredes internas logo acima da linha d’água e não saem apenas virando a água.', 'Porque os adultos vivem submersos.', 'Para proteger as raízes.'], correta: 1, comentario: 'Os ovos aderidos eclodem na próxima vez que o recipiente receber água.', pegadinha: 'Achar que apenas jogar a água fora elimina os ovos.', regraOuro: 'Jogar água fora não basta: é preciso ESFREGAR as bordas.' }
+    ];
+
+    // ============================================================================
+    // ESTADO DO APLICATIVO & PERSISTÊNCIA LOCAL
+    // ============================================================================
+    const DEFAULT_STATE = {
+      cargo: 'admin',
+      theme: 'light',
+      apiKey: '',
+      geminiModel: 'gemini-2.5-flash',
+      xp: 0,
+      completedTrails: [],
+      answeredQuestions: {},
+      errorNotebook: [],
+      customTrailsContent: {},
+      customQuestions: [],
+      chatHistory: [
+        {
+          role: 'model',
+          text: 'Olá! Sou seu **Mentor Especialista na Banca IBAM** para a **Prefeitura de Praia Grande**. Selecione seu cargo na barra lateral, estude as **63 trilhas do edital**, gere aulas/questões inéditas com IA ou conecte sua nuvem **Firebase Firestore**!'
+        }
+      ]
+    };
+
+    let state = loadState();
+    let currentTab = 'trilhas';
+    let activeDisciplineId = 'all';
+    let searchQuery = '';
+    let activeTrailId = null;
+    let radarFilter = 'all';
+    let trailTimerInterval = null;
+    let trailSeconds = 0;
+    let simuladoState = null;
+    let simuladoTimerInterval = null;
+    let pendingGeneratedQuestions = [];
+
+    let fbApp = null;
+    let fbAuth = null;
+    let fbDb = null;
+    let fbUser = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_STATE_KEY);
+        if (!raw) return structuredClone(DEFAULT_STATE);
+        return { ...structuredClone(DEFAULT_STATE), ...JSON.parse(raw) };
+      } catch (e) {
+        return structuredClone(DEFAULT_STATE);
+      }
+    }
+
+    function saveState(skipCloud = false) {
+      localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(state));
+      updateGlobalUI();
+      if (!skipCloud && fbUser && fbDb) {
+        syncUserProgressToFirestore();
+      }
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.add('hidden'), 3400);
+    }
+
+    // ============================================================================
+    // INTEGRAÇÃO FIREBASE AUTH & CLOUD FIRESTORE
+    // ============================================================================
+    function getSavedFirebaseConfig() {
+      if (DEFAULT_FIREBASE_CONFIG) return DEFAULT_FIREBASE_CONFIG;
+      try {
+        const raw = localStorage.getItem(STORAGE_FB_CONFIG_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function initFirebase(configObj) {
+      if (!configObj || !configObj.apiKey || !configObj.projectId) return false;
+      try {
+        if (!firebase.apps.length) {
+          fbApp = firebase.initializeApp(configObj);
+        } else {
+          fbApp = firebase.app();
+        }
+        fbAuth = firebase.auth();
+        fbDb = firebase.firestore();
+        fbDb.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+
+        fbAuth.onAuthStateChanged(async (user) => {
+          fbUser = user;
+          updateFirebaseUI();
+          if (user) {
+            await pullFromFirestoreManual(true);
+          }
+        });
+        return true;
+      } catch (err) {
+        showToast(`Erro Firebase: ${err.message}`);
+        return false;
+      }
+    }
+
+    function saveFirebaseConfigFromUI() {
+      const raw = document.getElementById('firebaseConfigInput').value.trim();
+      try {
+        const parsed = JSON.parse(raw);
+        localStorage.setItem(STORAGE_FB_CONFIG_KEY, JSON.stringify(parsed));
+        if (initFirebase(parsed)) {
+          showToast('Configuração Firebase salva! Clique em Entrar com Google.');
+          updateFirebaseUI();
+        }
+      } catch (e) {
+        showToast('JSON inválido no firebaseConfig.');
+      }
+    }
+
+    function loginWithGoogleFirebase() {
+      if (!fbAuth) {
+        showToast('Salve primeiro o firebaseConfig JSON válido.');
+        return;
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      fbAuth.signInWithPopup(provider)
+        .then(() => showToast('Conectado ao Firebase Firestore!'))
+        .catch(err => showToast(`Falha no login: ${err.message}`));
+    }
+
+    function logoutFirebase() {
+      if (!fbAuth) return;
+      fbAuth.signOut().then(() => {
+        fbUser = null;
+        updateFirebaseUI();
+        showToast('Sessão encerrada.');
+      });
+    }
+
+    function updateFirebaseUI() {
+      const label = document.getElementById('firebaseUserLabel');
+      const dot = document.getElementById('firebaseStatusDot');
+      const info = document.getElementById('firebaseAuthInfo');
+      const btnLogout = document.getElementById('btnLogoutFirebase');
+      const syncInd = document.getElementById('syncIndicator');
+
+      if (fbUser) {
+        if (label) label.textContent = fbUser.displayName || fbUser.email;
+        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0';
+        if (info) info.textContent = `Conectado: ${fbUser.email}`;
+        if (btnLogout) btnLogout.classList.remove('hidden');
+        if (syncInd) syncInd.classList.remove('hidden');
+      } else {
+        if (label) label.textContent = fbAuth ? 'Firebase (Desconectado)' : 'Firebase Firestore';
+        if (dot) dot.className = fbAuth ? 'w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0' : 'w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0';
+        if (info) info.textContent = fbAuth ? 'Pronto para login com Google.' : 'Status: Modo Offline / LocalStorage';
+        if (btnLogout) btnLogout.classList.add('hidden');
+        if (syncInd) syncInd.classList.add('hidden');
+      }
+    }
+
+    async function syncUserProgressToFirestore() {
+      if (!fbUser || !fbDb) return;
+      try {
+        const { apiKey, customTrailsContent, customQuestions, ...profilePayload } = state;
+        await fbDb.collection('usuarios').doc(fbUser.uid).set({
+          ...profilePayload,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn('Sync Firestore:', err.message);
+      }
+    }
+
+    async function syncLessonToFirestore(trilhaId, htmlContent) {
+      if (!fbUser || !fbDb) return;
+      await fbDb.collection('usuarios').doc(fbUser.uid).collection('aulas_ia').doc(trilhaId).set({
+        trilhaId,
+        htmlContent,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    async function syncQuestionsToFirestore(questionsArr) {
+      if (!fbUser || !fbDb || !questionsArr.length) return;
+      const batch = fbDb.batch();
+      questionsArr.forEach(q => {
+        const ref = fbDb.collection('questoes_ibam').doc(q.id);
+        batch.set(ref, q, { merge: true });
+      });
+      await batch.commit();
+    }
+
+    async function pushAllToFirestore() {
+      if (!fbUser || !fbDb) {
+        showToast('Conecte-se com sua conta Google no Firebase primeiro.');
+        return;
+      }
+      try {
+        showToast('Sincronizando dados com o Firestore...');
+        await syncUserProgressToFirestore();
+
+        const allExtras = state.customQuestions;
+        for (let i = 0; i < allExtras.length; i += 400) {
+          await syncQuestionsToFirestore(allExtras.slice(i, i + 400));
+        }
+
+        for (const [tId, html] of Object.entries(state.customTrailsContent)) {
+          await syncLessonToFirestore(tId, html);
+        }
+
+        showToast(`Nuvem atualizada! (${allExtras.length} questões extras e ${Object.keys(state.customTrailsContent).length} aulas IA)`);
+      } catch (err) {
+        showToast(`Erro ao sincronizar: ${err.message}`);
+      }
+    }
+
+    async function pullFromFirestoreManual(silent = false) {
+      if (!fbUser || !fbDb) {
+        if (!silent) showToast('Faça login no Firebase primeiro.');
+        return;
+      }
+      try {
+        const userDoc = await fbDb.collection('usuarios').doc(fbUser.uid).get();
+        if (userDoc.exists) {
+          const cloud = userDoc.data();
+          state = { ...state, ...cloud, apiKey: state.apiKey };
+        }
+
+        const aulasSnap = await fbDb.collection('usuarios').doc(fbUser.uid).collection('aulas_ia').get();
+        aulasSnap.forEach(doc => {
+          const d = doc.data();
+          if (d && d.trilhaId && d.htmlContent) {
+            state.customTrailsContent[d.trilhaId] = d.htmlContent;
+          }
+        });
+
+        const qsSnap = await fbDb.collection('questoes_ibam').get();
+        if (!qsSnap.empty) {
+          const cloudQs = qsSnap.docs.map(d => d.data());
+          const map = new Map([...state.customQuestions, ...cloudQs].map(q => [q.id, q]));
+          state.customQuestions = Array.from(map.values());
+        }
+
+        saveState(true);
+        renderCurrentTab();
+        if (!silent) showToast('Dados baixados e mesclados do Firestore!');
+      } catch (err) {
+        if (!silent) showToast(`Erro ao baixar: ${err.message}`);
+      }
+    }
+
+    // ============================================================================
+    // FILTROS POR CARGO ('admin' | 'ace' | 'ambos')
+    // ============================================================================
+    function matchCargo(itemCargos) {
+      if (state.cargo === 'ambos') return true;
+      return Array.isArray(itemCargos) && itemCargos.includes(state.cargo);
+    }
+
+    function getCargoLabel(cargo = state.cargo) {
+      if (cargo === 'admin') return 'Agente Administrativo';
+      if (cargo === 'ace') return 'Agente de Combate às Endemias';
+      return 'Ambos os Cargos';
+    }
+
+    function getFilteredDisciplinas() {
+      return DISCIPLINAS.filter(d => matchCargo(d.cargos));
+    }
+
+    function getFilteredTrilhas() {
+      const validDiscIds = new Set(getFilteredDisciplinas().map(d => d.id));
+      return TRILHAS.filter(t => validDiscIds.has(t.disciplinaId));
+    }
+
+    function getAllQuestions() {
+      const map = new Map([...QUESTOES_SEED, ...state.customQuestions].map(q => [q.id, q]));
+      return Array.from(map.values());
+    }
+
+    function getFilteredQuestions() {
+      return getAllQuestions().filter(q => matchCargo(q.cargos));
+    }
+
+    function setCargo(novoCargo) {
+      state.cargo = novoCargo;
+      activeDisciplineId = 'all';
+      activeTrailId = null;
+      saveState();
+      renderCurrentTab();
+      showToast(`Cargo selecionado: ${getCargoLabel(novoCargo)}`);
+    }
+
+    // ============================================================================
+    // TEMA, MODAIS E NAVEGAÇÃO
+    // ============================================================================
+    function applyTheme() {
+      document.documentElement.classList.toggle('dark', state.theme === 'dark');
+    }
+
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (id === 'modalApi') {
+        document.getElementById('inputApiKey').value = state.apiKey || '';
+        document.getElementById('inputGeminiModel').value = state.geminiModel || 'gemini-2.5-flash';
+      }
+      if (id === 'modalFirebase') {
+        const cfg = getSavedFirebaseConfig();
+        document.getElementById('firebaseConfigInput').value = cfg ? JSON.stringify(cfg, null, 2) : '';
+        updateFirebaseUI();
+      }
+      el.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function saveApiConfig() {
+      state.apiKey = document.getElementById('inputApiKey').value.trim();
+      state.geminiModel = document.getElementById('inputGeminiModel').value;
+      saveState(true);
+      closeModal('modalApi');
+      showToast(state.apiKey ? 'Chave API Gemini salva!' : 'Chave API removida.');
+    }
+
+    function clearApiKey() {
+      state.apiKey = '';
+      document.getElementById('inputApiKey').value = '';
+      saveState(true);
+      showToast('Chave API removida.');
+    }
+
+    function updateGlobalUI() {
+      const selDesk = document.getElementById('cargoSelectDesktop');
+      const selMob = document.getElementById('cargoSelectMobile');
+      if (selDesk) selDesk.value = state.cargo;
+      if (selMob) selMob.value = state.cargo;
+
+      const badgeCargo = document.getElementById('headerCargoBadge');
+      if (badgeCargo) badgeCargo.textContent = `Cargo: ${getCargoLabel()}`;
+
+      const trilhas = getFilteredTrilhas();
+      const concluidas = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
+      const statsEl = document.getElementById('headerTrailStats');
+      if (statsEl) statsEl.textContent = `${concluidas}/${trilhas.length} trilhas concluídas`;
+
+      const xpEl = document.getElementById('headerXp');
+      if (xpEl) xpEl.textContent = `${state.xp} XP`;
+
+      const validQIds = new Set(getFilteredQuestions().map(q => q.id));
+      const errosCargo = state.errorNotebook.filter(id => validQIds.has(id)).length;
+      const badgeErros = document.getElementById('badgeErrosDesktop');
+      if (badgeErros) badgeErros.textContent = errosCargo;
+
+      const dot = document.getElementById('apiStatusDot');
+      if (dot) {
+        dot.className = state.apiKey
+          ? 'w-2.5 h-2.5 rounded-full bg-emerald-500'
+          : 'w-2.5 h-2.5 rounded-full bg-amber-500';
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === currentTab;
+        btn.className = active
+          ? 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold bg-brand-600 text-white shadow-sm'
+          : 'nav-btn w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition';
+      });
+
+      document.querySelectorAll('.nav-btn-mob').forEach(btn => {
+        const active = btn.dataset.tab === currentTab;
+        btn.className = active
+          ? 'nav-btn-mob flex flex-col items-center text-[11px] font-bold px-2 py-1 text-brand-600 dark:text-brand-400'
+          : 'nav-btn-mob flex flex-col items-center text-[11px] font-medium px-2 py-1 text-slate-500 dark:text-slate-400';
+      });
+    }
+
+    function switchTab(tab) {
+      stopTrailTimer();
+      currentTab = tab;
+      activeTrailId = null;
+      updateGlobalUI();
+      renderCurrentTab();
+    }
+
+    function renderCurrentTab() {
+      const main = document.getElementById('mainContainer');
+      if (!main) return;
+
+      if (currentTab === 'trilhas') {
+        if (activeTrailId) renderTrailDetail(main, activeTrailId);
+        else renderTrilhasList(main);
+      } else if (currentTab === 'radar') {
+        renderRadar(main);
+      } else if (currentTab === 'mentor') {
+        renderMentor(main);
+      } else if (currentTab === 'simulado') {
+        renderSimulado(main);
+      } else if (currentTab === 'erros') {
+        renderErros(main);
+      } else if (currentTab === 'progresso') {
+        renderProgresso(main);
+      }
+      lucide.createIcons();
+    }
+
+    // ============================================================================
+    // GEMINI API
+    // ============================================================================
+    async function callGeminiAPI(prompt, systemInstruction = '', jsonMode = false) {
+      if (!state.apiKey) {
+        openModal('modalApi');
+        throw new Error('Configure sua Chave API Gemini primeiro.');
+      }
+
+      const model = state.geminiModel || 'gemini-2.5-flash';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(state.apiKey)}`;
+
+      const payload = {
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.55 }
+      };
+
+      if (systemInstruction) payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+      if (jsonMode) payload.generationConfig.responseMimeType = 'application/json';
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || `Erro HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('Resposta vazia da IA.');
+      return text;
+    }
+
+    function formatSimpleMarkdown(text) {
+      return text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^\- (.*$)/gim, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        .replace(/<\/ul>\s*<ul>/g, '')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // ============================================================================
+    // ABA 1: TRILHAS DO EDITAL
+    // ============================================================================
+    function renderTrilhasList(container) {
+      const disciplinas = getFilteredDisciplinas();
+      const trilhas = getFilteredTrilhas();
+
+      const blocos = [
+        { key: 'basicos', titulo: '📑 Conhecimentos Básicos Comuns' },
+        { key: 'especificos_admin', titulo: '📑 Conhecimentos Específicos — Agente Administrativo' },
+        { key: 'especificos_ace', titulo: '📑 Conhecimentos Específicos — Agente de Combate às Endemias' }
+      ];
+
+      const discPills = `
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
+          <button onclick="activeDisciplineId='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${activeDisciplineId === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
+            Todas (${trilhas.length})
+          </button>
+          ${disciplinas.map(d => {
+            const count = trilhas.filter(t => t.disciplinaId === d.id).length;
+            return `
+              <button onclick="activeDisciplineId='${d.id}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${activeDisciplineId === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
+                ${d.codigo} — ${d.nome} (${count})
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      let html = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
+          <div>
+            <h2 class="text-xl font-extrabold tracking-tight">Trilhas Verticalizadas do Edital</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Estude tópico a tópico, gere aulas completas com IA e salve questões inéditas.</p>
+          </div>
+          <div class="relative w-full md:w-72">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+            <input type="text" value="${searchQuery}" oninput="searchQuery=this.value; renderCurrentTab()" placeholder="Buscar assunto..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+        ${discPills}
+      `;
+
+      blocos.forEach(bloco => {
+        const discsDoBloco = disciplinas.filter(d => d.bloco === bloco.key && (activeDisciplineId === 'all' || d.id === activeDisciplineId));
+        if (!discsDoBloco.length) return;
+
+        let blocoHtml = '';
+        discsDoBloco.forEach(disc => {
+          const trilhasDisc = trilhas.filter(t =>
+            t.disciplinaId === disc.id &&
+            (!searchQuery || t.titulo.toLowerCase().includes(searchQuery.toLowerCase()) || disc.nome.toLowerCase().includes(searchQuery.toLowerCase()))
+          );
+          if (!trilhasDisc.length) return;
+
+          const doneCount = trilhasDisc.filter(t => state.completedTrails.includes(t.id)).length;
+
+          blocoHtml += `
+            <div class="mb-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+              <div class="px-4 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <span class="px-2 py-0.5 rounded-md bg-brand-600 text-white text-xs font-extrabold">${disc.codigo}</span>
+                  <h3 class="font-bold text-sm">${disc.nome}</h3>
+                </div>
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${doneCount}/${trilhasDisc.length} concluídas</span>
+              </div>
+              <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                ${trilhasDisc.map((t, idx) => {
+                  const isDone = state.completedTrails.includes(t.id);
+                  const hasAiContent = Boolean(state.customTrailsContent[t.id]);
+                  const qCount = getAllQuestions().filter(q => q.trilhaId === t.id).length;
+                  return `
+                    <div onclick="openTrail('${t.id}')" class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer flex items-center justify-between gap-3 transition">
+                      <div class="flex items-start gap-3">
+                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                          ${isDone ? '✓' : idx + 1}
+                        </div>
+                        <div>
+                          <p class="text-sm font-semibold leading-snug ${isDone ? 'line-through text-slate-400' : ''}">${t.titulo}</p>
+                          <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">${qCount} questões</span>
+                            ${hasAiContent ? '<span class="text-[11px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold">✨ Aula IA Salva</span>' : ''}
+                          </div>
+                        </div>
+                      </div>
+                      <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        });
+
+        if (blocoHtml) {
+          html += `<h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 mt-6">${bloco.titulo}</h3>${blocoHtml}`;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
+    function openTrail(trilhaId) {
+      activeTrailId = trilhaId;
+      pendingGeneratedQuestions = [];
+      startTrailTimer();
+      renderCurrentTab();
+    }
+
+    function startTrailTimer() {
+      stopTrailTimer();
+      trailSeconds = 0;
+      trailTimerInterval = setInterval(() => {
+        trailSeconds++;
+        const el = document.getElementById('trailTimerDisplay');
+        if (el) {
+          const m = String(Math.floor(trailSeconds / 60)).padStart(2, '0');
+          const s = String(trailSeconds % 60).padStart(2, '0');
+          el.textContent = `${m}:${s}`;
+        }
+      }, 1000);
+    }
+
+    function stopTrailTimer() {
+      if (trailTimerInterval) clearInterval(trailTimerInterval);
+      trailTimerInterval = null;
+    }
+
+    function renderTrailDetail(container, trilhaId) {
+      const trilha = TRILHAS.find(t => t.id === trilhaId);
+      if (!trilha) { activeTrailId = null; renderCurrentTab(); return; }
+      const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId) || DISCIPLINAS[0];
+      const isDone = state.completedTrails.includes(trilha.id);
+      const savedAiHtml = state.customTrailsContent[trilha.id];
+      const questoesTrilha = getAllQuestions().filter(q => q.trilhaId === trilha.id);
+
+      container.innerHTML = `
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <button onclick="stopTrailTimer(); activeTrailId=null; renderCurrentTab()" class="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Trilhas
+          </button>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-mono font-bold" id="trailTimerDisplay">00:00</span>
+            <button onclick="toggleCompleteTrail('${trilha.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-900 dark:bg-brand-600 text-white'}">
+              ${isDone ? '✓ Trilha Concluída' : 'Concluir Trilha (+50 XP)'}
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 md:p-6 shadow-sm mb-6">
+          <span class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">${disc.codigo} — ${disc.nome}</span>
+          <h2 class="text-xl font-extrabold mt-1 mb-4">${trilha.titulo}</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+            <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900">
+              <p class="text-xs font-extrabold text-amber-800 dark:text-amber-300 uppercase mb-1">⭐ Regra de Ouro IBAM</p>
+              <p class="text-xs leading-relaxed text-amber-950 dark:text-amber-100">${trilha.regraOuro}</p>
+            </div>
+            <div class="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900">
+              <p class="text-xs font-extrabold text-rose-800 dark:text-rose-300 uppercase mb-1">⚠️ Armadilha Clássica IBAM</p>
+              <p class="text-xs leading-relaxed text-rose-950 dark:text-rose-100">${trilha.armadilhaIbam}</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 mb-4">
+            <p class="text-xs font-extrabold uppercase text-slate-500 mb-1">📌 Resumo Relâmpago</p>
+            <p class="text-sm leading-relaxed">${trilha.resumo}</p>
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              ${(trilha.palavrasChave || []).map(k => `<span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">#${k}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="border-t border-slate-200 dark:border-slate-800 pt-4 mt-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h3 class="text-sm font-extrabold flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i> Aula Aprofundada (IA + Nuvem)</h3>
+              <button id="btnGenLesson" onclick="generateTrailLessonAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> ${savedAiHtml ? 'Regenerar Aula IA' : 'Gerar Conteúdo Completo com IA'}
+              </button>
+            </div>
+            <div id="aiLessonBox" class="text-sm prose-ai ${savedAiHtml ? 'p-4 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900' : 'text-xs text-slate-400 italic'}">
+              ${savedAiHtml ? savedAiHtml : 'Clique em "Gerar Conteúdo Completo com IA" para criar uma aula estruturada no perfil da banca IBAM sobre este tópico (salva localmente e sincronizada no Firestore).'}
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 md:p-6 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h3 class="text-base font-extrabold">Questões deste Assunto (${questoesTrilha.length})</h3>
+              <p class="text-xs text-slate-500">Resolva ou gere novas questões padrão IBAM para salvar no banco.</p>
+            </div>
+            <button id="btnGenQs" onclick="generateQuestionsForTrailAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Gerar +3 Questões IBAM (IA)
+            </button>
+          </div>
+
+          <div id="pendingQuestionsBox" class="mb-5">
+            ${renderPendingGeneratedQuestions()}
+          </div>
+
+          <div class="space-y-4">
+            ${questoesTrilha.length === 0
+              ? '<p class="text-xs text-slate-400 italic">Nenhuma questão vinculada ainda. Clique em "Gerar +3 Questões IBAM (IA)" acima para criar e salvar!</p>'
+              : questoesTrilha.map((q, i) => renderQuestionCard(q, i)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleCompleteTrail(trilhaId) {
+      const idx = state.completedTrails.indexOf(trilhaId);
+      if (idx >= 0) {
+        state.completedTrails.splice(idx, 1);
+        showToast('Trilha desmarcada.');
+      } else {
+        state.completedTrails.push(trilhaId);
+        state.xp += 50;
+        showToast('Trilha concluída! +50 XP');
+      }
+      saveState();
+      renderCurrentTab();
+    }
+
+    async function generateTrailLessonAI(trilhaId) {
+      const trilha = TRILHAS.find(t => t.id === trilhaId);
+      const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
+      const btn = document.getElementById('btnGenLesson');
+      const box = document.getElementById('aiLessonBox');
+
+      btn.disabled = true;
+      btn.textContent = 'Gerando aula IBAM...';
+      box.innerHTML = '<p class="text-xs text-purple-600 font-semibold animate-pulse">Consultando especialista IBAM e montando material...</p>';
+
+      const prompt = `Atue como professor especialista na banca IBAM (Prefeitura de Praia Grande - SP).
+Crie uma aula objetiva e completa sobre:
+Disciplina: ${disc.nome}
+Tópico: ${trilha.titulo}
+Cargo(s): ${disc.cargos.map(getCargoLabel).join(' / ')}
+
+Estruture com subtítulos (###):
+### 1. Conceitos Fundamentais Cobrados pela IBAM
+### 2. Regras de Ouro e Esquema de Memorização
+### 3. Como a IBAM Tenta Derrubar o Candidato (Pegadinhas)
+### 4. Exemplo Comentado Estilo Prova`;
+
+      try {
+        const raw = await callGeminiAPI(prompt);
+        const formatted = `<p>${formatSimpleMarkdown(raw)}</p>`;
+        state.customTrailsContent[trilhaId] = formatted;
+        state.xp += 25;
+        saveState();
+        await syncLessonToFirestore(trilhaId, formatted);
+        showToast('Aula gerada e salva! +25 XP');
+        renderCurrentTab();
+      } catch (err) {
+        box.innerHTML = `<p class="text-xs text-rose-600 font-semibold">Erro: ${err.message}</p>`;
+        btn.disabled = false;
+        btn.textContent = 'Tentar Novamente';
+      }
+    }
+
+    async function generateQuestionsForTrailAI(trilhaId) {
+      const trilha = TRILHAS.find(t => t.id === trilhaId);
+      const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
+      const btn = document.getElementById('btnGenQs');
+
+      btn.disabled = true;
+      btn.textContent = 'Gerando questões...';
+
+      const prompt = `Gere 3 questões inéditas de múltipla escolha (4 alternativas: A, B, C, D) no estilo exato da banca IBAM para o concurso da Prefeitura de Praia Grande.
+Disciplina: ${disc.nome}
+Assunto: ${trilha.titulo}
+
+Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
+[
+  {
+    "enunciado": "Texto da questão...",
+    "alternativas": ["Alternativa A", "Alternativa B", "Alternativa C", "Alternativa D"],
+    "correta": 0,
+    "incidencia": "Alta",
+    "comentario": "Explicação objetiva do gabarito.",
+    "pegadinha": "Qual era a armadilha da banca.",
+    "regraOuro": "Resumo em 1 frase para memorizar."
+  }
+]`;
+
+      try {
+        const raw = await callGeminiAPI(prompt, 'Você é um elaborador especialista da banca IBAM. Retorne apenas JSON puro.', true);
+        const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        if (!Array.isArray(parsed)) throw new Error('Formato JSON inválido.');
+
+        pendingGeneratedQuestions = parsed.map((item, idx) => ({
+          id: `q-ai-${Date.now()}-${idx}`,
+          cargos: disc.cargos,
+          bloco: disc.bloco,
+          disciplinaId: disc.id,
+          trilhaId: trilha.id,
+          incidencia: item.incidencia || 'Alta',
+          enunciado: item.enunciado,
+          alternativas: item.alternativas.slice(0, 4),
+          correta: Number(item.correta) || 0,
+          comentario: item.comentario || '',
+          pegadinha: item.pegadinha || '',
+          regraOuro: item.regraOuro || '',
+          origem: 'IA Gemini'
+        }));
+
+        showToast(`${pendingGeneratedQuestions.length} questões geradas!`);
+        renderCurrentTab();
+      } catch (err) {
+        showToast(`Erro ao gerar: ${err.message}`);
+        btn.disabled = false;
+        btn.textContent = 'Gerar +3 Questões IBAM (IA)';
+      }
+    }
+
+    function renderPendingGeneratedQuestions() {
+      if (!pendingGeneratedQuestions.length) return '';
+      return `
+        <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border-2 border-purple-300 dark:border-purple-800 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-extrabold text-purple-800 dark:text-purple-300">✨ ${pendingGeneratedQuestions.length} Questões Geradas pela IA</p>
+            <div class="flex gap-2">
+              <button onclick="saveAllPendingQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Salvar Todas (Local + Nuvem)</button>
+              <button onclick="pendingGeneratedQuestions=[]; renderCurrentTab()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold">Descartar</button>
+            </div>
+          </div>
+          ${pendingGeneratedQuestions.map((q, idx) => `
+            <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-xs">
+              <div class="flex justify-between items-start gap-2 mb-2">
+                <p class="font-bold">${idx + 1}. ${q.enunciado}</p>
+                <button onclick="saveSinglePendingQuestion(${idx})" class="shrink-0 px-2.5 py-1 rounded bg-brand-600 text-white font-bold text-[11px]">+ Salvar</button>
+              </div>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 mb-2">
+                ${q.alternativas.map((alt, aIdx) => `<li class="${aIdx === q.correta ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}">${String.fromCharCode(65 + aIdx)}) ${alt}</li>`).join('')}
+              </ul>
+              <p class="text-[11px] text-slate-500"><strong>Comentário:</strong> ${q.comentario}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function saveSinglePendingQuestion(idx) {
+      const q = pendingGeneratedQuestions[idx];
+      if (!q) return;
+      state.customQuestions.push(q);
+      pendingGeneratedQuestions.splice(idx, 1);
+      state.xp += 15;
+      saveState();
+      await syncQuestionsToFirestore([q]);
+      showToast('Questão salva! +15 XP');
+      renderCurrentTab();
+    }
+
+    async function saveAllPendingQuestions() {
+      if (!pendingGeneratedQuestions.length) return;
+      const toSave = [...pendingGeneratedQuestions];
+      state.customQuestions.push(...toSave);
+      pendingGeneratedQuestions = [];
+      state.xp += toSave.length * 15;
+      saveState();
+      await syncQuestionsToFirestore(toSave);
+      showToast(`${toSave.length} questões salvas! +${toSave.length * 15} XP`);
+      renderCurrentTab();
+    }
+
+    function renderQuestionCard(q, index) {
+      const ans = state.answeredQuestions[q.id];
+      const letters = ['A', 'B', 'C', 'D'];
+
+      return `
+        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">Questão ${index + 1} • Incidência ${q.incidencia || 'Alta'}</span>
+            ${q.origem ? `<span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">${q.origem}</span>` : ''}
+          </div>
+          <p class="text-sm font-semibold leading-relaxed mb-3">${q.enunciado}</p>
+          <div class="space-y-2">
+            ${q.alternativas.map((alt, idx) => {
+              let cls = 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-brand-500';
+              if (ans) {
+                if (idx === q.correta) cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-bold';
+                else if (idx === ans.selected && !ans.correct) cls = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200';
+              }
+              return `
+                <button onclick="answerTrailQuestion('${q.id}', ${idx})" class="w-full text-left p-3 rounded-xl border text-xs flex items-start gap-2.5 transition ${cls}">
+                  <span class="font-extrabold">${letters[idx]})</span>
+                  <span>${alt}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          ${ans ? `
+            <div class="mt-3 p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs space-y-1.5">
+              <p class="font-extrabold ${ans.correct ? 'text-emerald-600' : 'text-rose-600'}">
+                ${ans.correct ? '✓ Resposta Correta! (+20 XP)' : `✗ Incorreta. Gabarito: ${letters[q.correta]}`}
+              </p>
+              <p><strong>Gabarito Comentado:</strong> ${q.comentario}</p>
+              ${q.pegadinha ? `<p class="text-rose-600 dark:text-rose-400"><strong>⚠️ Pegadinha IBAM:</strong> ${q.pegadinha}</p>` : ''}
+              ${q.regraOuro ? `<p class="text-amber-700 dark:text-amber-300"><strong>⭐ Regra de Ouro:</strong> ${q.regraOuro}</p>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function answerTrailQuestion(qId, selectedIdx) {
+      const q = getAllQuestions().find(item => item.id === qId);
+      if (!q) return;
+      const alreadyAnswered = Boolean(state.answeredQuestions[qId]);
+      const isCorrect = selectedIdx === q.correta;
+
+      state.answeredQuestions[qId] = { selected: selectedIdx, correct: isCorrect };
+      if (isCorrect) {
+        if (!alreadyAnswered) state.xp += 20;
+        state.errorNotebook = state.errorNotebook.filter(id => id !== qId);
+      } else if (!state.errorNotebook.includes(qId)) {
+        state.errorNotebook.push(qId);
+      }
+
+      saveState();
+      renderCurrentTab();
+    }
+
+    // ============================================================================
+    // ABA 2: RADAR DE PEGADINHAS IBAM
+    // ============================================================================
+    function renderRadar(container) {
+      const cards = RADAR.filter(r => matchCargo(r.cargos) && (radarFilter === 'all' || r.disciplina === radarFilter));
+      const discs = [...new Set(RADAR.filter(r => matchCargo(r.cargos)).map(r => r.disciplina))];
+
+      container.innerHTML = `
+        <div class="mb-5">
+          <h2 class="text-xl font-extrabold">Radar de Pegadinhas & Regras de Ouro IBAM</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Armadilhas recorrentes da banca para <strong>${getCargoLabel()}</strong>.</p>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
+          <button onclick="radarFilter='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold ${radarFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas</button>
+          ${discs.map(d => `
+            <button onclick="radarFilter='${d}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${radarFilter === d ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d}</button>
+          `).join('')}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${cards.map(c => `
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">${c.disciplina}</span>
+                  <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">Incidência ${c.incidencia}</span>
+                </div>
+                <h3 class="font-extrabold text-sm mb-2">${c.titulo}</h3>
+                <p class="text-xs text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl mb-2"><strong>⚠️ Como a IBAM derruba:</strong> ${c.pegadinha}</p>
+                <p class="text-xs text-emerald-800 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl"><strong>⭐ Regra de Ouro:</strong> ${c.regraOuro}</p>
+              </div>
+              <button onclick="sendToMentor('Treine comigo com 2 questões rápidas estilo IBAM sobre: ${c.titulo.replace(/'/g, '')}')" class="mt-4 w-full py-2 rounded-xl bg-slate-900 dark:bg-brand-600 hover:opacity-90 text-white text-xs font-bold">
+                Treinar esta Regra com Mentor IA
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // ============================================================================
+    // ABA 3: MENTOR IA ESPECIALISTA IBAM
+    // ============================================================================
+    function renderMentor(container) {
+      container.innerHTML = `
+        <div class="flex flex-col h-[calc(100vh-11rem)] md:h-[calc(100vh-6rem)] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-slate-50 dark:bg-slate-800/50">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-brand-600 text-white flex items-center justify-center"><i data-lucide="bot" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="text-sm font-extrabold">Mentor Especialista IBAM • Praia Grande</h2>
+                <p class="text-[11px] text-slate-500">Foco: <strong>${getCargoLabel()}</strong> • Persistido no LocalStorage + Firestore</p>
+              </div>
+            </div>
+            <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40">Limpar Chat</button>
+          </div>
+
+          <div class="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex gap-2 overflow-x-auto bg-white dark:bg-slate-900">
+            <button onclick="sendToMentor('Quais são os 5 assuntos mais cobrados pela banca IBAM para ${getCargoLabel()} em Praia Grande e suas maiores pegadinhas?')" class="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[11px] font-bold whitespace-nowrap">🎯 Top 5 Assuntos IBAM</button>
+            <button onclick="analyzeErrorsWithMentor()" class="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-[11px] font-bold whitespace-nowrap">🩺 Analisar Meu Caderno de Erros</button>
+            <button onclick="sendToMentor('Crie um ciclo de revisões de 7 dias focado nos tópicos críticos do edital para ${getCargoLabel()}.')" class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold whitespace-nowrap">📅 Plano de Revisão 7 Dias</button>
+          </div>
+
+          <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3">
+            ${state.chatHistory.map(msg => `
+              <div class="flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}">
+                <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${msg.role === 'user'
+                  ? 'bg-brand-600 text-white font-medium'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 prose-ai'}">
+                  ${msg.role === 'user' ? msg.text : formatSimpleMarkdown(msg.text)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <form onsubmit="handleChatSubmit(event)" class="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
+            <input type="text" id="chatInput" placeholder="Pergunte sobre regras da IBAM, pegadinhas, leis ou peça questões..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5">
+              <i data-lucide="send" class="w-4 h-4"></i> Enviar
+            </button>
+          </form>
+        </div>
+      `;
+      const box = document.getElementById('chatMessagesBox');
+      if (box) box.scrollTop = box.scrollHeight;
+    }
+
+    function clearChatHistory() {
+      state.chatHistory = [DEFAULT_STATE.chatHistory[0]];
+      saveState();
+      renderCurrentTab();
+      showToast('Histórico do chat reiniciado.');
+    }
+
+    function analyzeErrorsWithMentor() {
+      const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
+      if (!wrongQs.length) {
+        sendToMentor('Meu Caderno de Erros está vazio. Monte um mini-simulado diagnóstico de 3 questões padrão IBAM para testar meu nível!');
+        return;
+      }
+      const summary = wrongQs.slice(0, 6).map(q => `- [${q.disciplinaId.toUpperCase()}] ${q.enunciado} (Pegadinha: ${q.pegadinha})`).join('\n');
+      sendToMentor(`Analise os erros que cometi e explique como evitar cada pegadinha da IBAM:\n${summary}`);
+    }
+
+    async function sendToMentor(promptText) {
+      if (currentTab !== 'mentor') {
+        currentTab = 'mentor';
+        updateGlobalUI();
+      }
+      state.chatHistory.push({ role: 'user', text: promptText });
+      saveState();
+      renderCurrentTab();
+
+      const box = document.getElementById('chatMessagesBox');
+      if (box) {
+        box.innerHTML += `<div class="flex justify-start"><div class="rounded-2xl px-4 py-3 text-xs bg-slate-100 dark:bg-slate-800 animate-pulse">Analisando com foco na banca IBAM...</div></div>`;
+        box.scrollTop = box.scrollHeight;
+      }
+
+      const sys = `Você é um mentor especialista na banca IBAM preparando candidatos para a Prefeitura de Praia Grande (Cargo: ${getCargoLabel()}). Destaque regras mais cobradas, pegadinhas de 4 alternativas (A-D) e dicas diretas.`;
+
+      try {
+        const contextPrompt = state.chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Estudante' : 'Mentor IBAM'}: ${m.text}`).join('\n\n');
+        const reply = await callGeminiAPI(contextPrompt, sys);
+        state.chatHistory.push({ role: 'model', text: reply });
+        saveState();
+        renderCurrentTab();
+      } catch (err) {
+        state.chatHistory.push({ role: 'model', text: `⚠️ Erro: ${err.message}` });
+        saveState();
+        renderCurrentTab();
+      }
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      sendToMentor(val);
+    }
+
+    // ============================================================================
+    // ABA 4: SIMULADO POR EDITAL
+    // ============================================================================
+    function renderSimulado(container) {
+      if (simuladoState && simuladoState.active) { renderSimuladoActive(container); return; }
+      if (simuladoState && simuladoState.finished) { renderSimuladoResult(container); return; }
+
+      const disciplinas = getFilteredDisciplinas();
+      const totalDisponivel = getFilteredQuestions().length;
+
+      container.innerHTML = `
+        <div class="mb-5">
+          <h2 class="text-xl font-extrabold">Simulado por Edital • Banca IBAM</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Banco ativo para <strong>${getCargoLabel()}</strong>: <strong>${totalDisponivel} questões</strong> disponíveis.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Edital Admin</span>
+              <h3 class="font-extrabold text-base mt-2">Simulado Agente Administrativo</h3>
+              <p class="text-xs text-slate-500 mt-1">Conhecimentos Básicos (LP, Matemática, Informática) + Específicas Admin.</p>
+            </div>
+            <button onclick="startPresetSimulado('admin', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Iniciar Simulado Admin (20q)</button>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-teal-100 text-teal-800">Edital Endemias</span>
+              <h3 class="font-extrabold text-base mt-2">Simulado Agente de Endemias</h3>
+              <p class="text-xs text-slate-500 mt-1">LP e Matemática (sem Informática) + SUS, Lei 11.350/06, Vetores e EPIs.</p>
+            </div>
+            <button onclick="startPresetSimulado('ace', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold">Iniciar Simulado Endemias (20q)</button>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-brand-100 text-brand-800">Treino Integrado</span>
+              <h3 class="font-extrabold text-base mt-2">Simulado Geral (Ambos os Cargos)</h3>
+              <p class="text-xs text-slate-500 mt-1">Mescla todas as disciplinas comuns e específicas dos dois cargos.</p>
+            </div>
+            <button onclick="startPresetSimulado('ambos', 30)" class="mt-4 w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Iniciar Simulado Geral (30q)</button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="font-extrabold text-sm mb-3">Configurar Simulado Personalizado</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold mb-1">Filtro por Disciplina / Bloco</label>
+              <select id="simDiscSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <option value="all">Todas do Cargo Atual (${getCargoLabel()})</option>
+                <option value="basicos">Apenas Conhecimentos Básicos</option>
+                <option value="especificos">Apenas Conhecimentos Específicos</option>
+                ${disciplinas.map(d => `<option value="${d.id}">${d.codigo} — ${d.nome}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Quantidade Máxima</label>
+              <select id="simQtySelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <option value="5">5 questões</option>
+                <option value="10" selected>10 questões</option>
+                <option value="20">20 questões</option>
+                <option value="40">40 questões</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button onclick="startCustomSimulado()" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold">Gerar Prova Agora</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startPresetSimulado(cargoTarget, qty) {
+      const pool = getAllQuestions().filter(q => cargoTarget === 'ambos' ? true : q.cargos.includes(cargoTarget));
+      launchSimulado(shuffleArray(pool).slice(0, qty), `Simulado ${getCargoLabel(cargoTarget)}`);
+    }
+
+    function startCustomSimulado() {
+      const filter = document.getElementById('simDiscSelect').value;
+      const qty = Number(document.getElementById('simQtySelect').value);
+      let pool = getFilteredQuestions();
+
+      if (filter === 'basicos') pool = pool.filter(q => q.bloco === 'basicos');
+      else if (filter === 'especificos') pool = pool.filter(q => q.bloco !== 'basicos');
+      else if (filter !== 'all') pool = pool.filter(q => q.disciplinaId === filter);
+
+      if (!pool.length) { showToast('Nenhuma questão encontrada para este filtro.'); return; }
+      launchSimulado(shuffleArray(pool).slice(0, qty), 'Simulado Personalizado');
+    }
+
+    function launchSimulado(questions, titulo) {
+      simuladoState = { active: true, finished: false, titulo, questions, answers: {}, secondsElapsed: 0 };
+      clearInterval(simuladoTimerInterval);
+      simuladoTimerInterval = setInterval(() => {
+        if (!simuladoState || !simuladoState.active) return;
+        simuladoState.secondsElapsed++;
+        const el = document.getElementById('simTimer');
+        if (el) {
+          const m = String(Math.floor(simuladoState.secondsElapsed / 60)).padStart(2, '0');
+          const s = String(simuladoState.secondsElapsed % 60).padStart(2, '0');
+          el.textContent = `${m}:${s}`;
+        }
+      }, 1000);
+      renderCurrentTab();
+    }
+
+    function renderSimuladoActive(container) {
+      const letters = ['A', 'B', 'C', 'D'];
+      container.innerHTML = `
+        <div class="sticky top-14 z-10 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 mb-4 flex items-center justify-between shadow-sm">
+          <div>
+            <h2 class="text-sm font-extrabold">${simuladoState.titulo}</h2>
+            <p class="text-xs text-slate-500">${Object.keys(simuladoState.answers).length} de ${simuladoState.questions.length} respondidas</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="simTimer" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">00:00</span>
+            <button onclick="finishSimulado()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Finalizar Prova</button>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          ${simuladoState.questions.map((q, idx) => {
+            const chosen = simuladoState.answers[idx];
+            return `
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <p class="text-xs font-bold text-brand-600 mb-1">Questão ${idx + 1}</p>
+                <p class="text-sm font-semibold mb-3">${q.enunciado}</p>
+                <div class="space-y-2">
+                  ${q.alternativas.map((alt, aIdx) => `
+                    <button onclick="simuladoState.answers[${idx}]=${aIdx}; renderCurrentTab()" class="w-full text-left p-3 rounded-xl border text-xs flex gap-2 ${chosen === aIdx ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/60 font-bold' : 'border-slate-200 dark:border-slate-700'}">
+                      <span class="font-extrabold">${letters[aIdx]})</span><span>${alt}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function finishSimulado() {
+      clearInterval(simuladoTimerInterval);
+      simuladoState.active = false;
+      simuladoState.finished = true;
+
+      let hits = 0;
+      simuladoState.questions.forEach((q, idx) => {
+        const ok = simuladoState.answers[idx] === q.correta;
+        if (ok) {
+          hits++;
+          state.errorNotebook = state.errorNotebook.filter(id => id !== q.id);
+        } else if (!state.errorNotebook.includes(q.id)) {
+          state.errorNotebook.push(q.id);
+        }
+      });
+      simuladoState.hits = hits;
+      state.xp += hits * 15;
+      saveState();
+      renderCurrentTab();
+    }
+
+    function renderSimuladoResult(container) {
+      const total = simuladoState.questions.length;
+      const pct = Math.round((simuladoState.hits / total) * 100);
+      const letters = ['A', 'B', 'C', 'D'];
+
+      const basicQs = simuladoState.questions.map((q, i) => ({ q, i })).filter(x => x.q.bloco === 'basicos');
+      const specQs = simuladoState.questions.map((q, i) => ({ q, i })).filter(x => x.q.bloco !== 'basicos');
+      const basicHits = basicQs.filter(x => simuladoState.answers[x.i] === x.q.correta).length;
+      const specHits = specQs.filter(x => simuladoState.answers[x.i] === x.q.correta).length;
+
+      container.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <div>
+              <h2 class="text-xl font-extrabold">Resultado: ${simuladoState.titulo}</h2>
+              <p class="text-xs text-slate-500">Você acertou <strong>${simuladoState.hits} de ${total}</strong> questões (${pct}%) • +${simuladoState.hits * 15} XP</p>
+            </div>
+            <button onclick="simuladoState=null; renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Novo Simulado</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <p class="font-bold">Conhecimentos Básicos</p>
+              <p class="text-lg font-extrabold text-brand-600">${basicHits}/${basicQs.length}</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <p class="font-bold">Conhecimentos Específicos</p>
+              <p class="text-lg font-extrabold text-emerald-600">${specHits}/${specQs.length}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          ${simuladoState.questions.map((q, idx) => {
+            const chosen = simuladoState.answers[idx];
+            const ok = chosen === q.correta;
+            return `
+              <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border ${ok ? 'border-emerald-300 dark:border-emerald-900' : 'border-rose-300 dark:border-rose-900'} text-xs">
+                <p class="font-bold mb-1">${idx + 1}. ${q.enunciado}</p>
+                <p class="${ok ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'} mb-1">
+                  Sua resposta: ${chosen !== undefined ? letters[chosen] : 'Em branco'} | Gabarito: ${letters[q.correta]}
+                </p>
+                <p class="text-slate-600 dark:text-slate-300">${q.comentario}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // ============================================================================
+    // ABA 5: CADERNO DE ERROS
+    // ============================================================================
+    function renderErros(container) {
+      const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
+
+      container.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div>
+            <h2 class="text-xl font-extrabold">Caderno de Erros Inteligente (${wrongQs.length})</h2>
+            <p class="text-xs text-slate-500">Questões erradas para <strong>${getCargoLabel()}</strong>.</p>
+          </div>
+          ${wrongQs.length > 0 ? `<button onclick="analyzeErrorsWithMentor()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Diagnosticar Erros com IA</button>` : ''}
+        </div>
+
+        ${wrongQs.length === 0
+          ? '<div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">Seu Caderno de Erros está zerado para este cargo!</div>'
+          : `<div class="space-y-4">${wrongQs.map((q, idx) => renderQuestionCard(q, idx)).join('')}</div>`}
+      `;
+    }
+
+    // ============================================================================
+    // ABA 6: PROGRESSO & BANCO
+    // ============================================================================
+    function renderProgresso(container) {
+      const trilhas = getFilteredTrilhas();
+      const done = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
+      const pct = trilhas.length ? Math.round((done / trilhas.length) * 100) : 0;
+
+      container.innerHTML = `
+        <div class="mb-5">
+          <h2 class="text-xl font-extrabold">Painel de Evolução & Banco de Dados</h2>
+          <p class="text-xs text-slate-500">Gerencie suas questões geradas por IA, pacotes JSON e sincronização Firebase Firestore.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-500">XP Total</p>
+            <p class="text-2xl font-extrabold text-amber-500">${state.xp}</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-500">Trilhas (${getCargoLabel()})</p>
+            <p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-500">Aulas IA Salvas</p>
+            <p class="text-2xl font-extrabold text-purple-600">${Object.keys(state.customTrailsContent).length}</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-500">Banco Total de Questões</p>
+            <p class="text-2xl font-extrabold text-emerald-600">${getAllQuestions().length}</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-sm">Importação JSON, Firebase Firestore & Backup</h3>
+            <p class="text-xs text-slate-500">Importe pacotes extras de questões em JSON, sincronize com a nuvem ou restaure backups.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="openModal('modalJson')" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Importar / Exportar JSON</button>
+            <button onclick="openModal('modalFirebase')" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">Configurar Firebase</button>
+            <button onclick="resetAllProgress()" class="px-4 py-2 rounded-xl bg-rose-100 text-rose-700 text-xs font-bold">Zerar Progresso</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function resetAllProgress() {
+      if (!confirm('Deseja realmente zerar seu progresso, aulas IA e histórico de chat?')) return;
+      localStorage.removeItem(STORAGE_STATE_KEY);
+      state = structuredClone(DEFAULT_STATE);
+      applyTheme();
+      saveState();
+      renderCurrentTab();
+      showToast('Progresso reiniciado.');
+    }
+
+    // ============================================================================
+    // IMPORTAÇÃO E EXPORTAÇÃO JSON
+    // ============================================================================
+    function downloadJsonFile(dataObj, filename) {
+      const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportCustomQuestionsJSON() {
+      downloadJsonFile(state.customQuestions, `questoes_extras_ibam_${Date.now()}.json`);
+      showToast('Questões extras exportadas!');
+    }
+
+    function exportFullBackupJSON() {
+      downloadJsonFile(state, `backup_progresso_pg_${Date.now()}.json`);
+      showToast('Backup completo exportado!');
+    }
+
+    function handleJsonFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => { document.getElementById('jsonPasteArea').value = ev.target.result; };
+      reader.readAsText(file);
+    }
+
+    async function importFromTextarea() {
+      const raw = document.getElementById('jsonPasteArea').value.trim();
+      if (!raw) return;
+
+      try {
+        const parsed = JSON.parse(raw);
+
+        // Caso 1: Array direto de questões ou { questoes: [...] }
+        const qArray = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.questoes) ? parsed.questoes : null);
+        if (qArray) {
+          const valid = normalizeQuestionsList(qArray, 'JSON Importado');
+          const map = new Map([...state.customQuestions, ...valid].map(q => [q.id, q]));
+          state.customQuestions = Array.from(map.values());
+          saveState();
+          await syncQuestionsToFirestore(valid);
+          closeModal('modalJson');
+          renderCurrentTab();
+          showToast(`${valid.length} questões importadas e salvas!`);
+          return;
+        }
+
+        // Caso 2: Backup completo do progresso do usuário
+        if (parsed && typeof parsed === 'object' && ('completedTrails' in parsed || 'chatHistory' in parsed)) {
+          state = { ...structuredClone(DEFAULT_STATE), ...parsed };
+          applyTheme();
+          saveState();
+          closeModal('modalJson');
+          renderCurrentTab();
+          showToast('Backup do estudante restaurado!');
+          return;
+        }
+
+        throw new Error('Formato JSON não reconhecido.');
+      } catch (err) {
+        showToast(`Erro ao importar JSON: ${err.message}`);
+      }
+    }
+
+    function normalizeQuestionsList(list, origemLabel) {
+      return list
+        .filter(q => q && q.enunciado && Array.isArray(q.alternativas) && q.alternativas.length >= 2)
+        .map((q, idx) => {
+          const trilha = TRILHAS.find(t => t.id === q.trilhaId) || TRILHAS[0];
+          const disc = DISCIPLINAS.find(d => d.id === (q.disciplinaId || trilha.disciplinaId)) || DISCIPLINAS[0];
+          return {
+            id: q.id || `q-imp-${Date.now()}-${idx}`,
+            cargos: Array.isArray(q.cargos) ? q.cargos : disc.cargos,
+            bloco: q.bloco || disc.bloco,
+            disciplinaId: disc.id,
+            trilhaId: trilha.id,
+            incidencia: q.incidencia || 'Alta',
+            enunciado: q.enunciado,
+            alternativas: q.alternativas.slice(0, 4),
+            correta: Number(q.correta) || 0,
+            comentario: q.comentario || 'Questão importada via JSON.',
+            pegadinha: q.pegadinha || '',
+            regraOuro: q.regraOuro || '',
+            origem: q.origem || origemLabel
+          };
+        });
+    }
+
+    // ============================================================================
+    // INICIALIZAÇÃO
+    // ============================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+      const savedFb = getSavedFirebaseConfig();
+      if (savedFb) initFirebase(savedFb);
+      updateGlobalUI();
+      renderCurrentTab();
+    });
+  </script>
+</body>
+</html>
