@@ -2,8 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Trilha PG • Especialista IBAM (Admin & Endemias)</title>
+
+  <!-- CONFIGURAÇÃO PWA (ANDROID & iOS) -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Trilha PG" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%231d4ed8'/%3E%3Cpath d='M96 34L44 56v42c0 34.5 22.2 66.7 52 76 29.8-9.3 52-41.5 52-76V56L96 34zm-10 92l-26-26 11.3-11.3L86 103.4l34.7-34.7L132 80l-46 46z' fill='%23ffffff'/%3E%3C/svg%3E" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
@@ -36,7 +46,6 @@
     .prose-ai li { margin-bottom: 0.3rem; }
     .prose-ai strong { font-weight: 700; }
 
-    /* Animação 3D de virada do Flashcard */
     .flashcard-scene { perspective: 1200px; }
     .flashcard-inner {
       position: relative;
@@ -66,7 +75,7 @@
         </div>
         <div>
           <h1 class="font-extrabold text-base tracking-tight leading-tight">Trilha PG • IBAM</h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Praia Grande • Edital & Nuvem</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Praia Grande • PWA & Nuvem</p>
         </div>
       </div>
 
@@ -107,6 +116,9 @@
     </nav>
 
     <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+      <button id="btnInstallPwaDesktop" onclick="triggerPwaInstall()" class="hidden w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">
+        <i data-lucide="download" class="w-4 h-4"></i> Instalar App no Dispositivo
+      </button>
       <button onclick="openModal('modalFirebase')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold transition">
         <span class="flex items-center gap-2 truncate"><i data-lucide="cloud" class="w-4 h-4 text-sky-500 shrink-0"></i> <span id="firebaseUserLabel" class="truncate">Firebase Firestore</span></span>
         <span id="firebaseStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
@@ -146,6 +158,9 @@
         </div>
 
         <div class="flex items-center gap-2 ml-auto">
+          <button id="btnInstallPwaMobile" onclick="triggerPwaInstall()" class="hidden px-2.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center gap-1">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> Instalar
+          </button>
           <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-bold">
             <i data-lucide="zap" class="w-3.5 h-3.5"></i> <span id="headerXp">0 XP</span>
           </div>
@@ -295,9 +310,6 @@
     const STORAGE_STATE_KEY = 'trilha_pg_single_v2';
     const STORAGE_FB_CONFIG_KEY = 'trilha_pg_fb_config_v1';
 
-    // ============================================================================
-    // 1. DISCIPLINAS DO EDITAL (14 DISCIPLINAS)
-    // ============================================================================
     const DISCIPLINAS = [
       { id: 'lp', codigo: 'I', nome: 'Língua Portuguesa', bloco: 'basicos', cargos: ['admin', 'ace'] },
       { id: 'mat', codigo: 'II', nome: 'Matemática', bloco: 'basicos', cargos: ['admin', 'ace'] },
@@ -315,9 +327,6 @@
       { id: 'ace-6', codigo: 'VI', nome: 'Educação e Participação', bloco: 'especificos_ace', cargos: ['ace'] }
     ];
 
-    // ============================================================================
-    // 2. TODAS AS 63 TRILHAS VERTICALIZADAS DO EDITAL (BASE DOS FLASHCARDS)
-    // ============================================================================
     const TRILHAS = [
       { id: 'lp-1', disciplinaId: 'lp', titulo: 'Leitura, compreensão e interpretação de textos', regraOuro: 'Compreensão está explícita no texto; interpretação exige dedução lógica sem extrapolar.', armadilhaIbam: 'Alternativas verdadeiras na vida real, mas ausentes ou extrapoladas em relação ao texto-base.', resumo: 'Sublinhe termos restritivos (apenas, sempre, nunca) e busque a paráfrase fiel ao parágrafo.', palavrasChave: ['Compreensão', 'Interpretação', 'Paráfrase'] },
       { id: 'lp-2', disciplinaId: 'lp', titulo: 'Informações explícitas e implícitas; finalidade do texto', regraOuro: 'Pressupostos são marcados por palavras do texto; subentendidos dependem do contexto.', armadilhaIbam: 'Trocar texto expositivo/informativo por injuntivo (instrucional) na finalidade.', resumo: 'Identifique o gênero textual para cravar a finalidade: informar, convencer, instruir ou entreter.', palavrasChave: ['Pressuposto', 'Subentendido', 'Finalidade'] },
@@ -387,10 +396,7 @@
       { id: 'ace-6-1', disciplinaId: 'ace-6', titulo: 'Mobilização comunitária', regraOuro: 'Articulação contínua entre saúde, escolas, lideranças e moradores como protagonistas.', armadilhaIbam: 'Confundir mobilização com entrega passiva de panfletos sem diálogo.', resumo: 'Ações coletivas fortalecem a vigilância permanente no bairro.', palavrasChave: ['Mobilização', 'Lideranças', 'Protagonismo'] },
       { id: 'ace-6-2', disciplinaId: 'ace-6', titulo: 'Educação em saúde e controle de vetores', regraOuro: 'Vistoria semanal (10 min) e esfregar bordas internas de pratos/bebedouros com bucha.', armadilhaIbam: 'Orientar apenas a trocar a água sem esfregar as paredes onde ficam os ovos aderidos.', resumo: 'Interrompe o ciclo de 7 a 10 dias do Aedes antes de virar mosquito adulto.', palavrasChave: ['Esfregar Bordas', 'Ciclo Semanal', 'Ovos Aderidos'] }
     ];
-
-    // ============================================================================
     // 3. RADAR DE PEGADINHAS IBAM (13 CARDS)
-    // ============================================================================
     const RADAR = [
       { id: 'rad-1', cargos: ['admin', 'ace'], disciplina: 'Língua Portuguesa', incidencia: 'Altíssima', titulo: 'Verbo HAVER impessoal vs. EXISTIR', pegadinha: 'Colocar sujeito no plural após "haver" ("Houveram falhas") para induzir concordância.', regraOuro: 'HAVER (= existir) fica sempre no singular; EXISTIR concorda com o sujeito.' },
       { id: 'rad-2', cargos: ['admin', 'ace'], disciplina: 'Língua Portuguesa', incidencia: 'Alta', titulo: 'Novo Acordo Ortográfico: Ditongos Abertos', pegadinha: 'Manter acento em paroxítonas como "idéia", "assembléia" e "heróico".', regraOuro: 'Ditongos abertos ÉI e ÓI perderam acento nas paroxítonas (ideia, heroico), mas mantiveram nas oxítonas (papéis, herói).' },
@@ -407,9 +413,7 @@
       { id: 'rad-13', cargos: ['ace'], disciplina: 'Procedimentos e EPIs (ACE)', incidencia: 'Alta', titulo: 'Etiqueta a Lápis e Acidentes Peçonhentos', pegadinha: 'Usar caneta em álcool 70% ou torniquete em picada.', regraOuro: 'Tubito leva etiqueta a LÁPIS. Acidente peçonhento: água e sabão + hospital (sem torniquete).' }
     ];
 
-    // ============================================================================
     // 4. BANCO INTEGRADO DE QUESTÕES IBAM (42 QUESTÕES COMENTADAS)
-    // ============================================================================
     const QUESTOES_SEED = [
       { id: 'q-lp-1', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-6', incidencia: 'Altíssima', enunciado: 'Assinale a alternativa em que a concordância verbal está inteiramente de acordo com a norma-padrão:', alternativas: ['Houveram muitas solicitações protocoladas na secretaria durante o mutirão.', 'Fazem dois anos que os agentes iniciaram o mapeamento do bairro.', 'Deve haver soluções mais eficazes para reduzir os focos nos terrenos baldios.', 'Aluga-se salas comerciais próximas ao paço municipal.'], correta: 2, comentario: 'Na locução "deve haver", o verbo principal "haver" (= existir) é impessoal e mantém o auxiliar no singular.', pegadinha: 'Flexionar "houveram" ou "fazem" (tempo) no plural.', regraOuro: 'HAVER (= existir) e FAZER (= tempo) ficam sempre no singular.' },
       { id: 'q-lp-2', cargos: ['admin', 'ace'], bloco: 'basicos', disciplinaId: 'lp', trilhaId: 'lp-4', incidencia: 'Alta', enunciado: 'Assinale a alternativa em que todas as palavras estão acentuadas corretamente conforme o Acordo Ortográfico:', alternativas: ['Ideia, heroico, assembleia, voo.', 'Idéia, heróico, assembléia, vôo.', 'Ideia, heróico, assembleia, voo.', 'Idéia, heroico, assembléia, enjôo.'], correta: 0, comentario: 'Ditongos abertos "ei" e "oi" em paroxítonas e o hiato "oo" perderam o acento.', pegadinha: 'Misturar grafias antigas com atuais.', regraOuro: 'Paroxítonas com ditongo aberto ÉI/ÓI e palavras terminadas em OO não têm acento.' },
@@ -455,9 +459,7 @@
       { id: 'q-ace-14', cargos: ['ace'], bloco: 'especificos_ace', disciplinaId: 'ace-6', trilhaId: 'ace-6-2', incidencia: 'Altíssima', enunciado: 'Por que o ACE orienta esfregar com bucha as bordas internas dos pratos de plantas e bebedouros além de trocar a água?', alternativas: ['Para dar brilho ao recipiente.', 'Porque os ovos do Aedes ficam aderidos às paredes internas logo acima da linha d’água e não saem apenas virando a água.', 'Porque os adultos vivem submersos.', 'Para proteger as raízes.'], correta: 1, comentario: 'Os ovos aderidos eclodem na próxima vez que o recipiente receber água.', pegadinha: 'Achar que apenas jogar a água fora elimina os ovos.', regraOuro: 'Jogar água fora não basta: é preciso ESFREGAR as bordas.' }
     ];
 
-    // ============================================================================
-    // ESTADO DO APLICATIVO & PERSISTÊNCIA LOCAL
-    // ============================================================================
+    // ESTADO & FIREBASE
     const DEFAULT_STATE = {
       cargo: 'admin',
       theme: 'light',
@@ -465,7 +467,7 @@
       geminiModel: 'gemini-2.5-flash',
       xp: 0,
       completedTrails: [],
-      masteredFlashcards: [], // IDs das trilhas dominadas nos Flashcards
+      masteredFlashcards: [],
       answeredQuestions: {},
       errorNotebook: [],
       customTrailsContent: {},
@@ -490,18 +492,14 @@
     let simuladoTimerInterval = null;
     let pendingGeneratedQuestions = [];
 
-    // Estado dos Flashcards
     let flashDiscFilter = 'all';
     let flashOnlyPending = false;
     let flashDeckOrder = [];
     let flashIndex = 0;
     let flashFlipped = false;
 
-    // Variáveis Firebase
-    let fbApp = null;
-    let fbAuth = null;
-    let fbDb = null;
-    let fbUser = null;
+    let fbApp = null, fbAuth = null, fbDb = null, fbUser = null;
+    let deferredInstallPrompt = null;
 
     function loadState() {
       try {
@@ -521,9 +519,7 @@
     function saveState(skipCloud = false) {
       localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(state));
       updateGlobalUI();
-      if (!skipCloud && fbUser && fbDb) {
-        syncUserProgressToFirestore();
-      }
+      if (!skipCloud && fbUser && fbDb) syncUserProgressToFirestore();
     }
 
     function showToast(msg) {
@@ -535,37 +531,25 @@
       el._timer = setTimeout(() => el.classList.add('hidden'), 3400);
     }
 
-    // ============================================================================
-    // INTEGRAÇÃO FIREBASE AUTH & CLOUD FIRESTORE
-    // ============================================================================
     function getSavedFirebaseConfig() {
       if (DEFAULT_FIREBASE_CONFIG) return DEFAULT_FIREBASE_CONFIG;
       try {
         const raw = localStorage.getItem(STORAGE_FB_CONFIG_KEY);
         return raw ? JSON.parse(raw) : null;
-      } catch (_) {
-        return null;
-      }
+      } catch (_) { return null; }
     }
 
     function initFirebase(configObj) {
       if (!configObj || !configObj.apiKey || !configObj.projectId) return false;
       try {
-        if (!firebase.apps.length) {
-          fbApp = firebase.initializeApp(configObj);
-        } else {
-          fbApp = firebase.app();
-        }
+        fbApp = !firebase.apps.length ? firebase.initializeApp(configObj) : firebase.app();
         fbAuth = firebase.auth();
         fbDb = firebase.firestore();
         fbDb.enablePersistence({ synchronizeTabs: true }).catch(() => {});
-
         fbAuth.onAuthStateChanged(async (user) => {
           fbUser = user;
           updateFirebaseUI();
-          if (user) {
-            await pullFromFirestoreManual(true);
-          }
+          if (user) await pullFromFirestoreManual(true);
         });
         return true;
       } catch (err) {
@@ -589,10 +573,7 @@
     }
 
     function loginWithGoogleFirebase() {
-      if (!fbAuth) {
-        showToast('Salve primeiro o firebaseConfig JSON válido.');
-        return;
-      }
+      if (!fbAuth) { showToast('Salve primeiro o firebaseConfig JSON válido.'); return; }
       const provider = new firebase.auth.GoogleAuthProvider();
       fbAuth.signInWithPopup(provider)
         .then(() => showToast('Conectado ao Firebase Firestore!'))
@@ -601,11 +582,7 @@
 
     function logoutFirebase() {
       if (!fbAuth) return;
-      fbAuth.signOut().then(() => {
-        fbUser = null;
-        updateFirebaseUI();
-        showToast('Sessão encerrada.');
-      });
+      fbAuth.signOut().then(() => { fbUser = null; updateFirebaseUI(); showToast('Sessão encerrada.'); });
     }
 
     function updateFirebaseUI() {
@@ -638,149 +615,100 @@
           ...profilePayload,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
-      } catch (err) {
-        console.warn('Sync Firestore:', err.message);
-      }
+      } catch (err) { console.warn('Sync Firestore:', err.message); }
     }
 
     async function syncLessonToFirestore(trilhaId, htmlContent) {
       if (!fbUser || !fbDb) return;
       await fbDb.collection('usuarios').doc(fbUser.uid).collection('aulas_ia').doc(trilhaId).set({
-        trilhaId,
-        htmlContent,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        trilhaId, htmlContent, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     }
 
     async function syncQuestionsToFirestore(questionsArr) {
       if (!fbUser || !fbDb || !questionsArr.length) return;
       const batch = fbDb.batch();
-      questionsArr.forEach(q => {
-        const ref = fbDb.collection('questoes_ibam').doc(q.id);
-        batch.set(ref, q, { merge: true });
-      });
+      questionsArr.forEach(q => batch.set(fbDb.collection('questoes_ibam').doc(q.id), q, { merge: true }));
       await batch.commit();
     }
 
     async function pushAllToFirestore() {
-      if (!fbUser || !fbDb) {
-        showToast('Conecte-se com sua conta Google no Firebase primeiro.');
-        return;
-      }
+      if (!fbUser || !fbDb) { showToast('Conecte-se com sua conta Google no Firebase primeiro.'); return; }
       try {
         showToast('Sincronizando dados com o Firestore...');
         await syncUserProgressToFirestore();
-
-        const allExtras = state.customQuestions;
-        for (let i = 0; i < allExtras.length; i += 400) {
-          await syncQuestionsToFirestore(allExtras.slice(i, i + 400));
+        for (let i = 0; i < state.customQuestions.length; i += 400) {
+          await syncQuestionsToFirestore(state.customQuestions.slice(i, i + 400));
         }
-
         for (const [tId, html] of Object.entries(state.customTrailsContent)) {
           await syncLessonToFirestore(tId, html);
         }
-
-        showToast(`Nuvem atualizada! (${allExtras.length} questões extras e ${Object.keys(state.customTrailsContent).length} aulas IA)`);
-      } catch (err) {
-        showToast(`Erro ao sincronizar: ${err.message}`);
-      }
+        showToast(`Nuvem atualizada! (${state.customQuestions.length} questões extras e ${Object.keys(state.customTrailsContent).length} aulas IA)`);
+      } catch (err) { showToast(`Erro ao sincronizar: ${err.message}`); }
     }
 
     async function pullFromFirestoreManual(silent = false) {
-      if (!fbUser || !fbDb) {
-        if (!silent) showToast('Faça login no Firebase primeiro.');
-        return;
-      }
+      if (!fbUser || !fbDb) { if (!silent) showToast('Faça login no Firebase primeiro.'); return; }
       try {
         const userDoc = await fbDb.collection('usuarios').doc(fbUser.uid).get();
         if (userDoc.exists) {
           const cloud = userDoc.data();
           state = {
-            ...state,
-            ...cloud,
+            ...state, ...cloud,
             masteredFlashcards: Array.isArray(cloud.masteredFlashcards) ? cloud.masteredFlashcards : state.masteredFlashcards,
             apiKey: state.apiKey
           };
         }
-
         const aulasSnap = await fbDb.collection('usuarios').doc(fbUser.uid).collection('aulas_ia').get();
         aulasSnap.forEach(doc => {
           const d = doc.data();
-          if (d && d.trilhaId && d.htmlContent) {
-            state.customTrailsContent[d.trilhaId] = d.htmlContent;
-          }
+          if (d && d.trilhaId && d.htmlContent) state.customTrailsContent[d.trilhaId] = d.htmlContent;
         });
-
         const qsSnap = await fbDb.collection('questoes_ibam').get();
         if (!qsSnap.empty) {
           const cloudQs = qsSnap.docs.map(d => d.data());
           const map = new Map([...state.customQuestions, ...cloudQs].map(q => [q.id, q]));
           state.customQuestions = Array.from(map.values());
         }
-
         saveState(true);
         renderCurrentTab();
         if (!silent) showToast('Dados baixados e mesclados do Firestore!');
-      } catch (err) {
-        if (!silent) showToast(`Erro ao baixar: ${err.message}`);
-      }
+      } catch (err) { if (!silent) showToast(`Erro ao baixar: ${err.message}`); }
     }
-
-    // ============================================================================
-    // FILTROS POR CARGO ('admin' | 'ace' | 'ambos')
-    // ============================================================================
+    // FILTROS, TEMA, MODAIS E NAVEGAÇÃO
     function matchCargo(itemCargos) {
       if (state.cargo === 'ambos') return true;
       return Array.isArray(itemCargos) && itemCargos.includes(state.cargo);
     }
-
     function getCargoLabel(cargo = state.cargo) {
       if (cargo === 'admin') return 'Agente Administrativo';
       if (cargo === 'ace') return 'Agente de Combate às Endemias';
       return 'Ambos os Cargos';
     }
-
-    function getFilteredDisciplinas() {
-      return DISCIPLINAS.filter(d => matchCargo(d.cargos));
-    }
-
+    function getFilteredDisciplinas() { return DISCIPLINAS.filter(d => matchCargo(d.cargos)); }
     function getFilteredTrilhas() {
       const validDiscIds = new Set(getFilteredDisciplinas().map(d => d.id));
       return TRILHAS.filter(t => validDiscIds.has(t.disciplinaId));
     }
-
     function getAllQuestions() {
       const map = new Map([...QUESTOES_SEED, ...state.customQuestions].map(q => [q.id, q]));
       return Array.from(map.values());
     }
-
-    function getFilteredQuestions() {
-      return getAllQuestions().filter(q => matchCargo(q.cargos));
-    }
+    function getFilteredQuestions() { return getAllQuestions().filter(q => matchCargo(q.cargos)); }
 
     function setCargo(novoCargo) {
       state.cargo = novoCargo;
       activeDisciplineId = 'all';
       activeTrailId = null;
       flashDiscFilter = 'all';
-      resetFlashDeckOrder();
+      resetFlashDeckOrder(false);
       saveState();
       renderCurrentTab();
       showToast(`Cargo selecionado: ${getCargoLabel(novoCargo)}`);
     }
 
-    // ============================================================================
-    // TEMA, MODAIS E NAVEGAÇÃO
-    // ============================================================================
-    function applyTheme() {
-      document.documentElement.classList.toggle('dark', state.theme === 'dark');
-    }
-
-    function toggleTheme() {
-      state.theme = state.theme === 'dark' ? 'light' : 'dark';
-      applyTheme();
-      saveState();
-    }
+    function applyTheme() { document.documentElement.classList.toggle('dark', state.theme === 'dark'); }
+    function toggleTheme() { state.theme = state.theme === 'dark' ? 'light' : 'dark'; applyTheme(); saveState(); }
 
     function openModal(id) {
       const el = document.getElementById(id);
@@ -797,11 +725,7 @@
       el.classList.remove('hidden');
       lucide.createIcons();
     }
-
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
-    }
+    function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.add('hidden'); }
 
     function saveApiConfig() {
       state.apiKey = document.getElementById('inputApiKey').value.trim();
@@ -810,13 +734,7 @@
       closeModal('modalApi');
       showToast(state.apiKey ? 'Chave API Gemini salva!' : 'Chave API removida.');
     }
-
-    function clearApiKey() {
-      state.apiKey = '';
-      document.getElementById('inputApiKey').value = '';
-      saveState(true);
-      showToast('Chave API removida.');
-    }
+    function clearApiKey() { state.apiKey = ''; document.getElementById('inputApiKey').value = ''; saveState(true); showToast('Chave API removida.'); }
 
     function updateGlobalUI() {
       const selDesk = document.getElementById('cargoSelectDesktop');
@@ -845,11 +763,7 @@
       if (badgeErros) badgeErros.textContent = errosCargo;
 
       const dot = document.getElementById('apiStatusDot');
-      if (dot) {
-        dot.className = state.apiKey
-          ? 'w-2.5 h-2.5 rounded-full bg-emerald-500'
-          : 'w-2.5 h-2.5 rounded-full bg-amber-500';
-      }
+      if (dot) dot.className = state.apiKey ? 'w-2.5 h-2.5 rounded-full bg-emerald-500' : 'w-2.5 h-2.5 rounded-full bg-amber-500';
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
         const active = btn.dataset.tab === currentTab;
@@ -870,9 +784,7 @@
       stopTrailTimer();
       currentTab = tab;
       activeTrailId = null;
-      if (tab === 'flashcards' && flashDeckOrder.length === 0) {
-        resetFlashDeckOrder();
-      }
+      if (tab === 'flashcards' && flashDeckOrder.length === 0) resetFlashDeckOrder(false);
       updateGlobalUI();
       renderCurrentTab();
     }
@@ -880,57 +792,30 @@
     function renderCurrentTab() {
       const main = document.getElementById('mainContainer');
       if (!main) return;
-
-      if (currentTab === 'trilhas') {
-        if (activeTrailId) renderTrailDetail(main, activeTrailId);
-        else renderTrilhasList(main);
-      } else if (currentTab === 'flashcards') {
-        renderFlashcards(main);
-      } else if (currentTab === 'radar') {
-        renderRadar(main);
-      } else if (currentTab === 'mentor') {
-        renderMentor(main);
-      } else if (currentTab === 'simulado') {
-        renderSimulado(main);
-      } else if (currentTab === 'erros') {
-        renderErros(main);
-      } else if (currentTab === 'progresso') {
-        renderProgresso(main);
-      }
+      if (currentTab === 'trilhas') activeTrailId ? renderTrailDetail(main, activeTrailId) : renderTrilhasList(main);
+      else if (currentTab === 'flashcards') renderFlashcards(main);
+      else if (currentTab === 'radar') renderRadar(main);
+      else if (currentTab === 'mentor') renderMentor(main);
+      else if (currentTab === 'simulado') renderSimulado(main);
+      else if (currentTab === 'erros') renderErros(main);
+      else if (currentTab === 'progresso') renderProgresso(main);
       lucide.createIcons();
     }
 
-    // ============================================================================
     // GEMINI API
-    // ============================================================================
     async function callGeminiAPI(prompt, systemInstruction = '', jsonMode = false) {
-      if (!state.apiKey) {
-        openModal('modalApi');
-        throw new Error('Configure sua Chave API Gemini primeiro.');
-      }
-
+      if (!state.apiKey) { openModal('modalApi'); throw new Error('Configure sua Chave API Gemini primeiro.'); }
       const model = state.geminiModel || 'gemini-2.5-flash';
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(state.apiKey)}`;
-
-      const payload = {
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.55 }
-      };
-
+      const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: 0.55 } };
       if (systemInstruction) payload.systemInstruction = { parts: [{ text: systemInstruction }] };
       if (jsonMode) payload.generationConfig.responseMimeType = 'application/json';
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData?.error?.message || `Erro HTTP ${res.status}`);
       }
-
       const data = await res.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) throw new Error('Resposta vazia da IA.');
@@ -950,13 +835,10 @@
         .replace(/\n/g, '<br>');
     }
 
-    // ============================================================================
-    // ABA 1: TRILHAS DO EDITAL
-    // ============================================================================
+    // ABA 1: TRILHAS
     function renderTrilhasList(container) {
       const disciplinas = getFilteredDisciplinas();
       const trilhas = getFilteredTrilhas();
-
       const blocos = [
         { key: 'basicos', titulo: '📑 Conhecimentos Básicos Comuns' },
         { key: 'especificos_admin', titulo: '📑 Conhecimentos Específicos — Agente Administrativo' },
@@ -965,16 +847,10 @@
 
       const discPills = `
         <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
-          <button onclick="activeDisciplineId='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${activeDisciplineId === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
-            Todas (${trilhas.length})
-          </button>
+          <button onclick="activeDisciplineId='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${activeDisciplineId === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas (${trilhas.length})</button>
           ${disciplinas.map(d => {
             const count = trilhas.filter(t => t.disciplinaId === d.id).length;
-            return `
-              <button onclick="activeDisciplineId='${d.id}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${activeDisciplineId === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
-                ${d.codigo} — ${d.nome} (${count})
-              </button>
-            `;
+            return `<button onclick="activeDisciplineId='${d.id}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${activeDisciplineId === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d.codigo} — ${d.nome} (${count})</button>`;
           }).join('')}
         </div>
       `;
@@ -996,17 +872,11 @@
       blocos.forEach(bloco => {
         const discsDoBloco = disciplinas.filter(d => d.bloco === bloco.key && (activeDisciplineId === 'all' || d.id === activeDisciplineId));
         if (!discsDoBloco.length) return;
-
         let blocoHtml = '';
         discsDoBloco.forEach(disc => {
-          const trilhasDisc = trilhas.filter(t =>
-            t.disciplinaId === disc.id &&
-            (!searchQuery || t.titulo.toLowerCase().includes(searchQuery.toLowerCase()) || disc.nome.toLowerCase().includes(searchQuery.toLowerCase()))
-          );
+          const trilhasDisc = trilhas.filter(t => t.disciplinaId === disc.id && (!searchQuery || t.titulo.toLowerCase().includes(searchQuery.toLowerCase()) || disc.nome.toLowerCase().includes(searchQuery.toLowerCase())));
           if (!trilhasDisc.length) return;
-
           const doneCount = trilhasDisc.filter(t => state.completedTrails.includes(t.id)).length;
-
           blocoHtml += `
             <div class="mb-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
               <div class="px-4 py-3.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
@@ -1024,9 +894,7 @@
                   return `
                     <div onclick="openTrail('${t.id}')" class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer flex items-center justify-between gap-3 transition">
                       <div class="flex items-start gap-3">
-                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                          ${isDone ? '✓' : idx + 1}
-                        </div>
+                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${isDone ? '✓' : idx + 1}</div>
                         <div>
                           <p class="text-sm font-semibold leading-snug ${isDone ? 'line-through text-slate-400' : ''}">${t.titulo}</p>
                           <div class="flex flex-wrap items-center gap-2 mt-1.5">
@@ -1043,40 +911,21 @@
             </div>
           `;
         });
-
-        if (blocoHtml) {
-          html += `<h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 mt-6">${bloco.titulo}</h3>${blocoHtml}`;
-        }
+        if (blocoHtml) html += `<h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 mt-6">${bloco.titulo}</h3>${blocoHtml}`;
       });
-
       container.innerHTML = html;
     }
 
-    function openTrail(trilhaId) {
-      activeTrailId = trilhaId;
-      pendingGeneratedQuestions = [];
-      startTrailTimer();
-      renderCurrentTab();
-    }
-
+    function openTrail(trilhaId) { activeTrailId = trilhaId; pendingGeneratedQuestions = []; startTrailTimer(); renderCurrentTab(); }
     function startTrailTimer() {
-      stopTrailTimer();
-      trailSeconds = 0;
+      stopTrailTimer(); trailSeconds = 0;
       trailTimerInterval = setInterval(() => {
         trailSeconds++;
         const el = document.getElementById('trailTimerDisplay');
-        if (el) {
-          const m = String(Math.floor(trailSeconds / 60)).padStart(2, '0');
-          const s = String(trailSeconds % 60).padStart(2, '0');
-          el.textContent = `${m}:${s}`;
-        }
+        if (el) el.textContent = `${String(Math.floor(trailSeconds / 60)).padStart(2, '0')}:${String(trailSeconds % 60).padStart(2, '0')}`;
       }, 1000);
     }
-
-    function stopTrailTimer() {
-      if (trailTimerInterval) clearInterval(trailTimerInterval);
-      trailTimerInterval = null;
-    }
+    function stopTrailTimer() { if (trailTimerInterval) clearInterval(trailTimerInterval); trailTimerInterval = null; }
 
     function renderTrailDetail(container, trilhaId) {
       const trilha = TRILHAS.find(t => t.id === trilhaId);
@@ -1088,14 +937,10 @@
 
       container.innerHTML = `
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <button onclick="stopTrailTimer(); activeTrailId=null; renderCurrentTab()" class="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Trilhas
-          </button>
+          <button onclick="stopTrailTimer(); activeTrailId=null; renderCurrentTab()" class="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar às Trilhas</button>
           <div class="flex items-center gap-2">
             <span class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-mono font-bold" id="trailTimerDisplay">00:00</span>
-            <button onclick="toggleCompleteTrail('${trilha.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-900 dark:bg-brand-600 text-white'}">
-              ${isDone ? '✓ Trilha Concluída' : 'Concluir Trilha (+50 XP)'}
-            </button>
+            <button onclick="toggleCompleteTrail('${trilha.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-900 dark:bg-brand-600 text-white'}">${isDone ? '✓ Trilha Concluída' : 'Concluir Trilha (+50 XP)'}</button>
           </div>
         </div>
 
@@ -1117,20 +962,16 @@
           <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 mb-4">
             <p class="text-xs font-extrabold uppercase text-slate-500 mb-1">📌 Resumo Relâmpago</p>
             <p class="text-sm leading-relaxed">${trilha.resumo}</p>
-            <div class="flex flex-wrap gap-1.5 mt-3">
-              ${(trilha.palavrasChave || []).map(k => `<span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">#${k}</span>`).join('')}
-            </div>
+            <div class="flex flex-wrap gap-1.5 mt-3">${(trilha.palavrasChave || []).map(k => `<span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">#${k}</span>`).join('')}</div>
           </div>
 
           <div class="border-t border-slate-200 dark:border-slate-800 pt-4 mt-4">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
               <h3 class="text-sm font-extrabold flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i> Aula Aprofundada (IA + Nuvem)</h3>
-              <button id="btnGenLesson" onclick="generateTrailLessonAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center gap-1.5">
-                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> ${savedAiHtml ? 'Regenerar Aula IA' : 'Gerar Conteúdo Completo com IA'}
-              </button>
+              <button id="btnGenLesson" onclick="generateTrailLessonAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3.5 h-3.5"></i> ${savedAiHtml ? 'Regenerar Aula IA' : 'Gerar Conteúdo Completo com IA'}</button>
             </div>
             <div id="aiLessonBox" class="text-sm prose-ai ${savedAiHtml ? 'p-4 rounded-xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900' : 'text-xs text-slate-400 italic'}">
-              ${savedAiHtml ? savedAiHtml : 'Clique em "Gerar Conteúdo Completo com IA" para criar uma aula estruturada no perfil da banca IBAM sobre este tópico (salva localmente e sincronizada no Firestore).'}
+              ${savedAiHtml ? savedAiHtml : 'Clique em "Gerar Conteúdo Completo com IA" para criar uma aula estruturada no perfil da banca IBAM sobre este tópico.'}
             </div>
           </div>
         </div>
@@ -1141,19 +982,11 @@
               <h3 class="text-base font-extrabold">Questões deste Assunto (${questoesTrilha.length})</h3>
               <p class="text-xs text-slate-500">Resolva ou gere novas questões padrão IBAM para salvar no banco.</p>
             </div>
-            <button id="btnGenQs" onclick="generateQuestionsForTrailAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Gerar +3 Questões IBAM (IA)
-            </button>
+            <button id="btnGenQs" onclick="generateQuestionsForTrailAI('${trilha.id}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Gerar +3 Questões IBAM (IA)</button>
           </div>
-
-          <div id="pendingQuestionsBox" class="mb-5">
-            ${renderPendingGeneratedQuestions()}
-          </div>
-
+          <div id="pendingQuestionsBox" class="mb-5">${renderPendingGeneratedQuestions()}</div>
           <div class="space-y-4">
-            ${questoesTrilha.length === 0
-              ? '<p class="text-xs text-slate-400 italic">Nenhuma questão vinculada ainda. Clique em "Gerar +3 Questões IBAM (IA)" acima para criar e salvar!</p>'
-              : questoesTrilha.map((q, i) => renderQuestionCard(q, i)).join('')}
+            ${questoesTrilha.length === 0 ? '<p class="text-xs text-slate-400 italic">Nenhuma questão vinculada ainda. Clique em "Gerar +3 Questões IBAM (IA)" acima!</p>' : questoesTrilha.map((q, i) => renderQuestionCard(q, i)).join('')}
           </div>
         </div>
       `;
@@ -1161,16 +994,9 @@
 
     function toggleCompleteTrail(trilhaId) {
       const idx = state.completedTrails.indexOf(trilhaId);
-      if (idx >= 0) {
-        state.completedTrails.splice(idx, 1);
-        showToast('Trilha desmarcada.');
-      } else {
-        state.completedTrails.push(trilhaId);
-        state.xp += 50;
-        showToast('Trilha concluída! +50 XP');
-      }
-      saveState();
-      renderCurrentTab();
+      if (idx >= 0) { state.completedTrails.splice(idx, 1); showToast('Trilha desmarcada.'); }
+      else { state.completedTrails.push(trilhaId); state.xp += 50; showToast('Trilha concluída! +50 XP'); }
+      saveState(); renderCurrentTab();
     }
 
     async function generateTrailLessonAI(trilhaId) {
@@ -1178,22 +1004,10 @@
       const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
       const btn = document.getElementById('btnGenLesson');
       const box = document.getElementById('aiLessonBox');
+      btn.disabled = true; btn.textContent = 'Gerando aula IBAM...';
+      box.innerHTML = '<p class="text-xs text-purple-600 font-semibold animate-pulse">Consultando especialista IBAM...</p>';
 
-      btn.disabled = true;
-      btn.textContent = 'Gerando aula IBAM...';
-      box.innerHTML = '<p class="text-xs text-purple-600 font-semibold animate-pulse">Consultando especialista IBAM e montando material...</p>';
-
-      const prompt = `Atue como professor especialista na banca IBAM (Prefeitura de Praia Grande - SP).
-Crie uma aula objetiva e completa sobre:
-Disciplina: ${disc.nome}
-Tópico: ${trilha.titulo}
-Cargo(s): ${disc.cargos.map(getCargoLabel).join(' / ')}
-
-Estruture com subtítulos (###):
-### 1. Conceitos Fundamentais Cobrados pela IBAM
-### 2. Regras de Ouro e Esquema de Memorização
-### 3. Como a IBAM Tenta Derrubar o Candidato (Pegadinhas)
-### 4. Exemplo Comentado Estilo Prova`;
+      const prompt = `Atue como professor especialista na banca IBAM (Prefeitura de Praia Grande - SP). Crie uma aula objetiva e completa sobre:\nDisciplina: ${disc.nome}\nTópico: ${trilha.titulo}\nCargo(s): ${disc.cargos.map(getCargoLabel).join(' / ')}\n\nEstruture com subtítulos (###):\n### 1. Conceitos Fundamentais Cobrados pela IBAM\n### 2. Regras de Ouro e Esquema de Memorização\n### 3. Como a IBAM Tenta Derrubar o Candidato (Pegadinhas)\n### 4. Exemplo Comentado Estilo Prova`;
 
       try {
         const raw = await callGeminiAPI(prompt);
@@ -1206,8 +1020,7 @@ Estruture com subtítulos (###):
         renderCurrentTab();
       } catch (err) {
         box.innerHTML = `<p class="text-xs text-rose-600 font-semibold">Erro: ${err.message}</p>`;
-        btn.disabled = false;
-        btn.textContent = 'Tentar Novamente';
+        btn.disabled = false; btn.textContent = 'Tentar Novamente';
       }
     }
 
@@ -1215,54 +1028,24 @@ Estruture com subtítulos (###):
       const trilha = TRILHAS.find(t => t.id === trilhaId);
       const disc = DISCIPLINAS.find(d => d.id === trilha.disciplinaId);
       const btn = document.getElementById('btnGenQs');
+      btn.disabled = true; btn.textContent = 'Gerando questões...';
 
-      btn.disabled = true;
-      btn.textContent = 'Gerando questões...';
-
-      const prompt = `Gere 3 questões inéditas de múltipla escolha (4 alternativas: A, B, C, D) no estilo exato da banca IBAM para o concurso da Prefeitura de Praia Grande.
-Disciplina: ${disc.nome}
-Assunto: ${trilha.titulo}
-
-Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
-[
-  {
-    "enunciado": "Texto da questão...",
-    "alternativas": ["Alternativa A", "Alternativa B", "Alternativa C", "Alternativa D"],
-    "correta": 0,
-    "incidencia": "Alta",
-    "comentario": "Explicação objetiva do gabarito.",
-    "pegadinha": "Qual era a armadilha da banca.",
-    "regraOuro": "Resumo em 1 frase para memorizar."
-  }
-]`;
+      const prompt = `Gere 3 questões inéditas de múltipla escolha (4 alternativas: A, B, C, D) no estilo exato da banca IBAM para Prefeitura de Praia Grande.\nDisciplina: ${disc.nome}\nAssunto: ${trilha.titulo}\nRetorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos): [{"enunciado":"...","alternativas":["A","B","C","D"],"correta":0,"incidencia":"Alta","comentario":"...","pegadinha":"...","regraOuro":"..."}]`;
 
       try {
         const raw = await callGeminiAPI(prompt, 'Você é um elaborador especialista da banca IBAM. Retorne apenas JSON puro.', true);
         const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
         if (!Array.isArray(parsed)) throw new Error('Formato JSON inválido.');
-
         pendingGeneratedQuestions = parsed.map((item, idx) => ({
-          id: `q-ai-${Date.now()}-${idx}`,
-          cargos: disc.cargos,
-          bloco: disc.bloco,
-          disciplinaId: disc.id,
-          trilhaId: trilha.id,
-          incidencia: item.incidencia || 'Alta',
-          enunciado: item.enunciado,
-          alternativas: item.alternativas.slice(0, 4),
-          correta: Number(item.correta) || 0,
-          comentario: item.comentario || '',
-          pegadinha: item.pegadinha || '',
-          regraOuro: item.regraOuro || '',
-          origem: 'IA Gemini'
+          id: `q-ai-${Date.now()}-${idx}`, cargos: disc.cargos, bloco: disc.bloco, disciplinaId: disc.id, trilhaId: trilha.id,
+          incidencia: item.incidencia || 'Alta', enunciado: item.enunciado, alternativas: item.alternativas.slice(0, 4),
+          correta: Number(item.correta) || 0, comentario: item.comentario || '', pegadinha: item.pegadinha || '', regraOuro: item.regraOuro || '', origem: 'IA Gemini'
         }));
-
         showToast(`${pendingGeneratedQuestions.length} questões geradas!`);
         renderCurrentTab();
       } catch (err) {
         showToast(`Erro ao gerar: ${err.message}`);
-        btn.disabled = false;
-        btn.textContent = 'Gerar +3 Questões IBAM (IA)';
+        btn.disabled = false; btn.textContent = 'Gerar +3 Questões IBAM (IA)';
       }
     }
 
@@ -1273,7 +1056,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
           <div class="flex flex-wrap items-center justify-between gap-2">
             <p class="text-xs font-extrabold text-purple-800 dark:text-purple-300">✨ ${pendingGeneratedQuestions.length} Questões Geradas pela IA</p>
             <div class="flex gap-2">
-              <button onclick="saveAllPendingQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Salvar Todas (Local + Nuvem)</button>
+              <button onclick="saveAllPendingQuestions()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Salvar Todas</button>
               <button onclick="pendingGeneratedQuestions=[]; renderCurrentTab()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-xs font-semibold">Descartar</button>
             </div>
           </div>
@@ -1283,9 +1066,7 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
                 <p class="font-bold">${idx + 1}. ${q.enunciado}</p>
                 <button onclick="saveSinglePendingQuestion(${idx})" class="shrink-0 px-2.5 py-1 rounded bg-brand-600 text-white font-bold text-[11px]">+ Salvar</button>
               </div>
-              <ul class="space-y-1 text-slate-600 dark:text-slate-300 mb-2">
-                ${q.alternativas.map((alt, aIdx) => `<li class="${aIdx === q.correta ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}">${String.fromCharCode(65 + aIdx)}) ${alt}</li>`).join('')}
-              </ul>
+              <ul class="space-y-1 text-slate-600 dark:text-slate-300 mb-2">${q.alternativas.map((alt, aIdx) => `<li class="${aIdx === q.correta ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}">${String.fromCharCode(65 + aIdx)}) ${alt}</li>`).join('')}</ul>
               <p class="text-[11px] text-slate-500"><strong>Comentário:</strong> ${q.comentario}</p>
             </div>
           `).join('')}
@@ -1294,33 +1075,19 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
     }
 
     async function saveSinglePendingQuestion(idx) {
-      const q = pendingGeneratedQuestions[idx];
-      if (!q) return;
-      state.customQuestions.push(q);
-      pendingGeneratedQuestions.splice(idx, 1);
-      state.xp += 15;
-      saveState();
-      await syncQuestionsToFirestore([q]);
-      showToast('Questão salva! +15 XP');
-      renderCurrentTab();
+      const q = pendingGeneratedQuestions[idx]; if (!q) return;
+      state.customQuestions.push(q); pendingGeneratedQuestions.splice(idx, 1); state.xp += 15;
+      saveState(); await syncQuestionsToFirestore([q]); showToast('Questão salva! +15 XP'); renderCurrentTab();
     }
-
     async function saveAllPendingQuestions() {
       if (!pendingGeneratedQuestions.length) return;
-      const toSave = [...pendingGeneratedQuestions];
-      state.customQuestions.push(...toSave);
-      pendingGeneratedQuestions = [];
-      state.xp += toSave.length * 15;
-      saveState();
-      await syncQuestionsToFirestore(toSave);
-      showToast(`${toSave.length} questões salvas! +${toSave.length * 15} XP`);
-      renderCurrentTab();
+      const toSave = [...pendingGeneratedQuestions]; state.customQuestions.push(...toSave); pendingGeneratedQuestions = []; state.xp += toSave.length * 15;
+      saveState(); await syncQuestionsToFirestore(toSave); showToast(`${toSave.length} questões salvas!`); renderCurrentTab();
     }
 
     function renderQuestionCard(q, index) {
       const ans = state.answeredQuestions[q.id];
       const letters = ['A', 'B', 'C', 'D'];
-
       return `
         <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
@@ -1335,20 +1102,12 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
                 if (idx === q.correta) cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-bold';
                 else if (idx === ans.selected && !ans.correct) cls = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200';
               }
-              return `
-                <button onclick="answerTrailQuestion('${q.id}', ${idx})" class="w-full text-left p-3 rounded-xl border text-xs flex items-start gap-2.5 transition ${cls}">
-                  <span class="font-extrabold">${letters[idx]})</span>
-                  <span>${alt}</span>
-                </button>
-              `;
+              return `<button onclick="answerTrailQuestion('${q.id}', ${idx})" class="w-full text-left p-3 rounded-xl border text-xs flex items-start gap-2.5 transition ${cls}"><span class="font-extrabold">${letters[idx]})</span><span>${alt}</span></button>`;
             }).join('')}
           </div>
-
           ${ans ? `
             <div class="mt-3 p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs space-y-1.5">
-              <p class="font-extrabold ${ans.correct ? 'text-emerald-600' : 'text-rose-600'}">
-                ${ans.correct ? '✓ Resposta Correta! (+20 XP)' : `✗ Incorreta. Gabarito: ${letters[q.correta]}`}
-              </p>
+              <p class="font-extrabold ${ans.correct ? 'text-emerald-600' : 'text-rose-600'}">${ans.correct ? '✓ Resposta Correta! (+20 XP)' : `✗ Incorreta. Gabarito: ${letters[q.correta]}`}</p>
               <p><strong>Gabarito Comentado:</strong> ${q.comentario}</p>
               ${q.pegadinha ? `<p class="text-rose-600 dark:text-rose-400"><strong>⚠️ Pegadinha IBAM:</strong> ${q.pegadinha}</p>` : ''}
               ${q.regraOuro ? `<p class="text-amber-700 dark:text-amber-300"><strong>⭐ Regra de Ouro:</strong> ${q.regraOuro}</p>` : ''}
@@ -1363,7 +1122,6 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       if (!q) return;
       const alreadyAnswered = Boolean(state.answeredQuestions[qId]);
       const isCorrect = selectedIdx === q.correta;
-
       state.answeredQuestions[qId] = { selected: selectedIdx, correct: isCorrect };
       if (isCorrect) {
         if (!alreadyAnswered) state.xp += 20;
@@ -1371,44 +1129,26 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       } else if (!state.errorNotebook.includes(qId)) {
         state.errorNotebook.push(qId);
       }
-
-      saveState();
-      renderCurrentTab();
+      saveState(); renderCurrentTab();
     }
 
-    // ============================================================================
-    // NOVA ABA: FLASHCARDS INTERATIVOS (63 REGRAS DE OURO & ARMADILHAS IBAM)
-    // ============================================================================
+    // ABA 2: FLASHCARDS INTERATIVOS 3D
     function getFlashcardsPool() {
       let pool = getFilteredTrilhas();
-      if (flashDiscFilter !== 'all') {
-        pool = pool.filter(t => t.disciplinaId === flashDiscFilter);
-      }
-      if (flashOnlyPending) {
-        pool = pool.filter(t => !state.masteredFlashcards.includes(t.id));
-      }
+      if (flashDiscFilter !== 'all') pool = pool.filter(t => t.disciplinaId === flashDiscFilter);
+      if (flashOnlyPending) pool = pool.filter(t => !state.masteredFlashcards.includes(t.id));
       return pool;
     }
-
     function resetFlashDeckOrder(shuffle = false) {
-      const pool = getFlashcardsPool();
-      const ids = pool.map(t => t.id);
+      const ids = getFlashcardsPool().map(t => t.id);
       flashDeckOrder = shuffle ? shuffleArray(ids) : ids;
-      flashIndex = 0;
-      flashFlipped = false;
+      flashIndex = 0; flashFlipped = false;
     }
-
     function getOrderedFlashcards() {
       const pool = getFlashcardsPool();
       const poolMap = new Map(pool.map(t => [t.id, t]));
       const ordered = flashDeckOrder.map(id => poolMap.get(id)).filter(Boolean);
-      // Garante sincronia se o filtro mudou
-      if (ordered.length !== pool.length) {
-        flashDeckOrder = pool.map(t => t.id);
-        flashIndex = 0;
-        flashFlipped = false;
-        return pool;
-      }
+      if (ordered.length !== pool.length) { flashDeckOrder = pool.map(t => t.id); flashIndex = 0; flashFlipped = false; return pool; }
       return ordered;
     }
 
@@ -1417,7 +1157,6 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       const allCargoTrilhas = getFilteredTrilhas();
       const masteredCount = allCargoTrilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
       const deck = getOrderedFlashcards();
-
       if (flashIndex >= deck.length) flashIndex = Math.max(0, deck.length - 1);
       const currentCard = deck[flashIndex];
 
@@ -1425,36 +1164,22 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h2 class="text-xl font-extrabold">Flashcards IBAM • Regras de Ouro & Pegadinhas</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              Dominados em <strong>${getCargoLabel()}</strong>: <strong>${masteredCount}/${allCargoTrilhas.length}</strong> • Clique no card (ou tecla <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Espaço</kbd>) para virar.
-            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Dominados em <strong>${getCargoLabel()}</strong>: <strong>${masteredCount}/${allCargoTrilhas.length}</strong> • Clique no card (ou tecla <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px]">Espaço</kbd>) para virar.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="flashOnlyPending=!flashOnlyPending; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-xl text-xs font-bold border ${flashOnlyPending ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}">
-              ${flashOnlyPending ? '✓ Mostrando Pendentes' : 'Filtrar Pendentes'}
-            </button>
-            <button onclick="resetFlashDeckOrder(true); renderCurrentTab(); showToast('Baralho embaralhado!')" class="px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Embaralhar
-            </button>
+            <button onclick="flashOnlyPending=!flashOnlyPending; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-xl text-xs font-bold border ${flashOnlyPending ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700'}">${flashOnlyPending ? '✓ Mostrando Pendentes' : 'Filtrar Pendentes'}</button>
+            <button onclick="resetFlashDeckOrder(true); renderCurrentTab(); showToast('Baralho embaralhado!')" class="px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Embaralhar</button>
           </div>
         </div>
 
-        <!-- FILTRO POR DISCIPLINA -->
         <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
-          <button onclick="flashDiscFilter='all'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${flashDiscFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
-            Todas (${allCargoTrilhas.length})
-          </button>
-          ${disciplinas.map(d => `
-            <button onclick="flashDiscFilter='${d.id}'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${flashDiscFilter === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">
-              ${d.codigo} — ${d.nome}
-            </button>
-          `).join('')}
+          <button onclick="flashDiscFilter='all'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap ${flashDiscFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas (${allCargoTrilhas.length})</button>
+          ${disciplinas.map(d => `<button onclick="flashDiscFilter='${d.id}'; resetFlashDeckOrder(false); renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${flashDiscFilter === d.id ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d.codigo} — ${d.nome}</button>`).join('')}
         </div>
 
         ${!currentCard ? `
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-10 text-center space-y-3">
             <p class="text-base font-extrabold text-emerald-600">🎉 Você dominou todos os Flashcards deste filtro!</p>
-            <p class="text-xs text-slate-500">Desative "Filtrar Pendentes" ou escolha outra disciplina para revisar novamente.</p>
             <button onclick="flashOnlyPending=false; resetFlashDeckOrder(false); renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Mostrar Todos os Cards</button>
           </div>
         ` : renderSingleFlashcardStage(currentCard, flashIndex, deck.length)}
@@ -1468,7 +1193,6 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
 
       return `
         <div class="max-w-3xl mx-auto">
-          <!-- BARRA DE PROGRESSO DO BARALHO -->
           <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
             <span>Card ${idx + 1} de ${total}</span>
             <span>${isMastered ? '✅ Dominado' : '⏳ Em revisão'}</span>
@@ -1477,17 +1201,13 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
             <div class="h-full bg-brand-600 transition-all duration-300" style="width: ${progressPct}%"></div>
           </div>
 
-          <!-- CARD 3D INTERATIVO -->
           <div class="flashcard-scene cursor-pointer select-none mb-5" onclick="flipFlashcard()">
             <div id="flashcardInner" class="flashcard-inner ${flashFlipped ? 'is-flipped' : ''}">
-              
-              <!-- FRENTE: TÓPICO + ARMADILHA IBAM -->
               <div class="flashcard-face bg-white dark:bg-slate-900 rounded-3xl border-2 ${isMastered ? 'border-emerald-400 dark:border-emerald-800' : 'border-slate-200 dark:border-slate-800'} p-6 md:p-8 shadow-md flex flex-col justify-between">
                 <div class="flex items-center justify-between gap-2">
                   <span class="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-extrabold">${disc.codigo} — ${disc.nome}</span>
                   <span class="text-[11px] font-bold text-slate-400 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Clique para virar</span>
                 </div>
-
                 <div class="my-6 text-center space-y-4">
                   <h3 class="text-lg md:text-xl font-extrabold leading-snug">${card.titulo}</h3>
                   <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-left">
@@ -1495,19 +1215,14 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
                     <p class="text-xs md:text-sm text-rose-950 dark:text-rose-100 leading-relaxed">${card.armadilhaIbam}</p>
                   </div>
                 </div>
-
-                <div class="flex flex-wrap justify-center gap-1.5">
-                  ${(card.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300">#${k}</span>`).join('')}
-                </div>
+                <div class="flex flex-wrap justify-center gap-1.5">${(card.palavrasChave || []).map(k => `<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300">#${k}</span>`).join('')}</div>
               </div>
 
-              <!-- VERSO: REGRA DE OURO + RESUMO RELÂMPAGO -->
               <div class="flashcard-face flashcard-back bg-gradient-to-br from-slate-900 to-brand-950 text-white rounded-3xl border-2 border-brand-500 p-6 md:p-8 shadow-lg flex flex-col justify-between">
                 <div class="flex items-center justify-between gap-2">
                   <span class="px-2.5 py-1 rounded-lg bg-white/15 text-amber-300 text-xs font-extrabold">⭐ REGRA DE OURO IBAM</span>
                   <span class="text-[11px] font-semibold text-slate-300 flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Voltar frente</span>
                 </div>
-
                 <div class="my-5 space-y-4">
                   <div class="p-4 rounded-2xl bg-amber-400/15 border border-amber-300/40">
                     <p class="text-sm md:text-base font-bold text-amber-200 leading-relaxed">${card.regraOuro}</p>
@@ -1517,122 +1232,61 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
                     <p class="text-xs md:text-sm text-slate-100 leading-relaxed">${card.resumo}</p>
                   </div>
                 </div>
-
                 <div class="flex justify-between items-center text-[11px] text-slate-300">
-                  <span>Tópico: ${card.titulo}</span>
-                  <button onclick="event.stopPropagation(); openTrailFromFlashcard('${card.id}')" class="underline font-bold text-amber-300 hover:text-amber-200">Abrir Trilha & Questões →</button>
+                  <span class="truncate pr-2">Tópico: ${card.titulo}</span>
+                  <button onclick="event.stopPropagation(); openTrailFromFlashcard('${card.id}')" class="shrink-0 underline font-bold text-amber-300 hover:text-amber-200">Abrir Trilha →</button>
                 </div>
               </div>
-
             </div>
           </div>
 
-          <!-- CONTROLES DE NAVEGAÇÃO E AUTOAVALIAÇÃO -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <button onclick="prevFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">
-              <i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior
-            </button>
-            <button onclick="markFlashcardStatus('${card.id}', false)" class="py-3 px-3 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 hover:opacity-90 text-xs font-extrabold flex items-center justify-center gap-1.5">
-              <i data-lucide="refresh-cw" class="w-4 h-4"></i> Revisar Depois
-            </button>
-            <button onclick="markFlashcardStatus('${card.id}', true)" class="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5">
-              <i data-lucide="check-circle-2" class="w-4 h-4"></i> ${isMastered ? 'Dominado ✓' : 'Dominei (+10 XP)'}
-            </button>
-            <button onclick="nextFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">
-              Próximo <i data-lucide="chevron-right" class="w-4 h-4"></i>
-            </button>
+            <button onclick="prevFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5"><i data-lucide="chevron-left" class="w-4 h-4"></i> Anterior</button>
+            <button onclick="markFlashcardStatus('${card.id}', false)" class="py-3 px-3 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-200 hover:opacity-90 text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Revisar Depois</button>
+            <button onclick="markFlashcardStatus('${card.id}', true)" class="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4"></i> ${isMastered ? 'Dominado ✓' : 'Dominei (+10 XP)'}</button>
+            <button onclick="nextFlashcard()" class="py-3 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold flex items-center justify-center gap-1.5">Próximo <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
           </div>
         </div>
       `;
     }
 
-    function flipFlashcard() {
-      flashFlipped = !flashFlipped;
-      const el = document.getElementById('flashcardInner');
-      if (el) el.classList.toggle('is-flipped', flashFlipped);
-    }
-
-    function nextFlashcard() {
-      const deck = getOrderedFlashcards();
-      if (!deck.length) return;
-      flashIndex = (flashIndex + 1) % deck.length;
-      flashFlipped = false;
-      renderCurrentTab();
-    }
-
-    function prevFlashcard() {
-      const deck = getOrderedFlashcards();
-      if (!deck.length) return;
-      flashIndex = (flashIndex - 1 + deck.length) % deck.length;
-      flashFlipped = false;
-      renderCurrentTab();
-    }
-
+    function flipFlashcard() { flashFlipped = !flashFlipped; const el = document.getElementById('flashcardInner'); if (el) el.classList.toggle('is-flipped', flashFlipped); }
+    function nextFlashcard() { const deck = getOrderedFlashcards(); if (!deck.length) return; flashIndex = (flashIndex + 1) % deck.length; flashFlipped = false; renderCurrentTab(); }
+    function prevFlashcard() { const deck = getOrderedFlashcards(); if (!deck.length) return; flashIndex = (flashIndex - 1 + deck.length) % deck.length; flashFlipped = false; renderCurrentTab(); }
     function markFlashcardStatus(trilhaId, mastered) {
-      const alreadyMastered = state.masteredFlashcards.includes(trilhaId);
+      const already = state.masteredFlashcards.includes(trilhaId);
       if (mastered) {
-        if (!alreadyMastered) {
-          state.masteredFlashcards.push(trilhaId);
-          state.xp += 10;
-          showToast('Flashcard dominado! +10 XP');
-        }
+        if (!already) { state.masteredFlashcards.push(trilhaId); state.xp += 10; showToast('Flashcard dominado! +10 XP'); }
       } else {
-        state.masteredFlashcards = state.masteredFlashcards.filter(id => id !== trilhaId);
-        showToast('Marcado para revisão futura.');
+        state.masteredFlashcards = state.masteredFlashcards.filter(id => id !== trilhaId); showToast('Marcado para revisão futura.');
       }
       saveState();
-
       const deck = getOrderedFlashcards();
-      if (deck.length > 0 && !flashOnlyPending) {
-        flashIndex = (flashIndex + 1) % deck.length;
-      }
-      flashFlipped = false;
-      renderCurrentTab();
+      if (deck.length > 0 && !flashOnlyPending) flashIndex = (flashIndex + 1) % deck.length;
+      flashFlipped = false; renderCurrentTab();
     }
+    function openTrailFromFlashcard(trilhaId) { currentTab = 'trilhas'; activeTrailId = trilhaId; pendingGeneratedQuestions = []; startTrailTimer(); updateGlobalUI(); renderCurrentTab(); }
 
-    function openTrailFromFlashcard(trilhaId) {
-      currentTab = 'trilhas';
-      activeTrailId = trilhaId;
-      pendingGeneratedQuestions = [];
-      startTrailTimer();
-      updateGlobalUI();
-      renderCurrentTab();
-    }
-
-    // Atalhos de teclado na aba Flashcards
     document.addEventListener('keydown', (e) => {
-      if (currentTab !== 'flashcards') return;
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-      if (e.code === 'Space') {
-        e.preventDefault();
-        flipFlashcard();
-      } else if (e.code === 'ArrowRight') {
-        nextFlashcard();
-      } else if (e.code === 'ArrowLeft') {
-        prevFlashcard();
-      }
+      if (currentTab !== 'flashcards' || ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.code === 'Space') { e.preventDefault(); flipFlashcard(); }
+      else if (e.code === 'ArrowRight') nextFlashcard();
+      else if (e.code === 'ArrowLeft') prevFlashcard();
     });
 
-    // ============================================================================
-    // ABA 3: RADAR DE PEGADINHAS IBAM
-    // ============================================================================
+    // ABA 3: RADAR IBAM
     function renderRadar(container) {
       const cards = RADAR.filter(r => matchCargo(r.cargos) && (radarFilter === 'all' || r.disciplina === radarFilter));
       const discs = [...new Set(RADAR.filter(r => matchCargo(r.cargos)).map(r => r.disciplina))];
-
       container.innerHTML = `
         <div class="mb-5">
           <h2 class="text-xl font-extrabold">Radar de Pegadinhas & Regras de Ouro IBAM</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400">Armadilhas recorrentes da banca para <strong>${getCargoLabel()}</strong>.</p>
         </div>
-
         <div class="flex gap-2 overflow-x-auto pb-2 mb-5">
           <button onclick="radarFilter='all'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-bold ${radarFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">Todas</button>
-          ${discs.map(d => `
-            <button onclick="radarFilter='${d}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${radarFilter === d ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d}</button>
-          `).join('')}
+          ${discs.map(d => `<button onclick="radarFilter='${d}'; renderCurrentTab()" class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${radarFilter === d ? 'bg-brand-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'}">${d}</button>`).join('')}
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           ${cards.map(c => `
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm flex flex-col justify-between">
@@ -1645,18 +1299,14 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
                 <p class="text-xs text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl mb-2"><strong>⚠️ Como a IBAM derruba:</strong> ${c.pegadinha}</p>
                 <p class="text-xs text-emerald-800 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl"><strong>⭐ Regra de Ouro:</strong> ${c.regraOuro}</p>
               </div>
-              <button onclick="sendToMentor('Treine comigo com 2 questões rápidas estilo IBAM sobre: ${c.titulo.replace(/'/g, '')}')" class="mt-4 w-full py-2 rounded-xl bg-slate-900 dark:bg-brand-600 hover:opacity-90 text-white text-xs font-bold">
-                Treinar esta Regra com Mentor IA
-              </button>
+              <button onclick="sendToMentor('Treine comigo com 2 questões rápidas estilo IBAM sobre: ${c.titulo.replace(/'/g, '')}')" class="mt-4 w-full py-2 rounded-xl bg-slate-900 dark:bg-brand-600 hover:opacity-90 text-white text-xs font-bold">Treinar esta Regra com Mentor IA</button>
             </div>
           `).join('')}
         </div>
       `;
     }
 
-    // ============================================================================
-    // ABA 4: MENTOR IA ESPECIALISTA IBAM
-    // ============================================================================
+    // ABA 4: MENTOR IA
     function renderMentor(container) {
       container.innerHTML = `
         <div class="flex flex-col h-[calc(100vh-11rem)] md:h-[calc(100vh-6rem)] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
@@ -1670,138 +1320,75 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
             </div>
             <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40">Limpar Chat</button>
           </div>
-
           <div class="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex gap-2 overflow-x-auto bg-white dark:bg-slate-900">
             <button onclick="sendToMentor('Quais são os 5 assuntos mais cobrados pela banca IBAM para ${getCargoLabel()} em Praia Grande e suas maiores pegadinhas?')" class="px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[11px] font-bold whitespace-nowrap">🎯 Top 5 Assuntos IBAM</button>
             <button onclick="analyzeErrorsWithMentor()" class="px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-[11px] font-bold whitespace-nowrap">🩺 Analisar Meu Caderno de Erros</button>
             <button onclick="sendToMentor('Crie um ciclo de revisões de 7 dias focado nos tópicos críticos do edital para ${getCargoLabel()}.')" class="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold whitespace-nowrap">📅 Plano de Revisão 7 Dias</button>
           </div>
-
           <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3">
             ${state.chatHistory.map(msg => `
               <div class="flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}">
-                <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${msg.role === 'user'
-                  ? 'bg-brand-600 text-white font-medium'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 prose-ai'}">
-                  ${msg.role === 'user' ? msg.text : formatSimpleMarkdown(msg.text)}
-                </div>
+                <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${msg.role === 'user' ? 'bg-brand-600 text-white font-medium' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 prose-ai'}">${msg.role === 'user' ? msg.text : formatSimpleMarkdown(msg.text)}</div>
               </div>
             `).join('')}
           </div>
-
           <form onsubmit="handleChatSubmit(event)" class="p-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
             <input type="text" id="chatInput" placeholder="Pergunte sobre regras da IBAM, pegadinhas, leis ou peça questões..." class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
-            <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="send" class="w-4 h-4"></i> Enviar
-            </button>
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold flex items-center gap-1.5"><i data-lucide="send" class="w-4 h-4"></i> Enviar</button>
           </form>
         </div>
       `;
-      const box = document.getElementById('chatMessagesBox');
-      if (box) box.scrollTop = box.scrollHeight;
+      const box = document.getElementById('chatMessagesBox'); if (box) box.scrollTop = box.scrollHeight;
     }
 
-    function clearChatHistory() {
-      state.chatHistory = [DEFAULT_STATE.chatHistory[0]];
-      saveState();
-      renderCurrentTab();
-      showToast('Histórico do chat reiniciado.');
-    }
-
+    function clearChatHistory() { state.chatHistory = [DEFAULT_STATE.chatHistory[0]]; saveState(); renderCurrentTab(); showToast('Histórico reiniciado.'); }
     function analyzeErrorsWithMentor() {
       const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
-      if (!wrongQs.length) {
-        sendToMentor('Meu Caderno de Erros está vazio. Monte um mini-simulado diagnóstico de 3 questões padrão IBAM para testar meu nível!');
-        return;
-      }
+      if (!wrongQs.length) { sendToMentor('Meu Caderno de Erros está vazio. Monte um mini-simulado diagnóstico de 3 questões padrão IBAM!'); return; }
       const summary = wrongQs.slice(0, 6).map(q => `- [${q.disciplinaId.toUpperCase()}] ${q.enunciado} (Pegadinha: ${q.pegadinha})`).join('\n');
       sendToMentor(`Analise os erros que cometi e explique como evitar cada pegadinha da IBAM:\n${summary}`);
     }
-
     async function sendToMentor(promptText) {
-      if (currentTab !== 'mentor') {
-        currentTab = 'mentor';
-        updateGlobalUI();
-      }
-      state.chatHistory.push({ role: 'user', text: promptText });
-      saveState();
-      renderCurrentTab();
-
+      if (currentTab !== 'mentor') { currentTab = 'mentor'; updateGlobalUI(); }
+      state.chatHistory.push({ role: 'user', text: promptText }); saveState(); renderCurrentTab();
       const box = document.getElementById('chatMessagesBox');
-      if (box) {
-        box.innerHTML += `<div class="flex justify-start"><div class="rounded-2xl px-4 py-3 text-xs bg-slate-100 dark:bg-slate-800 animate-pulse">Analisando com foco na banca IBAM...</div></div>`;
-        box.scrollTop = box.scrollHeight;
-      }
-
+      if (box) { box.innerHTML += `<div class="flex justify-start"><div class="rounded-2xl px-4 py-3 text-xs bg-slate-100 dark:bg-slate-800 animate-pulse">Analisando com foco na banca IBAM...</div></div>`; box.scrollTop = box.scrollHeight; }
       const sys = `Você é um mentor especialista na banca IBAM preparando candidatos para a Prefeitura de Praia Grande (Cargo: ${getCargoLabel()}). Destaque regras mais cobradas, pegadinhas de 4 alternativas (A-D) e dicas diretas.`;
-
       try {
         const contextPrompt = state.chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Estudante' : 'Mentor IBAM'}: ${m.text}`).join('\n\n');
         const reply = await callGeminiAPI(contextPrompt, sys);
-        state.chatHistory.push({ role: 'model', text: reply });
-        saveState();
-        renderCurrentTab();
+        state.chatHistory.push({ role: 'model', text: reply }); saveState(); renderCurrentTab();
       } catch (err) {
-        state.chatHistory.push({ role: 'model', text: `⚠️ Erro: ${err.message}` });
-        saveState();
-        renderCurrentTab();
+        state.chatHistory.push({ role: 'model', text: `⚠️ Erro: ${err.message}` }); saveState(); renderCurrentTab();
       }
     }
+    function handleChatSubmit(e) { e.preventDefault(); const input = document.getElementById('chatInput'); const val = input.value.trim(); if (!val) return; input.value = ''; sendToMentor(val); }
 
-    function handleChatSubmit(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const val = input.value.trim();
-      if (!val) return;
-      input.value = '';
-      sendToMentor(val);
-    }
-
-    // ============================================================================
-    // ABA 5: SIMULADO POR EDITAL
-    // ============================================================================
+    // ABA 5: SIMULADO
     function renderSimulado(container) {
       if (simuladoState && simuladoState.active) { renderSimuladoActive(container); return; }
       if (simuladoState && simuladoState.finished) { renderSimuladoResult(container); return; }
-
       const disciplinas = getFilteredDisciplinas();
       const totalDisponivel = getFilteredQuestions().length;
-
       container.innerHTML = `
         <div class="mb-5">
           <h2 class="text-xl font-extrabold">Simulado por Edital • Banca IBAM</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400">Banco ativo para <strong>${getCargoLabel()}</strong>: <strong>${totalDisponivel} questões</strong> disponíveis.</p>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Edital Admin</span>
-              <h3 class="font-extrabold text-base mt-2">Simulado Agente Administrativo</h3>
-              <p class="text-xs text-slate-500 mt-1">Conhecimentos Básicos (LP, Matemática, Informática) + Específicas Admin.</p>
-            </div>
+            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Edital Admin</span><h3 class="font-extrabold text-base mt-2">Simulado Agente Administrativo</h3><p class="text-xs text-slate-500 mt-1">Conhecimentos Básicos (LP, Matemática, Informática) + Específicas Admin.</p></div>
             <button onclick="startPresetSimulado('admin', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Iniciar Simulado Admin (20q)</button>
           </div>
-
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-teal-100 text-teal-800">Edital Endemias</span>
-              <h3 class="font-extrabold text-base mt-2">Simulado Agente de Endemias</h3>
-              <p class="text-xs text-slate-500 mt-1">LP e Matemática (sem Informática) + SUS, Lei 11.350/06, Vetores e EPIs.</p>
-            </div>
+            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-teal-100 text-teal-800">Edital Endemias</span><h3 class="font-extrabold text-base mt-2">Simulado Agente de Endemias</h3><p class="text-xs text-slate-500 mt-1">LP e Matemática (sem Informática) + SUS, Lei 11.350/06, Vetores e EPIs.</p></div>
             <button onclick="startPresetSimulado('ace', 20)" class="mt-4 w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold">Iniciar Simulado Endemias (20q)</button>
           </div>
-
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-brand-100 text-brand-800">Treino Integrado</span>
-              <h3 class="font-extrabold text-base mt-2">Simulado Geral (Ambos os Cargos)</h3>
-              <p class="text-xs text-slate-500 mt-1">Mescla todas as disciplinas comuns e específicas dos dois cargos.</p>
-            </div>
+            <div><span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-brand-100 text-brand-800">Treino Integrado</span><h3 class="font-extrabold text-base mt-2">Simulado Geral (Ambos os Cargos)</h3><p class="text-xs text-slate-500 mt-1">Mescla todas as disciplinas comuns e específicas dos dois cargos.</p></div>
             <button onclick="startPresetSimulado('ambos', 30)" class="mt-4 w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Iniciar Simulado Geral (30q)</button>
           </div>
         </div>
-
         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
           <h3 class="font-extrabold text-sm mb-3">Configurar Simulado Personalizado</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -1817,15 +1404,10 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
             <div>
               <label class="block text-xs font-semibold mb-1">Quantidade Máxima</label>
               <select id="simQtySelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
-                <option value="5">5 questões</option>
-                <option value="10" selected>10 questões</option>
-                <option value="20">20 questões</option>
-                <option value="40">40 questões</option>
+                <option value="5">5 questões</option><option value="10" selected>10 questões</option><option value="20">20 questões</option><option value="40">40 questões</option>
               </select>
             </div>
-            <div class="flex items-end">
-              <button onclick="startCustomSimulado()" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold">Gerar Prova Agora</button>
-            </div>
+            <div class="flex items-end"><button onclick="startCustomSimulado()" class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-brand-600 text-white text-xs font-bold">Gerar Prova Agora</button></div>
           </div>
         </div>
       `;
@@ -1833,31 +1415,23 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
 
     function shuffleArray(arr) {
       const copy = [...arr];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
+      for (let i = copy.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]]; }
       return copy;
     }
-
     function startPresetSimulado(cargoTarget, qty) {
       const pool = getAllQuestions().filter(q => cargoTarget === 'ambos' ? true : q.cargos.includes(cargoTarget));
       launchSimulado(shuffleArray(pool).slice(0, qty), `Simulado ${getCargoLabel(cargoTarget)}`);
     }
-
     function startCustomSimulado() {
       const filter = document.getElementById('simDiscSelect').value;
       const qty = Number(document.getElementById('simQtySelect').value);
       let pool = getFilteredQuestions();
-
       if (filter === 'basicos') pool = pool.filter(q => q.bloco === 'basicos');
       else if (filter === 'especificos') pool = pool.filter(q => q.bloco !== 'basicos');
       else if (filter !== 'all') pool = pool.filter(q => q.disciplinaId === filter);
-
-      if (!pool.length) { showToast('Nenhuma questão encontrada para este filtro.'); return; }
+      if (!pool.length) { showToast('Nenhuma questão encontrada.'); return; }
       launchSimulado(shuffleArray(pool).slice(0, qty), 'Simulado Personalizado');
     }
-
     function launchSimulado(questions, titulo) {
       simuladoState = { active: true, finished: false, titulo, questions, answers: {}, secondsElapsed: 0 };
       clearInterval(simuladoTimerInterval);
@@ -1865,29 +1439,17 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
         if (!simuladoState || !simuladoState.active) return;
         simuladoState.secondsElapsed++;
         const el = document.getElementById('simTimer');
-        if (el) {
-          const m = String(Math.floor(simuladoState.secondsElapsed / 60)).padStart(2, '0');
-          const s = String(simuladoState.secondsElapsed % 60).padStart(2, '0');
-          el.textContent = `${m}:${s}`;
-        }
+        if (el) el.textContent = `${String(Math.floor(simuladoState.secondsElapsed / 60)).padStart(2, '0')}:${String(simuladoState.secondsElapsed % 60).padStart(2, '0')}`;
       }, 1000);
       renderCurrentTab();
     }
-
     function renderSimuladoActive(container) {
       const letters = ['A', 'B', 'C', 'D'];
       container.innerHTML = `
         <div class="sticky top-14 z-10 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 mb-4 flex items-center justify-between shadow-sm">
-          <div>
-            <h2 class="text-sm font-extrabold">${simuladoState.titulo}</h2>
-            <p class="text-xs text-slate-500">${Object.keys(simuladoState.answers).length} de ${simuladoState.questions.length} respondidas</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <span id="simTimer" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">00:00</span>
-            <button onclick="finishSimulado()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Finalizar Prova</button>
-          </div>
+          <div><h2 class="text-sm font-extrabold">${simuladoState.titulo}</h2><p class="text-xs text-slate-500">${Object.keys(simuladoState.answers).length} de ${simuladoState.questions.length} respondidas</p></div>
+          <div class="flex items-center gap-3"><span id="simTimer" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">00:00</span><button onclick="finishSimulado()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Finalizar Prova</button></div>
         </div>
-
         <div class="space-y-4">
           ${simuladoState.questions.map((q, idx) => {
             const chosen = simuladoState.answers[idx];
@@ -1895,46 +1457,26 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
               <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
                 <p class="text-xs font-bold text-brand-600 mb-1">Questão ${idx + 1}</p>
                 <p class="text-sm font-semibold mb-3">${q.enunciado}</p>
-                <div class="space-y-2">
-                  ${q.alternativas.map((alt, aIdx) => `
-                    <button onclick="simuladoState.answers[${idx}]=${aIdx}; renderCurrentTab()" class="w-full text-left p-3 rounded-xl border text-xs flex gap-2 ${chosen === aIdx ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/60 font-bold' : 'border-slate-200 dark:border-slate-700'}">
-                      <span class="font-extrabold">${letters[aIdx]})</span><span>${alt}</span>
-                    </button>
-                  `).join('')}
-                </div>
+                <div class="space-y-2">${q.alternativas.map((alt, aIdx) => `<button onclick="simuladoState.answers[${idx}]=${aIdx}; renderCurrentTab()" class="w-full text-left p-3 rounded-xl border text-xs flex gap-2 ${chosen === aIdx ? 'border-brand-600 bg-brand-50 dark:bg-brand-950/60 font-bold' : 'border-slate-200 dark:border-slate-700'}"><span class="font-extrabold">${letters[aIdx]})</span><span>${alt}</span></button>`).join('')}</div>
               </div>
             `;
           }).join('')}
         </div>
       `;
     }
-
     function finishSimulado() {
-      clearInterval(simuladoTimerInterval);
-      simuladoState.active = false;
-      simuladoState.finished = true;
-
+      clearInterval(simuladoTimerInterval); simuladoState.active = false; simuladoState.finished = true;
       let hits = 0;
       simuladoState.questions.forEach((q, idx) => {
-        const ok = simuladoState.answers[idx] === q.correta;
-        if (ok) {
-          hits++;
-          state.errorNotebook = state.errorNotebook.filter(id => id !== q.id);
-        } else if (!state.errorNotebook.includes(q.id)) {
-          state.errorNotebook.push(q.id);
-        }
+        if (simuladoState.answers[idx] === q.correta) { hits++; state.errorNotebook = state.errorNotebook.filter(id => id !== q.id); }
+        else if (!state.errorNotebook.includes(q.id)) state.errorNotebook.push(q.id);
       });
-      simuladoState.hits = hits;
-      state.xp += hits * 15;
-      saveState();
-      renderCurrentTab();
+      simuladoState.hits = hits; state.xp += hits * 15; saveState(); renderCurrentTab();
     }
-
     function renderSimuladoResult(container) {
       const total = simuladoState.questions.length;
       const pct = Math.round((simuladoState.hits / total) * 100);
       const letters = ['A', 'B', 'C', 'D'];
-
       const basicQs = simuladoState.questions.map((q, i) => ({ q, i })).filter(x => x.q.bloco === 'basicos');
       const specQs = simuladoState.questions.map((q, i) => ({ q, i })).filter(x => x.q.bloco !== 'basicos');
       const basicHits = basicQs.filter(x => simuladoState.answers[x.i] === x.q.correta).length;
@@ -1943,103 +1485,50 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
       container.innerHTML = `
         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 mb-6">
           <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <div>
-              <h2 class="text-xl font-extrabold">Resultado: ${simuladoState.titulo}</h2>
-              <p class="text-xs text-slate-500">Você acertou <strong>${simuladoState.hits} de ${total}</strong> questões (${pct}%) • +${simuladoState.hits * 15} XP</p>
-            </div>
+            <div><h2 class="text-xl font-extrabold">Resultado: ${simuladoState.titulo}</h2><p class="text-xs text-slate-500">Você acertou <strong>${simuladoState.hits} de ${total}</strong> questões (${pct}%) • +${simuladoState.hits * 15} XP</p></div>
             <button onclick="simuladoState=null; renderCurrentTab()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Novo Simulado</button>
           </div>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800">
-              <p class="font-bold">Conhecimentos Básicos</p>
-              <p class="text-lg font-extrabold text-brand-600">${basicHits}/${basicQs.length}</p>
-            </div>
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800">
-              <p class="font-bold">Conhecimentos Específicos</p>
-              <p class="text-lg font-extrabold text-emerald-600">${specHits}/${specQs.length}</p>
-            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800"><p class="font-bold">Conhecimentos Básicos</p><p class="text-lg font-extrabold text-brand-600">${basicHits}/${basicQs.length}</p></div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800"><p class="font-bold">Conhecimentos Específicos</p><p class="text-lg font-extrabold text-emerald-600">${specHits}/${specQs.length}</p></div>
           </div>
         </div>
-
         <div class="space-y-3">
           ${simuladoState.questions.map((q, idx) => {
-            const chosen = simuladoState.answers[idx];
-            const ok = chosen === q.correta;
-            return `
-              <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border ${ok ? 'border-emerald-300 dark:border-emerald-900' : 'border-rose-300 dark:border-rose-900'} text-xs">
-                <p class="font-bold mb-1">${idx + 1}. ${q.enunciado}</p>
-                <p class="${ok ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'} mb-1">
-                  Sua resposta: ${chosen !== undefined ? letters[chosen] : 'Em branco'} | Gabarito: ${letters[q.correta]}
-                </p>
-                <p class="text-slate-600 dark:text-slate-300">${q.comentario}</p>
-              </div>
-            `;
+            const chosen = simuladoState.answers[idx]; const ok = chosen === q.correta;
+            return `<div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border ${ok ? 'border-emerald-300 dark:border-emerald-900' : 'border-rose-300 dark:border-rose-900'} text-xs"><p class="font-bold mb-1">${idx + 1}. ${q.enunciado}</p><p class="${ok ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'} mb-1">Sua resposta: ${chosen !== undefined ? letters[chosen] : 'Em branco'} | Gabarito: ${letters[q.correta]}</p><p class="text-slate-600 dark:text-slate-300">${q.comentario}</p></div>`;
           }).join('')}
         </div>
       `;
     }
 
-    // ============================================================================
-    // ABA 6: CADERNO DE ERROS
-    // ============================================================================
+    // ABA 6: CADERNO DE ERROS & ABA 7: PROGRESSO
     function renderErros(container) {
       const wrongQs = getFilteredQuestions().filter(q => state.errorNotebook.includes(q.id));
-
       container.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-          <div>
-            <h2 class="text-xl font-extrabold">Caderno de Erros Inteligente (${wrongQs.length})</h2>
-            <p class="text-xs text-slate-500">Questões erradas para <strong>${getCargoLabel()}</strong>.</p>
-          </div>
+          <div><h2 class="text-xl font-extrabold">Caderno de Erros Inteligente (${wrongQs.length})</h2><p class="text-xs text-slate-500">Questões erradas para <strong>${getCargoLabel()}</strong>.</p></div>
           ${wrongQs.length > 0 ? `<button onclick="analyzeErrorsWithMentor()" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Diagnosticar Erros com IA</button>` : ''}
         </div>
-
-        ${wrongQs.length === 0
-          ? '<div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">Seu Caderno de Erros está zerado para este cargo!</div>'
-          : `<div class="space-y-4">${wrongQs.map((q, idx) => renderQuestionCard(q, idx)).join('')}</div>`}
+        ${wrongQs.length === 0 ? '<div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">Seu Caderno de Erros está zerado para este cargo!</div>' : `<div class="space-y-4">${wrongQs.map((q, idx) => renderQuestionCard(q, idx)).join('')}</div>`}
       `;
     }
 
-    // ============================================================================
-    // ABA 7: PROGRESSO & BANCO
-    // ============================================================================
     function renderProgresso(container) {
       const trilhas = getFilteredTrilhas();
       const done = trilhas.filter(t => state.completedTrails.includes(t.id)).length;
       const pct = trilhas.length ? Math.round((done / trilhas.length) * 100) : 0;
       const flashDone = trilhas.filter(t => state.masteredFlashcards.includes(t.id)).length;
-
       container.innerHTML = `
-        <div class="mb-5">
-          <h2 class="text-xl font-extrabold">Painel de Evolução & Banco de Dados</h2>
-          <p class="text-xs text-slate-500">Gerencie suas questões geradas por IA, pacotes JSON e sincronização Firebase Firestore.</p>
-        </div>
-
+        <div class="mb-5"><h2 class="text-xl font-extrabold">Painel de Evolução & Banco de Dados</h2><p class="text-xs text-slate-500">Gerencie suas questões geradas por IA, pacotes JSON e sincronização Firebase Firestore.</p></div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <p class="text-xs text-slate-500">XP Total</p>
-            <p class="text-2xl font-extrabold text-amber-500">${state.xp}</p>
-          </div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <p class="text-xs text-slate-500">Trilhas (${getCargoLabel()})</p>
-            <p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p>
-          </div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <p class="text-xs text-slate-500">Flashcards Dominados</p>
-            <p class="text-2xl font-extrabold text-indigo-600">${flashDone}/${trilhas.length}</p>
-          </div>
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <p class="text-xs text-slate-500">Banco Total de Questões</p>
-            <p class="text-2xl font-extrabold text-emerald-600">${getAllQuestions().length}</p>
-          </div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">XP Total</p><p class="text-2xl font-extrabold text-amber-500">${state.xp}</p></div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Trilhas (${getCargoLabel()})</p><p class="text-2xl font-extrabold text-brand-600">${done}/${trilhas.length} (${pct}%)</p></div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Flashcards Dominados</p><p class="text-2xl font-extrabold text-indigo-600">${flashDone}/${trilhas.length}</p></div>
+          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-xs text-slate-500">Banco Total de Questões</p><p class="text-2xl font-extrabold text-emerald-600">${getAllQuestions().length}</p></div>
         </div>
-
         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 class="font-bold text-sm">Importação JSON, Firebase Firestore & Backup</h3>
-            <p class="text-xs text-slate-500">Importe pacotes extras de questões em JSON, sincronize com a nuvem ou restaure backups.</p>
-          </div>
+          <div><h3 class="font-bold text-sm">Importação JSON, Firebase Firestore & Backup</h3><p class="text-xs text-slate-500">Importe pacotes extras de questões em JSON, sincronize com a nuvem ou restaure backups.</p></div>
           <div class="flex flex-wrap gap-2">
             <button onclick="openModal('modalJson')" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Importar / Exportar JSON</button>
             <button onclick="openModal('modalFirebase')" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">Configurar Firebase</button>
@@ -2051,112 +1540,89 @@ Retorne EXCLUSIVAMENTE um JSON válido (array de 3 objetos):
 
     function resetAllProgress() {
       if (!confirm('Deseja realmente zerar seu progresso, flashcards dominados, aulas IA e histórico de chat?')) return;
-      localStorage.removeItem(STORAGE_STATE_KEY);
-      state = structuredClone(DEFAULT_STATE);
-      applyTheme();
-      saveState();
-      renderCurrentTab();
-      showToast('Progresso reiniciado.');
+      localStorage.removeItem(STORAGE_STATE_KEY); state = structuredClone(DEFAULT_STATE); applyTheme(); saveState(); renderCurrentTab(); showToast('Progresso reiniciado.');
     }
 
-    // ============================================================================
-    // IMPORTAÇÃO E EXPORTAÇÃO JSON
-    // ============================================================================
+    // JSON IMPORT / EXPORT
     function downloadJsonFile(dataObj, filename) {
       const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
     }
-
-    function exportCustomQuestionsJSON() {
-      downloadJsonFile(state.customQuestions, `questoes_extras_ibam_${Date.now()}.json`);
-      showToast('Questões extras exportadas!');
-    }
-
-    function exportFullBackupJSON() {
-      downloadJsonFile(state, `backup_progresso_pg_${Date.now()}.json`);
-      showToast('Backup completo exportado!');
-    }
-
-    function handleJsonFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => { document.getElementById('jsonPasteArea').value = ev.target.result; };
-      reader.readAsText(file);
-    }
+    function exportCustomQuestionsJSON() { downloadJsonFile(state.customQuestions, `questoes_extras_ibam_${Date.now()}.json`); showToast('Questões extras exportadas!'); }
+    function exportFullBackupJSON() { downloadJsonFile(state, `backup_progresso_pg_${Date.now()}.json`); showToast('Backup completo exportado!'); }
+    function handleJsonFileUpload(e) { const file = e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = ev => { document.getElementById('jsonPasteArea').value = ev.target.result; }; r.readAsText(file); }
 
     async function importFromTextarea() {
-      const raw = document.getElementById('jsonPasteArea').value.trim();
-      if (!raw) return;
-
+      const raw = document.getElementById('jsonPasteArea').value.trim(); if (!raw) return;
       try {
         const parsed = JSON.parse(raw);
-
         const qArray = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.questoes) ? parsed.questoes : null);
         if (qArray) {
           const valid = normalizeQuestionsList(qArray, 'JSON Importado');
           const map = new Map([...state.customQuestions, ...valid].map(q => [q.id, q]));
           state.customQuestions = Array.from(map.values());
-          saveState();
-          await syncQuestionsToFirestore(valid);
-          closeModal('modalJson');
-          renderCurrentTab();
-          showToast(`${valid.length} questões importadas e salvas!`);
-          return;
+          saveState(); await syncQuestionsToFirestore(valid); closeModal('modalJson'); renderCurrentTab();
+          showToast(`${valid.length} questões importadas e salvas!`); return;
         }
-
         if (parsed && typeof parsed === 'object' && ('completedTrails' in parsed || 'chatHistory' in parsed)) {
-          state = {
-            ...structuredClone(DEFAULT_STATE),
-            ...parsed,
-            masteredFlashcards: Array.isArray(parsed.masteredFlashcards) ? parsed.masteredFlashcards : []
-          };
-          applyTheme();
-          saveState();
-          closeModal('modalJson');
-          renderCurrentTab();
-          showToast('Backup do estudante restaurado!');
-          return;
+          state = { ...structuredClone(DEFAULT_STATE), ...parsed, masteredFlashcards: Array.isArray(parsed.masteredFlashcards) ? parsed.masteredFlashcards : [] };
+          applyTheme(); saveState(); closeModal('modalJson'); renderCurrentTab(); showToast('Backup restaurado!'); return;
         }
-
         throw new Error('Formato JSON não reconhecido.');
-      } catch (err) {
-        showToast(`Erro ao importar JSON: ${err.message}`);
-      }
+      } catch (err) { showToast(`Erro ao importar JSON: ${err.message}`); }
     }
 
     function normalizeQuestionsList(list, origemLabel) {
-      return list
-        .filter(q => q && q.enunciado && Array.isArray(q.alternativas) && q.alternativas.length >= 2)
-        .map((q, idx) => {
-          const trilha = TRILHAS.find(t => t.id === q.trilhaId) || TRILHAS[0];
-          const disc = DISCIPLINAS.find(d => d.id === (q.disciplinaId || trilha.disciplinaId)) || DISCIPLINAS[0];
-          return {
-            id: q.id || `q-imp-${Date.now()}-${idx}`,
-            cargos: Array.isArray(q.cargos) ? q.cargos : disc.cargos,
-            bloco: q.bloco || disc.bloco,
-            disciplinaId: disc.id,
-            trilhaId: trilha.id,
-            incidencia: q.incidencia || 'Alta',
-            enunciado: q.enunciado,
-            alternativas: q.alternativas.slice(0, 4),
-            correta: Number(q.correta) || 0,
-            comentario: q.comentario || 'Questão importada via JSON.',
-            pegadinha: q.pegadinha || '',
-            regraOuro: q.regraOuro || '',
-            origem: q.origem || origemLabel
-          };
-        });
+      return list.filter(q => q && q.enunciado && Array.isArray(q.alternativas) && q.alternativas.length >= 2).map((q, idx) => {
+        const trilha = TRILHAS.find(t => t.id === q.trilhaId) || TRILHAS[0];
+        const disc = DISCIPLINAS.find(d => d.id === (q.disciplinaId || trilha.disciplinaId)) || DISCIPLINAS[0];
+        return {
+          id: q.id || `q-imp-${Date.now()}-${idx}`, cargos: Array.isArray(q.cargos) ? q.cargos : disc.cargos, bloco: q.bloco || disc.bloco,
+          disciplinaId: disc.id, trilhaId: trilha.id, incidencia: q.incidencia || 'Alta', enunciado: q.enunciado, alternativas: q.alternativas.slice(0, 4),
+          correta: Number(q.correta) || 0, comentario: q.comentario || 'Questão importada via JSON.', pegadinha: q.pegadinha || '', regraOuro: q.regraOuro || '', origem: q.origem || origemLabel
+        };
+      });
     }
 
     // ============================================================================
-    // INICIALIZAÇÃO
+    // INSTALAÇÃO PWA & REGISTRO DO SERVICE WORKER
     // ============================================================================
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      document.getElementById('btnInstallPwaDesktop')?.classList.remove('hidden');
+      document.getElementById('btnInstallPwaMobile')?.classList.remove('hidden');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      document.getElementById('btnInstallPwaDesktop')?.classList.add('hidden');
+      document.getElementById('btnInstallPwaMobile')?.classList.add('hidden');
+      showToast('Trilha PG instalado na tela inicial!');
+    });
+
+    async function triggerPwaInstall() {
+      if (!deferredInstallPrompt) {
+        showToast('No navegador do celular, toque em Compartilhar / Menu e selecione "Adicionar à tela inicial".');
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        deferredInstallPrompt = null;
+        document.getElementById('btnInstallPwaDesktop')?.classList.add('hidden');
+        document.getElementById('btnInstallPwaMobile')?.classList.add('hidden');
+      }
+    }
+
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch((err) => {
+          console.warn('Registro Service Worker:', err);
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       applyTheme();
       const savedFb = getSavedFirebaseConfig();
