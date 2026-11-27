@@ -6,6 +6,8 @@
   <title>Estudei IBAM — Trilhas Teóricas</title>
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#1e3a8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -16,7 +18,7 @@
       theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
     };
   </script>
-  <!-- Mammoth.js para leitura local de .docx -->
+  <!-- Mammoth.js para leitura local de .docx (estilos + texto) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
   <!-- Firebase Compat SDK v10.12.2 -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -103,6 +105,9 @@
       </div>
 
       <div class="space-y-2.5 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="PWAInstaller.promptInstall()" class="js-install-btn hidden w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5">
+          <span>📲</span><span>Instalar App (PWA)</span>
+        </button>
         <button onclick="AuthUI.openModal()" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-left transition">
           <p class="text-[11px] font-extrabold truncate js-auth-label">👤 Modo Local</p>
           <p class="text-[10px] font-semibold text-slate-400 truncate js-sync-status">💾 IndexedDB local</p>
@@ -128,7 +133,8 @@
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="AuthUI.openModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] font-extrabold max-w-[115px] truncate js-auth-short">👤 Entrar</button>
+        <button onclick="PWAInstaller.promptInstall()" class="js-install-btn hidden px-2.5 py-1.5 rounded-xl bg-emerald-600 text-white text-[11px] font-black">📲 Instalar</button>
+        <button onclick="AuthUI.openModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] font-extrabold max-w-[105px] truncate js-auth-short">👤 Entrar</button>
         <button onclick="App.toggleTheme()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs">🌓</button>
       </div>
     </header>
@@ -148,7 +154,7 @@
     </nav>
   </div>
 
-  <!-- OVERLAY PLAYER (FASE 1 LEITURA TEÓRICA / FASE 2 QUIZ IBAM / SRS / SIMULADO) -->
+  <!-- OVERLAY PLAYER (FASE 1 LEITURA DA APOSTILA / FASE 2 QUIZ IBAM / SRS / SIMULADO) -->
   <div id="player-overlay" class="hidden fixed inset-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col">
     <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between gap-3">
       <div id="player-header-info" class="min-w-0"></div>
@@ -167,29 +173,109 @@
 
   <script>
     // =========================================================================
-    // 1. CHAVES DO FIREBASE (MESMO PROJETO, COLEÇÃO DEDICADA 'estudei_ibam')
+    // 1. CHAVES DO FIREBASE (COLEÇÕES DEDICADAS 'ibam_dados' E 'ibam_trilhas')
     // =========================================================================
     const DEFAULT_FIREBASE_CONFIG = {
-      apiKey: "AIzaSyBx31Et1ChcPYPoXHTxPRQTUg-gXL2wvic",
-      authDomain: "studyai-bcaad.firebaseapp.com",
-      projectId: "studyai-bcaad",
-      storageBucket: "studyai-bcaad.firebasestorage.app",
-      messagingSenderId: "951771157217",
-      appId: "1:951771157217:web:f573534bbc93918f91dda0"
+      apiKey: "AIzaSyCE61zHIZ6tIh31kwY_1A3BMcqREGXDQNg",
+      authDomain: "trilhapg-765e5.firebaseapp.com",
+      projectId: "trilhapg-765e5",
+      storageBucket: "trilhapg-765e5.firebasestorage.app",
+      messagingSenderId: "597875738975",
+      appId: "1:597875738975:web:b3e47332af4041c6c28eea"
     };
 
     // =========================================================================
-    // 2. CATÁLOGO DAS DISCIPLINAS — BANCA IBAM (EDITAL PREFEITURA / CONCURSOS)
+    // 2. INSTALADOR PWA (SERVICE WORKER + BEFOREINSTALLPROMPT + IOS GUIDE)
     // =========================================================================
+    const PWAInstaller = {
+      deferredPrompt: null,
+      isInstalled: false,
+
+      init() {
+        this.isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('./sw.js').catch((err) => {
+            console.warn('Service Worker não registrado:', err);
+          });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          this.deferredPrompt = e;
+          this.updateButtons();
+        });
+
+        window.addEventListener('appinstalled', () => {
+          this.deferredPrompt = null;
+          this.isInstalled = true;
+          this.updateButtons();
+          showToast('🎉 Estudei IBAM instalado com sucesso!', 'success');
+        });
+
+        this.updateButtons();
+      },
+
+      updateButtons() {
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const canShow = !this.isInstalled && (!!this.deferredPrompt || isIOS);
+        document.querySelectorAll('.js-install-btn').forEach((btn) => {
+          btn.classList.toggle('hidden', !canShow);
+        });
+      },
+
+      async promptInstall() {
+        if (this.deferredPrompt) {
+          this.deferredPrompt.prompt();
+          const { outcome } = await this.deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            this.deferredPrompt = null;
+            this.updateButtons();
+          }
+          return;
+        }
+        // Instrução manual (Safari iOS ou navegador sem prompt automático)
+        Modal.open(`
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-black text-base">📲 Instalar Estudei IBAM</h3>
+              <button onclick="Modal.close()" class="text-slate-400 font-bold">✕</button>
+            </div>
+            <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p><strong>No iPhone / iPad (Safari):</strong></p>
+              <ol class="list-decimal pl-5 space-y-1">
+                <li>Toque no ícone de <strong>Compartilhar</strong> (quadrado com seta para cima) na barra inferior.</li>
+                <li>Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>.</li>
+              </ol>
+              <p class="pt-2"><strong>No Android / PC (Chrome / Edge):</strong></p>
+              <ol class="list-decimal pl-5 space-y-1">
+                <li>Abra o menu do navegador (<strong>⋮</strong>) e toque em <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</li>
+              </ol>
+            </div>
+            <button onclick="Modal.close()" class="w-full py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">Entendi</button>
+          </div>
+        `);
+      }
+    };
+
+    // =========================================================================
+    // 3. CATÁLOGO DAS DISCIPLINAS POR CARGO — BANCA IBAM (PRAIA GRANDE / EDITAIS)
+    // =========================================================================
+    const ROLES = [
+      { id: 'all', label: '📋 Todas as Matérias' },
+      { id: 'ag_adm', label: '🏢 Agente Administrativo' },
+      { id: 'ace', label: '🦟 Agente de Combate às Endemias (ACE)' }
+    ];
+
     const DEFAULT_DISCIPLINES = [
-      { id: 'portugues', short: 'Língua Portuguesa', name: 'Língua Portuguesa (Interpretação, Gramática, Concordância, Regência e Crase)', icon: '📚' },
-      { id: 'matematica', short: 'Matemática & RLM', name: 'Matemática e Raciocínio Lógico (Porcentagem, Regra de Três, Equações e Lógica)', icon: '📐' },
-      { id: 'informatica', short: 'Informática', name: 'Noções de Informática (Windows, Word, Excel, Navegadores e Segurança)', icon: '💻' },
-      { id: 'leg_municipal', short: 'Legislação Municipal', name: 'Legislação Municipal (Lei Complementar nº 973/2023, Estatuto e Lei Orgânica)', icon: '🏛️' },
-      { id: 'adm_publica', short: 'Administração Pública', name: 'Noções de Administração Pública, Redação Oficial, Arquivo e Atendimento', icon: '🗂️' },
-      { id: 'const_adm', short: 'Direito Const. e Adm.', name: 'Noções de Direito Constitucional e Direito Administrativo (Atos, Poderes e Princípios)', icon: '⚖️' },
-      { id: 'ace_especifico', short: 'Endemias (ACE)', name: 'Conhecimentos Específicos — Agente de Combate às Endemias (Arboviroses e Vetores)', icon: '🦟' },
-      { id: 'sus_saude', short: 'SUS & Saúde Pública', name: 'Políticas de Saúde Pública, Lei 8.080/90, Lei 8.142/90 e Vigilância Epidemiológica', icon: '🏥' }
+      { id: 'portugues', roles: ['ag_adm', 'ace'], short: 'Língua Portuguesa', name: 'Língua Portuguesa (Interpretação, Gramática, Concordância, Regência e Crase)', icon: '📚' },
+      { id: 'matematica', roles: ['ag_adm', 'ace'], short: 'Matemática & RLM', name: 'Matemática e Raciocínio Lógico (Porcentagem, Regra de Três, Equações e Lógica)', icon: '📐' },
+      { id: 'leg_municipal', roles: ['ag_adm', 'ace'], short: 'Legislação Municipal', name: 'Legislação Municipal (Lei Complementar nº 973/2023, Estatuto e Lei Orgânica)', icon: '🏛️' },
+      { id: 'informatica', roles: ['ag_adm'], short: 'Informática', name: 'Noções de Informática (Windows, Word, Excel, Navegadores e Segurança)', icon: '💻' },
+      { id: 'adm_publica', roles: ['ag_adm'], short: 'Administração Pública', name: 'Noções de Administração Pública, Redação Oficial, Arquivo e Atendimento', icon: '🗂️' },
+      { id: 'const_adm', roles: ['ag_adm'], short: 'Direito Const. e Adm.', name: 'Noções de Direito Constitucional (Art. 37 CF/88) e Direito Administrativo', icon: '⚖️' },
+      { id: 'ace_especifico', roles: ['ace'], short: 'Endemias (ACE)', name: 'Conhecimentos Específicos — Agente de Combate às Endemias (Arboviroses e Vetores)', icon: '🦟' },
+      { id: 'sus_saude', roles: ['ace'], short: 'SUS & Saúde Pública', name: 'Políticas de Saúde Pública (Lei 8.080/90, Lei 8.142/90, Lei 11.350/06 e Vigilância)', icon: '🏥' }
     ];
 
     // Trilhas de exemplo iniciais para demonstrar o fluxo Teoria -> Quiz IBAM
@@ -200,7 +286,7 @@
         order: 1,
         breadcrumb: 'MÓDULO I — MORFOSSINTAXE › 1. Crase e Regência',
         title: '1.1 Emprego do Sinal Indicativo de Crase',
-        subtitle: '3 subtópicos • Apostila Teórica',
+        subtitle: '2 subtópicos • Apostila Teórica',
         readingMin: 5,
         origemIa: true,
         isHighPriority: true,
@@ -311,7 +397,7 @@
     ];
 
     // =========================================================================
-    // 3. UTILITÁRIOS DE SEGURANÇA, DATA E ESTADO
+    // 4. UTILITÁRIOS DE SEGURANÇA, DATA E ESTADO
     // =========================================================================
     const LS_KEYS = {
       FB_CFG: 'estudei_ibam_firebase_config',
@@ -357,9 +443,10 @@
         trails: withSeeds ? JSON.parse(JSON.stringify(INITIAL_SEED_TRAILS)) : [],
         customDisciplines: [],
         seedDeleted: !withSeeds,
-        progress: {},   // { [trailId]: { mastered: bool, bestScore: number, updatedAt: string } }
-        srs: {},        // { [questionId]: { due: 'YYYY-MM-DD', interval: number, ease: number, reps: number } }
-        errors: [],     // array de questionId
+        selectedRole: 'all', // 'all' | 'ag_adm' | 'ace'
+        progress: {},
+        srs: {},
+        errors: [],
         stats: { xp: 0, streak: 0, lastStudyDate: null, todayCount: 0, todayDate: null },
         settings: {
           fontSize: 16,
@@ -374,12 +461,14 @@
     let state = createEmptyState(true);
     let questionBankCache = [];
 
-    function getAllDisciplines() {
-      return [...DEFAULT_DISCIPLINES, ...(state.customDisciplines || [])];
+    function getAllDisciplines(roleFilter = 'all') {
+      const all = [...DEFAULT_DISCIPLINES, ...(state.customDisciplines || [])];
+      if (!roleFilter || roleFilter === 'all') return all;
+      return all.filter((d) => !Array.isArray(d.roles) || d.roles.includes('all') || d.roles.includes(roleFilter));
     }
 
     function getDiscipline(id) {
-      return getAllDisciplines().find((d) => d.id === id) || { id, short: id, name: id, icon: '📘' };
+      return getAllDisciplines('all').find((d) => d.id === id) || { id, short: id, name: id, icon: '📘', roles: ['ag_adm', 'ace'] };
     }
 
     function isPriorityTrail(trail) {
@@ -409,7 +498,7 @@
     }
 
     // =========================================================================
-    // 4. INDEXEDDB LOCAL (SEM LIMITE DE 5MB DO LOCALSTORAGE)
+    // 5. INDEXEDDB LOCAL
     // =========================================================================
     const LocalDB = {
       dbName: 'EstudeiIBAM_DB',
@@ -491,7 +580,7 @@
     }
 
     // =========================================================================
-    // 5. FIREBASE AUTH + CLOUD FIRESTORE FRAGMENTADO (1 DOC POR TRILHA)
+    // 6. FIREBASE AUTH + CLOUD FIRESTORE FRAGMENTADO (1 DOC POR TRILHA)
     // =========================================================================
     let fbAuth = null;
     let fbDb = null;
@@ -554,7 +643,6 @@
     const CloudSync = {
       isSignedIn() { return !!(fbDb && currentUser); },
 
-      // Coleção isolada 'ibam_dados' e 'ibam_trilhas' no usuário para não colidir com outros apps
       async pushAll(showFeedback = true) {
         if (!this.isSignedIn()) {
           if (showFeedback) showToast('Faça login para sincronizar na nuvem.', 'warn');
@@ -570,6 +658,7 @@
             dadosRef.doc('meta').set({
               customDisciplines: state.customDisciplines || [],
               seedDeleted: !!state.seedDeleted,
+              selectedRole: state.selectedRole || 'all',
               settings: state.settings || {},
               updatedAt: state.updatedAt || Date.now()
             }),
@@ -640,6 +729,7 @@
             state.trails = cloudTrails.sort((a, b) => (a.order || 0) - (b.order || 0));
             if (Array.isArray(meta.customDisciplines)) state.customDisciplines = meta.customDisciplines;
             if (typeof meta.seedDeleted === 'boolean') state.seedDeleted = meta.seedDeleted;
+            if (meta.selectedRole) state.selectedRole = meta.selectedRole;
             if (meta.settings) state.settings = { ...state.settings, ...meta.settings };
             if (res.progress) state.progress = res.progress;
             if (res.srs) state.srs = res.srs;
@@ -669,7 +759,7 @@
           await batch.commit();
         }
         await userRef.collection('ibam_dados').doc('meta').set({
-          customDisciplines: [], seedDeleted: true, settings: state.settings, updatedAt: Date.now()
+          customDisciplines: [], seedDeleted: true, selectedRole: 'all', settings: state.settings, updatedAt: Date.now()
         });
         await userRef.collection('ibam_dados').doc('resultados').set({
           progress: {}, srs: {}, errors: [], stats: state.stats, updatedAt: Date.now()
@@ -678,7 +768,7 @@
     };
 
     // =========================================================================
-    // 6. MODAL DE AUTENTICAÇÃO
+    // 7. MODAL DE AUTENTICAÇÃO
     // =========================================================================
     const Modal = {
       open(html) {
@@ -805,27 +895,22 @@
     };
 
     // =========================================================================
-    // 7. MOTOR TEÓRICO IBAM (MARCAÇÃO DE PONTOS-CHAVE + MÚLTIPLA ESCOLHA)
+    // 8. MOTOR TEÓRICO IBAM (MARCAÇÃO DE PONTOS-CHAVE + MÚLTIPLA ESCOLHA)
     // =========================================================================
     const IBAMTheoryEngine = {
       applyOfflineMarks(text) {
         let html = escHtml(text);
-        // 1. Exceções / Restrições / Negações
         html = html.replace(/\b(salvo|exceto|vedado|vedada|vedados|vedadas|proibido|proibida|somente|apenas|não ocorre|não se aplica|ressalvado|ressalvada|independentemente|nunca|jamais|obrigatório|obrigatória)\b/gi,
           '<span class="v-exc">$1</span>');
-        // 2. Prazos / Números / Quóruns / Dados quantitativos
         html = html.replace(/\b(\d+(?:[\.,]\d+)?\s*(?:dias?\s*úteis|dias?\s*corridos|dias?|horas?|meses|mês|anos?|%|por cento|fases?|estádios?|situações?|casos?)|\d+\/\d+|facultativo|facultativa)\b/gi,
           '<span class="v-prazo">$1</span>');
-        // 3. Órgãos / Sujeitos / Competências / Agentes
         html = html.replace(/\b(Administração Pública|servidor(?:es)? públicos?|União|Estados|Municípios|Prefeito|Secretário|Agente de Combate às Endemias|Agente Administrativo|fêmea|macho|SUS|Ministério da Saúde|Poder Executivo|Poder Legislativo|Poder Judiciário)\b/gi,
           '<span class="v-comp">$1</span>');
-        // 4. Conceitos / Classificações nucleares
         html = html.replace(/\b(crase|regência|concordância|holometábolo|hematofagia|arboviroses|Dengue|Zika|Chikungunya|Febre Amarela|princípio da legalidade|impessoalidade|moralidade|publicidade|eficiência|ato administrativo|presunção de legitimidade|autoexecutoriedade|imperatividade)\b/gi,
           '<span class="v-conc">$1</span>');
         return html;
       },
 
-      // Gerador offline de até 5 questões de múltipla escolha a partir dos subtópicos da apostila
       generateOfflineQuestions(trail) {
         const sections = trail.sections || [];
         if (!sections.length) return [];
@@ -858,9 +943,7 @@
             [/\b(\d+)\b/, (_, n) => String(Number(n) + 15)]
           ];
           for (const [rx, rep] of swaps) {
-            if (rx.test(sentence)) {
-              return sentence.replace(rx, rep);
-            }
+            if (rx.test(sentence)) return sentence.replace(rx, rep);
           }
           return `Diferentemente do previsto na teoria, ${sentence.charAt(0).toLowerCase() + sentence.slice(1).replace(/\.$/, '')} apenas em caráter excepcional.`;
         };
@@ -870,17 +953,13 @@
         const maxQ = Math.min(5, statements.length);
 
         for (let i = 0; i < maxQ; i++) {
-          let idx = i % statements.length;
+          const idx = i % statements.length;
           if (usedIndexes.has(idx)) continue;
           usedIndexes.add(idx);
 
           const target = statements[idx];
-          const distractors = [];
+          const distractors = [makeDistortedFalse(target.text)];
 
-          // 1 distrator baseado na inversão da própria afirmação
-          distractors.push(makeDistortedFalse(target.text));
-
-          // Mais 2 distratores invertendo outras frases da apostila
           for (let j = 1; j < statements.length && distractors.length < 3; j++) {
             const other = statements[(idx + j) % statements.length];
             const distorted = makeDistortedFalse(other.text);
@@ -894,7 +973,6 @@
           }
 
           const allOptions = [target.text, ...distractors.slice(0, 3)];
-          // Embaralha mantendo rastreio da correta
           const indexed = allOptions.map((txt, pos) => ({ txt, isCorrect: pos === 0 })).sort(() => Math.random() - 0.5);
           const correctIndex = indexed.findIndex((x) => x.isCorrect);
 
@@ -906,7 +984,7 @@
             opcoes: indexed.map((x) => x.txt),
             respostaCorreta: correctIndex,
             fundamentacao: target.text,
-            dicaBanca: 'Questão gerada no modo offline. Use "✨ Gerar com IA IBAM" para questões inéditas comentadas.'
+            dicaBanca: 'Questão gerada no modo offline. Use "✨ IA IBAM" para questões inéditas comentadas.'
           });
         }
 
@@ -1004,33 +1082,66 @@ ${theoryText}`;
     };
 
     // =========================================================================
-    // 8. PARSER HIERÁRQUICO DE APOSTILA TEÓRICA (TÍTULO E SUBTÍTULOS)
+    // 9. PARSER HIERÁRQUICO DE APOSTILA (.DOCX ESTILOS WORD + TEXTO PURO)
     // =========================================================================
     const ApostilaParser = {
-      parse(rawText, disciplineId, splitLargeTopics = true) {
-        const lines = String(rawText || '')
-          .replace(/\r\n/g, '\n')
-          .replace(/\r/g, '\n')
-          .split('\n')
-          .map((l) => l.trim())
-          .filter((l) => l.length > 0);
+      // Converte o HTML gerado pelo mammoth.js em blocos classificados (h1, h2, p, li)
+      extractBlocksFromHtml(htmlString) {
+        const doc = new DOMParser().parseFromString(htmlString || '', 'text/html');
+        const nodes = doc.body.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li');
+        const blocks = [];
 
-        // Padrões de Título Principal (Módulo, Unidade, Capítulo, Parte, Título ou numeração de 1º nível "1. Título")
-        const majorRx = /^(?:M[ÓO]DULO|UNIDADE|CAP[ÍI]TULO|PARTE|T[ÍI]TULO|TEMA)\b\s*.*$/i;
+        nodes.forEach((node) => {
+          const tag = node.tagName.toLowerCase();
+          const text = (node.textContent || '').replace(/\s+/g, ' ').trim();
+          if (!text) return;
+
+          // Verifica se um <p> é inteiro em negrito (padrão muito comum em apostilas do Word para subtítulos)
+          let isStandaloneBold = false;
+          if (tag === 'p' && text.length <= 130 && !/[.;!?]$/.test(text)) {
+            const strongs = Array.from(node.querySelectorAll('strong, b'));
+            const boldLen = strongs.reduce((acc, el) => acc + (el.textContent || '').trim().length, 0);
+            if (boldLen > 0 && boldLen >= text.length * 0.85) {
+              isStandaloneBold = true;
+            }
+          }
+
+          blocks.push({
+            tag,
+            text,
+            isStandaloneBold,
+            isListItem: tag === 'li'
+          });
+        });
+
+        return blocks;
+      },
+
+      parse(input, disciplineId, splitLargeTopics = true, isHtml = false) {
+        const blocks = isHtml
+          ? this.extractBlocksFromHtml(input)
+          : String(input || '')
+              .replace(/\r\n/g, '\n')
+              .replace(/\r/g, '\n')
+              .split('\n')
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .map((text) => ({ tag: 'p', text, isStandaloneBold: false, isListItem: false }));
+
+        const majorRx = /^(?:M[ÓO]DULO|UNIDADE|CAP[ÍI]TULO|PARTE|T[ÍI]TULO|TEMA|BLOCO)\b\s*.*$/i;
         const level1NumRx = /^(\d+)\.\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][^\n]{2,110})$/;
-        // Padrões de Subtítulo (1.1 Subtítulo, 1.1.2 Subtítulo, Tópico X, ou cabeçalho curto sem ponto final)
         const subNumRx = /^(\d+(?:\.\d+)+)\.?\s+([^\n]{2,120})$/;
         const topicLabelRx = /^(?:T[ÓO]PICO|SUBT[ÍI]TULO|ITEM)\b\s*.*$/i;
 
         const isAllCapsHeading = (line) => {
-          if (line.length < 4 || line.length > 100) return false;
+          if (line.length < 4 || line.length > 105) return false;
           if (/[.;!?]$/.test(line)) return false;
           const letters = line.replace(/[^A-Za-zÁÉÍÓÚÂÊÔÃÕÇáéíóúâêôãõç]/g, '');
           return letters.length >= 4 && letters === letters.toUpperCase();
         };
 
         let currentMainTitle = 'Conteúdo Geral da Apostila';
-        const topics = []; // Cada tópico vira uma trilha organizada sob currentMainTitle
+        const topics = [];
         let currentTopic = null;
         let currentSubSection = null;
 
@@ -1068,13 +1179,15 @@ ${theoryText}`;
           currentSubSection = null;
         };
 
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
+        for (let i = 0; i < blocks.length; i++) {
+          const b = blocks[i];
+          const line = b.text;
 
-          // 1. Título Principal (MÓDULO, CAPÍTULO, UNIDADE, "1. TÍTULO", ou CAIXA ALTA)
-          if (majorRx.test(line) || level1NumRx.test(line) || isAllCapsHeading(line)) {
+          // 1. Título Principal: Estilo Word <h1>, ou padrão MÓDULO/CAPÍTULO/UNIDADE, ou "1. TÍTULO", ou CAIXA ALTA
+          const isWordH1 = b.tag === 'h1';
+          if (isWordH1 || majorRx.test(line) || level1NumRx.test(line) || (!b.isListItem && isAllCapsHeading(line))) {
             flushSubSection();
-            currentMainTitle = line.replace(/\s+/g, ' ').trim();
+            currentMainTitle = line;
             currentTopic = {
               mainTitle: currentMainTitle,
               title: currentMainTitle,
@@ -1084,22 +1197,22 @@ ${theoryText}`;
             continue;
           }
 
-          // 2. Subtítulo (1.1 ..., 2.3.1 ..., Tópico ...)
-          if (subNumRx.test(line) || topicLabelRx.test(line)) {
+          // 2. Subtítulo: Estilo Word <h2>/<h3>/<h4>, parágrafo inteiro em negrito no Word, ou numeração "1.1 ..." / "Tópico ..."
+          const isWordSubHeading = ['h2', 'h3', 'h4'].includes(b.tag) || b.isStandaloneBold;
+          if (isWordSubHeading || subNumRx.test(line) || topicLabelRx.test(line)) {
             flushSubSection();
-            const cleanSub = line.replace(/\s+/g, ' ').trim();
-            // Se o tópico atual ainda não tem conteúdo ou é nível 1.1, cria trilha dedicada para este subtítulo
-            const isLevel2 = /^\d+\.\d+(?!\.\d)/.test(cleanSub) || topicLabelRx.test(cleanSub);
-            if (isLevel2 || !currentTopic) {
+            // Se for H2, nível 1.1 ou Tópico explícito, inicia uma nova trilha sob o Título Principal
+            const startsNewTrail = b.tag === 'h2' || /^\d+\.\d+(?!\.\d)/.test(line) || topicLabelRx.test(line) || (b.isStandaloneBold && (!currentTopic || currentTopic.sections.length > 0));
+            if (startsNewTrail || !currentTopic) {
               currentTopic = {
                 mainTitle: currentMainTitle,
-                title: cleanSub,
+                title: line,
                 sections: []
               };
               topics.push(currentTopic);
             }
             currentSubSection = {
-              subtitulo: cleanSub,
+              subtitulo: line,
               lines: [],
               notaBanca: ''
             };
@@ -1107,9 +1220,9 @@ ${theoryText}`;
             continue;
           }
 
-          // 3. Parágrafo ou item de lista pertencente ao subtítulo/título atual
+          // 3. Conteúdo textual (parágrafo ou item de lista)
           ensureSubSection(currentTopic ? currentTopic.title : currentMainTitle);
-          currentSubSection.lines.push(line);
+          currentSubSection.lines.push(b.isListItem ? `• ${line}` : line);
         }
         flushSubSection();
 
@@ -1121,7 +1234,6 @@ ${theoryText}`;
         validTopics.forEach((topic) => {
           totalSubtopics += topic.sections.length;
 
-          // Se ativado, divide tópicos muito longos (mais de 4 subtópicos ou > 3.500 caracteres) em partes digeríveis
           const chunks = [];
           if (!splitLargeTopics) {
             chunks.push(topic.sections);
@@ -1170,7 +1282,7 @@ ${theoryText}`;
     };
 
     // =========================================================================
-    // 9. MOTOR DE REVISÃO ESPAÇADA (SRS)
+    // 10. MOTOR DE REVISÃO ESPAÇADA (SRS)
     // =========================================================================
     const SRSEngine = {
       getIntervals(isPriority) {
@@ -1247,7 +1359,7 @@ ${theoryText}`;
     };
 
     // =========================================================================
-    // 10. PLAYER DE ESTUDO (FASE 1 LEITURA DA APOSTILA / FASE 2 QUIZ IBAM)
+    // 11. PLAYER DE ESTUDO (FASE 1 LEITURA DA APOSTILA / FASE 2 QUIZ IBAM)
     // =========================================================================
     const Player = {
       mode: 'read',
@@ -1282,7 +1394,7 @@ ${theoryText}`;
           persistState(true);
         }
         if (!t.questions.length) {
-          showToast('Use "✨ Gerar Questões IBAM" para criar as questões desta trilha.', 'warn');
+          showToast('Use "✨ IA IBAM (5q)" para gerar as questões desta trilha.', 'warn');
           return;
         }
         this.stopTimer();
@@ -1396,7 +1508,6 @@ ${theoryText}`;
 
         document.getElementById('player-body').innerHTML = `
           <div class="max-w-3xl mx-auto space-y-4 animate-fade-in ${hideMarksCls}">
-            <!-- Barra de controles da leitura -->
             <div class="sticky top-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
               <div class="flex flex-wrap items-center gap-1.5">
                 <button id="read-timer-btn" onclick="Player.toggleTimer()" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-black">${this.timerRunning ? '⏸️' : '▶️'} ${this.formatTime(this.timerSec)}</button>
@@ -1410,7 +1521,6 @@ ${theoryText}`;
               </div>
             </div>
 
-            <!-- Legenda 4 cores -->
             <div class="ibam-legend bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-wrap items-center gap-2 text-[11px] font-bold">
               <span class="text-slate-400 font-extrabold mr-1">Radar IBAM:</span>
               <span class="px-2 py-0.5 rounded bg-rose-200/80 text-rose-900 dark:bg-rose-900/50 dark:text-rose-200">Exceção / Proibição</span>
@@ -1419,7 +1529,6 @@ ${theoryText}`;
               <span class="px-2 py-0.5 rounded bg-purple-200/80 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200">Conceito / Definição</span>
             </div>
 
-            <!-- Cartões dos Subtópicos da Apostila -->
             <div class="space-y-4">
               ${(t.sections || []).map((sec, idx) => `
                 <article class="bg-white dark:bg-slate-900 rounded-3xl border ${t.isHighPriority ? 'border-orange-300 dark:border-orange-800/80' : 'border-slate-200 dark:border-slate-800'} p-5 shadow-sm space-y-3">
@@ -1623,7 +1732,7 @@ ${theoryText}`;
     };
 
     // =========================================================================
-    // 11. CONTROLADOR PRINCIPAL (5 ABAS)
+    // 12. CONTROLADOR PRINCIPAL (5 ABAS + SELETOR DE CARGO)
     // =========================================================================
     const App = {
       tab: 'trilhas',
@@ -1641,6 +1750,7 @@ ${theoryText}`;
 
         await loadLocalState();
         initFirebase();
+        PWAInstaller.init();
         updateAuthBadges();
         this.render();
       },
@@ -1656,6 +1766,17 @@ ${theoryText}`;
         if (mode === 'desktop') document.body.classList.add('force-desktop');
         if (save) localStorage.setItem(LS_KEYS.VIEWPORT, mode);
         document.querySelectorAll('.js-viewport-select').forEach((el) => (el.value = mode));
+      },
+
+      setRole(roleId) {
+        state.selectedRole = roleId;
+        this.selectedDiscId = null;
+        const visibleDiscs = getAllDisciplines(roleId);
+        if (visibleDiscs.length && !visibleDiscs.some((d) => d.id === this.importDestDisc)) {
+          this.importDestDisc = visibleDiscs[0].id;
+        }
+        persistState(true);
+        this.render();
       },
 
       setTab(tab) {
@@ -1707,17 +1828,30 @@ ${theoryText}`;
         else root.innerHTML = this.viewAjustes();
       },
 
-      // --- ABA 1: TRILHAS ---
+      // --- ABA 1: TRILHAS + SELETOR DE CARGO ---
       viewTrilhas() {
-        const discs = getAllDisciplines();
+        const currentRole = state.selectedRole || 'all';
+        const discs = getAllDisciplines(currentRole);
         if (this.selectedDiscId) return this.viewDisciplineTrails(this.selectedDiscId);
 
-        const totalTrails = state.trails.length;
-        const mastered = state.trails.filter((t) => state.progress[t.id]?.mastered).length;
+        const visibleDiscIds = new Set(discs.map((d) => d.id));
+        const visibleTrails = state.trails.filter((t) => visibleDiscIds.has(t.disciplineId));
+        const totalTrails = visibleTrails.length;
+        const mastered = visibleTrails.filter((t) => state.progress[t.id]?.mastered).length;
         const pct = totalTrails ? Math.round((mastered / totalTrails) * 100) : 0;
 
         return `
-          <div class="space-y-5 animate-fade-in">
+          <div class="space-y-4 animate-fade-in">
+            <!-- Seletor de Cargo -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 flex flex-wrap items-center gap-1.5 shadow-sm">
+              <span class="text-[11px] font-black text-slate-400 px-2">Cargo:</span>
+              ${ROLES.map((r) => `
+                <button onclick="App.setRole('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentRole === r.id ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}">
+                  ${escHtml(r.label)}
+                </button>
+              `).join('')}
+            </div>
+
             <div class="bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-3xl p-5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-200">Concursos Banca IBAM • Apostilas Organizadas por Títulos e Subtítulos</p>
@@ -1736,13 +1870,19 @@ ${theoryText}`;
                 const done = list.filter((t) => state.progress[t.id]?.mastered).length;
                 const p = list.length ? Math.round((done / list.length) * 100) : 0;
                 const isCustom = (state.customDisciplines || []).some((c) => c.id === d.id);
+                const roleTag = Array.isArray(d.roles) && d.roles.length === 1
+                  ? (d.roles[0] === 'ag_adm' ? 'Ag. Adm' : 'ACE')
+                  : 'Comum';
                 return `
                   <div onclick="App.openDiscipline('${d.id}')" class="cursor-pointer bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-400 p-4 transition shadow-sm flex flex-col justify-between gap-3">
                     <div class="flex items-start justify-between gap-2">
                       <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-lg shrink-0">${d.icon || '📘'}</span>
                         <div class="min-w-0">
-                          <h3 class="font-black text-sm truncate">${escHtml(d.short)}</h3>
+                          <div class="flex items-center gap-1.5">
+                            <h3 class="font-black text-sm truncate">${escHtml(d.short)}</h3>
+                            <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-black text-slate-500 shrink-0">${roleTag}</span>
+                          </div>
                           <p class="text-[11px] text-slate-400 line-clamp-1">${escHtml(d.name)}</p>
                         </div>
                       </div>
@@ -1829,7 +1969,7 @@ ${theoryText}`;
       viewRevisoes() {
         const dueAll = SRSEngine.getDueQuestions(false);
         const duePrio = SRSEngine.getDueQuestions(true);
-        const discs = getAllDisciplines();
+        const discs = getAllDisciplines(state.selectedRole || 'all');
         const filteredBank = questionBankCache.filter((q) => {
           if (this.bankFilterDisc !== 'all' && q.disciplineId !== this.bankFilterDisc) return false;
           if (this.bankOnlyPriority && !isPriorityQuestion(q)) return false;
@@ -1918,7 +2058,7 @@ ${theoryText}`;
 
       // --- ABA 3: IMPORTAR APOSTILA ---
       viewImportar() {
-        const discs = getAllDisciplines();
+        const discs = getAllDisciplines(state.selectedRole || 'all');
         const draft = this.importDraft;
         const importedList = state.trails.filter((t) => !t.id.startsWith('seed_'));
 
@@ -1950,7 +2090,7 @@ ${theoryText}`;
                 <input id="docx-input" type="file" accept=".docx" class="hidden" onchange="App.handleDocxFile(this.files[0])" />
                 <p class="text-2xl mb-1">📄</p>
                 <p class="text-xs sm:text-sm font-black">Clique ou arraste sua apostila .docx aqui</p>
-                <p class="text-[11px] text-slate-500 mt-1">Organização automática por Título (Módulo/Capítulo/1.) e Subtítulo (1.1 / Tópico)</p>
+                <p class="text-[11px] text-slate-500 mt-1">Lê estilos nativos do Word (Título 1, Título 2, Título 3, Negrito) e numeração (1., 1.1)</p>
               </div>
 
               <details class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
@@ -2031,8 +2171,9 @@ ${theoryText}`;
         if (!file.name.toLowerCase().endsWith('.docx')) { showToast('Selecione um arquivo .docx válido.', 'error'); return; }
         try {
           const buf = await file.arrayBuffer();
-          const res = await mammoth.extractRawText({ arrayBuffer: buf });
-          this.importDraft = ApostilaParser.parse(res.value || '', this.importDestDisc, this.importSplitLarge);
+          // Usa convertToHtml para preservar estilos nativos do Word (Título 1, Título 2, Título 3, negrito e listas)
+          const res = await mammoth.convertToHtml({ arrayBuffer: buf });
+          this.importDraft = ApostilaParser.parse(res.value || '', this.importDestDisc, this.importSplitLarge, true);
           if (this.importDraft.totalSubtopics === 0) showToast('Nenhum conteúdo estruturado encontrado no documento.', 'warn');
           else showToast(`${this.importDraft.totalSubtopics} subtópicos organizados em ${this.importDraft.trails.length} trilhas!`, 'success');
           this.render();
@@ -2044,7 +2185,7 @@ ${theoryText}`;
       parseManualText() {
         const txt = (document.getElementById('manual-theory-text')?.value || '').trim();
         if (!txt) { showToast('Cole o texto da apostila primeiro.', 'warn'); return; }
-        this.importDraft = ApostilaParser.parse(txt, this.importDestDisc, this.importSplitLarge);
+        this.importDraft = ApostilaParser.parse(txt, this.importDestDisc, this.importSplitLarge, false);
         this.render();
       },
 
@@ -2135,8 +2276,9 @@ ${theoryText}`;
         }
       },
 
-      // --- NOVA MATÉRIA PERSONALIZADA ---
+      // --- NOVA MATÉRIA PERSONALIZADA (COM VÍNCULO DE CARGO) ---
       openNewDisciplineModal() {
+        const curRole = state.selectedRole && state.selectedRole !== 'all' ? state.selectedRole : 'all';
         Modal.open(`
           <div class="space-y-4">
             <div class="flex items-center justify-between">
@@ -2146,7 +2288,14 @@ ${theoryText}`;
             <div class="space-y-2.5">
               <input id="nd-short" placeholder="Nome curto (ex: Conhecimentos Gerais)" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold" />
               <input id="nd-name" placeholder="Descrição dos assuntos do edital IBAM" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold" />
-              <input id="nd-icon" value="📘" maxlength="4" class="w-20 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-base" />
+              <div class="flex gap-2">
+                <select id="nd-role" class="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                  <option value="all" ${curRole === 'all' ? 'selected' : ''}>Ambos os Cargos (Comum)</option>
+                  <option value="ag_adm" ${curRole === 'ag_adm' ? 'selected' : ''}>Agente Administrativo</option>
+                  <option value="ace" ${curRole === 'ace' ? 'selected' : ''}>Agente de Combate às Endemias (ACE)</option>
+                </select>
+                <input id="nd-icon" value="📘" maxlength="4" class="w-16 px-2 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-base" />
+              </div>
             </div>
             <button onclick="App.saveNewDiscipline()" class="w-full py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">Salvar Matéria</button>
           </div>
@@ -2156,10 +2305,12 @@ ${theoryText}`;
       saveNewDiscipline() {
         const short = (document.getElementById('nd-short')?.value || '').trim();
         const name = (document.getElementById('nd-name')?.value || '').trim() || short;
+        const roleVal = document.getElementById('nd-role')?.value || 'all';
         const icon = (document.getElementById('nd-icon')?.value || '📘').trim();
         if (!short) { showToast('Informe o nome da matéria.', 'warn'); return; }
         const id = uid('disc');
-        state.customDisciplines.push({ id, short, name, icon });
+        const roles = roleVal === 'all' ? ['ag_adm', 'ace'] : [roleVal];
+        state.customDisciplines.push({ id, short, name, icon, roles });
         this.importDestDisc = id;
         persistState(true);
         Modal.close();
@@ -2257,10 +2408,11 @@ ${theoryText}`;
                   `}
               </div>
 
-              <!-- Backup + Aparência -->
+              <!-- Backup + Instalação PWA + Aparência -->
               <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
-                <h3 class="font-black text-sm">💾 Backup JSON &amp; Tela</h3>
+                <h3 class="font-black text-sm">💾 Backup JSON, Instalador PWA &amp; Tela</h3>
                 <div class="flex flex-wrap gap-2">
+                  <button onclick="PWAInstaller.promptInstall()" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">📲 Instalar Aplicativo</button>
                   <button onclick="App.exportBackup()" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">⬇️ Exportar Backup (.json)</button>
                   <label class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-extrabold cursor-pointer">
                     ⬆️ Importar Backup
