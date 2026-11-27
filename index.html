@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Estudei IBAM — Trilhas Teóricas &amp; Simulados</title>
+  <title>TrilhaPG — Estudei IBAM (Praia Grande)</title>
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#1e3a8a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -39,6 +39,18 @@
     .dark .theory-text .v-comp { background: rgba(59, 130, 246, 0.28); color: #93c5fd; }
     .dark .theory-text .v-conc { background: rgba(168, 85, 247, 0.28); color: #d8b4fe; }
 
+    /* Blocos especiais de apostila IBAM */
+    .ibam-callout-example {
+      background: #f8fafc; border-left: 4px solid #4f46e5; border-radius: 0 16px 16px 0;
+      padding: 12px 14px; margin: 12px 0;
+    }
+    .dark .ibam-callout-example { background: rgba(30, 41, 59, 0.65); border-left-color: #818cf8; }
+    .ibam-callout-therm {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 16px;
+      padding: 12px 14px; margin: 12px 0;
+    }
+    .dark .ibam-callout-therm { background: rgba(120, 53, 15, 0.22); border-color: rgba(245, 158, 11, 0.35); }
+
     .hide-marks .theory-text mark,
     .hide-marks .theory-text .v-exc,
     .hide-marks .theory-text .v-prazo,
@@ -73,8 +85,8 @@
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-xl shadow-md">🎓</div>
           <div>
-            <h1 class="font-black text-lg leading-tight">Estudei IBAM</h1>
-            <p class="text-xs font-semibold text-slate-400">Acesso Restrito • Autenticação Obrigatória</p>
+            <h1 class="font-black text-lg leading-tight">TrilhaPG</h1>
+            <p class="text-xs font-semibold text-slate-400">Estudei IBAM • Praia Grande • Acesso Restrito</p>
           </div>
         </div>
         <button onclick="App.toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm" title="Alternar tema">🌓</button>
@@ -87,7 +99,7 @@
 
       <div id="gate-form" class="hidden space-y-4">
         <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-          Entre com sua conta para carregar suas trilhas teóricas, estatísticas por matéria, simulados ponderados IBAM e sincronização na nuvem.
+          Entre com sua conta para carregar suas trilhas teóricas, edital verticalizado de Praia Grande, estatísticas por matéria e simulados IBAM.
         </p>
 
         <button onclick="AuthUI.loginGoogle()" class="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-black flex items-center justify-center gap-2 transition">
@@ -129,8 +141,8 @@
         <div class="flex items-center gap-3 px-1">
           <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md">🎓</div>
           <div>
-            <h1 class="font-black text-base leading-tight">Estudei IBAM</h1>
-            <p class="text-[11px] font-semibold text-slate-400">Trilhas &amp; Simulados</p>
+            <h1 class="font-black text-base leading-tight">TrilhaPG</h1>
+            <p class="text-[11px] font-semibold text-slate-400">Estudei IBAM • Praia Grande</p>
           </div>
         </div>
 
@@ -187,7 +199,7 @@
       <div class="flex items-center gap-2 min-w-0">
         <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0">🎓</div>
         <div class="min-w-0">
-          <h1 class="font-black text-sm leading-tight truncate">Estudei IBAM</h1>
+          <h1 class="font-black text-sm leading-tight truncate">TrilhaPG</h1>
           <p class="text-[10px] font-bold text-slate-400 truncate">🔥 <span class="js-streak">0</span>d • ⚡ <span class="js-xp">0</span> XP</p>
         </div>
       </div>
@@ -239,16 +251,16 @@
     // 1. CHAVES DO FIREBASE & LISTA DE ADMINISTRADORES (WHITELIST ADMIN)
     // =========================================================================
     const DEFAULT_FIREBASE_CONFIG = {
-        apiKey: "AIzaSyCE61zHIZ6tIh31kwY_1A3BMcqREGXDQNg",
-        authDomain: "trilhapg-765e5.firebaseapp.com",
-        projectId: "trilhapg-765e5",
-        storageBucket: "trilhapg-765e5.firebasestorage.app",
-        messagingSenderId: "597875738975",
-        appId: "1:597875738975:web:b3e47332af4041c6c28eea"
+      apiKey: "AIzaSyCE61zHIZ6tIh31kwY_1A3BMcqREGXDQNg",
+      authDomain: "trilhapg-765e5.firebaseapp.com",
+      projectId: "trilhapg-765e5",
+      storageBucket: "trilhapg-765e5.firebasestorage.app",
+      messagingSenderId: "597875738975",
+      appId: "1:597875738975:web:b3e47332af4041c6c28eea"
     };
 
     const ADMIN_EMAILS = [
-      "everaldo.vsantos@gmail.com"
+      "evevsts04@outlook.com"
     ];
 
     function isAdminUser() {
@@ -276,7 +288,7 @@
           this.deferredPrompt = null;
           this.isInstalled = true;
           this.updateButtons();
-          showToast('🎉 Estudei IBAM instalado com sucesso!', 'success');
+          showToast('🎉 TrilhaPG instalado com sucesso!', 'success');
         });
         this.updateButtons();
       },
@@ -297,7 +309,7 @@
         Modal.open(`
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <h3 class="font-black text-base">📲 Instalar Estudei IBAM</h3>
+              <h3 class="font-black text-base">📲 Instalar TrilhaPG</h3>
               <button onclick="Modal.close()" class="text-slate-400 font-bold">✕</button>
             </div>
             <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -311,7 +323,7 @@
     };
 
     // =========================================================================
-    // 3. DISCIPLINAS & MATRIZ OFICIAL PONDERADA IBAM (100 PONTOS)
+    // 3. DISCIPLINAS, EDITAL VERTICALIZADO PRAIA GRANDE & MATRIZ IBAM (100 PTS)
     // =========================================================================
     const ROLES = [
       { id: 'all', label: '📋 Todas as Matérias' },
@@ -320,15 +332,38 @@
     ];
 
     const DEFAULT_DISCIPLINES = [
-      { id: 'portugues', roles: ['ag_adm', 'ace'], short: 'Língua Portuguesa', name: 'Língua Portuguesa (Interpretação, Gramática, Concordância, Regência e Crase)', icon: '📚' },
-      { id: 'matematica', roles: ['ag_adm', 'ace'], short: 'Matemática', name: 'Matemática e Raciocínio Lógico (Porcentagem, Regra de Três, Equações e Lógica)', icon: '📐' },
-      { id: 'informatica', roles: ['ag_adm'], short: 'Informática', name: 'Noções de Informática (Windows, Word, Excel, Navegadores e Segurança)', icon: '💻' },
-      { id: 'leg_municipal', roles: ['ag_adm', 'ace'], short: 'Legislação Municipal', name: 'Legislação Municipal (Lei Complementar nº 973/2023, Estatuto e Lei Orgânica)', icon: '🏛️' },
-      { id: 'adm_publica', roles: ['ag_adm'], short: 'Administração Pública', name: 'Conhecimentos Específicos — Administração Pública, Redação Oficial e Atendimento', icon: '🗂️' },
-      { id: 'const_adm', roles: ['ag_adm'], short: 'Direito Const. e Adm.', name: 'Conhecimentos Específicos — Direito Constitucional e Direito Administrativo', icon: '⚖️' },
-      { id: 'sus_saude', roles: ['ace'], short: 'Saúde Pública e SUS', name: 'Saúde Pública e SUS (Lei 8.080/90, Lei 8.142/90, Princípios e Vigilância)', icon: '🏥' },
-      { id: 'ace_especifico', roles: ['ace'], short: 'Específicos Endemias (ACE)', name: 'Conhecimentos Específicos — Agente de Combate às Endemias (Arboviroses e Vetores)', icon: '🦟' }
+      { id: 'portugues', roles: ['ag_adm', 'ace'], short: 'Língua Portuguesa', name: 'Língua Portuguesa (Leitura, Compreensão, Interpretação, Semântica, Ortografia, Pontuação, Classes, Verbos, Concordância e Coesão)', icon: '📚' },
+      { id: 'matematica', roles: ['ag_adm', 'ace'], short: 'Matemática', name: 'Matemática e Raciocínio Lógico (Operações, Frações, Porcentagem, Regra de Três, Proporcionalidade, Equações e Geometria)', icon: '📐' },
+      { id: 'informatica', roles: ['ag_adm'], short: 'Informática', name: 'Noções de Informática (Windows, Word, Excel, Navegadores, E-mail e Segurança da Informação)', icon: '💻' },
+      { id: 'leg_municipal', roles: ['ag_adm', 'ace'], short: 'Legislação Municipal', name: 'Legislação Municipal de Praia Grande (Lei Complementar nº 973/2023, Estatuto dos Servidores e Lei Orgânica)', icon: '🏛️' },
+      { id: 'adm_publica', roles: ['ag_adm'], short: 'Administração Pública', name: 'Conhecimentos Específicos — Administração Pública, Redação Oficial, Arquivo, Protocolo e Atendimento ao Cidadão', icon: '🗂️' },
+      { id: 'const_adm', roles: ['ag_adm'], short: 'Direito Const. e Adm.', name: 'Conhecimentos Específicos — Princípios Constitucionais, Atos Administrativos, Poderes e Licitações', icon: '⚖️' },
+      { id: 'sus_saude', roles: ['ace'], short: 'Saúde Pública e SUS', name: 'Saúde Pública e SUS (Lei 8.080/90, Lei 8.142/90, Princípios e Diretrizes do SUS, Vigilância em Saúde)', icon: '🏥' },
+      { id: 'ace_especifico', roles: ['ace'], short: 'Específicos Endemias (ACE)', name: 'Conhecimentos Específicos — Vigilância e Controle de Endemias/Vetores, Lei 11.350/2006 e Segurança/EPI (NR-06)', icon: '🦟' }
     ];
+
+    // Edital Verticalizado de referência para acompanhamento de cobertura
+    const PRAIA_GRANDE_SYLLABUS = {
+      ag_adm: [
+        { discId: 'portugues', topic: 'Leitura, compreensão e interpretação de textos, avisos, comunicados e instruções' },
+        { discId: 'portugues', topic: 'Assunto, finalidade, informações explícitas e implícitas; sentido no contexto; sinônimos e antônimos' },
+        { discId: 'portugues', topic: 'Ortografia oficial, acentuação, pontuação, classes de palavras, tempos verbais, concordância e clareza' },
+        { discId: 'matematica', topic: 'Números inteiros/fracionários/decimais, razão, proporção, regra de três, porcentagem e juros simples' },
+        { discId: 'informatica', topic: 'Sistema operacional, editores de texto e planilhas (Word/Excel), internet, e-mail e segurança' },
+        { discId: 'leg_municipal', topic: 'Legislação Municipal de Praia Grande (LC nº 973/2023 e normas locais)' },
+        { discId: 'adm_publica', topic: 'Rotinas administrativas, redação oficial, arquivo, protocolo e atendimento ao público' },
+        { discId: 'const_adm', topic: 'Direitos e garantias fundamentais, Administração Pública (art. 37 CF/88) e atos administrativos' }
+      ],
+      ace: [
+        { discId: 'portugues', topic: 'Leitura, compreensão e interpretação de textos, avisos, comunicados e instruções' },
+        { discId: 'portugues', topic: 'Assunto, finalidade, informações explícitas/implícitas, sentido contextual, ortografia, acentuação e concordância' },
+        { discId: 'matematica', topic: 'Operações fundamentais, frações, decimais, regra de três, porcentagem e unidades de medida' },
+        { discId: 'sus_saude', topic: 'Políticas de saúde pública, princípios e diretrizes do SUS (Leis 8.080/1990 e 8.142/1990)' },
+        { discId: 'ace_especifico', topic: 'Vigilância epidemiológica e entomológica; controle de vetores e arboviroses (Dengue, Zika, Chikungunya, Febre Amarela)' },
+        { discId: 'ace_especifico', topic: 'Atribuições do ACE (Lei nº 11.350/2006), visitas domiciliares e segurança/EPI no trabalho de campo (NR-06)' },
+        { discId: 'leg_municipal', topic: 'Legislação Municipal de Praia Grande aplicável ao cargo' }
+      ]
+    };
 
     const IBAM_EXAM_BLUEPRINTS = {
       ag_adm: {
@@ -355,16 +390,14 @@
       }
     };
 
-    const INITIAL_SEED_TRAILS = [];
-
     // =========================================================================
     // 4. UTILITÁRIOS, ESTADO E INDEXEDDB
     // =========================================================================
     const LS_KEYS = {
-      FB_CFG: 'estudei_ibam_firebase_config',
-      GEMINI_KEY: 'estudei_ibam_gemini_key',
-      THEME: 'estudei_ibam_theme',
-      VIEWPORT: 'estudei_ibam_viewport'
+      FB_CFG: 'trilhapg_ibam_firebase_config',
+      GEMINI_KEY: 'trilhapg_ibam_gemini_key',
+      THEME: 'trilhapg_ibam_theme',
+      VIEWPORT: 'trilhapg_ibam_viewport'
     };
 
     function escHtml(str) {
@@ -399,25 +432,27 @@
       setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .25s'; setTimeout(() => el.remove(), 260); }, 3400);
     }
 
-    function createEmptyState(withSeeds = false) {
+    function createEmptyState() {
       return {
-        trails: withSeeds ? JSON.parse(JSON.stringify(INITIAL_SEED_TRAILS)) : [],
+        trails: [],
         customDisciplines: [],
         customExams: [],
-        seedDeleted: !withSeeds,
+        seedDeleted: true,
         selectedRole: 'all',
-        progress: {},
+        progress: {},        // { [trailId]: { mastered: bool, bestScore: number, readSections: { [secIdx]: bool }, updatedAt: string } }
         srs: {},
         errors: [],
         discStats: {},
         examHistory: [],
+        activeExamDraft: null, // { examId, title, mode, questions, userAnswers, timerSec, updatedAt }
+        hasUnpublishedChanges: false,
         stats: { xp: 0, streak: 0, lastStudyDate: null, todayCount: 0, todayDate: null },
         settings: { fontSize: 16, showMarks: true, prioritizeFocusTopics: true, simDayOffset: 0 },
         updatedAt: Date.now()
       };
     }
 
-    let state = createEmptyState(false);
+    let state = createEmptyState();
     let questionBankCache = [];
 
     function getAllDisciplines(roleFilter = 'all') {
@@ -463,7 +498,7 @@
     }
 
     const LocalDB = {
-      dbName: 'EstudeiIBAM_DB',
+      dbName: 'TrilhaPG_IBAM_DB',
       storeName: 'kv',
       _db: null,
       open() {
@@ -515,7 +550,7 @@
     async function loadLocalState() {
       const saved = await LocalDB.get('app_state');
       if (saved && typeof saved === 'object') {
-        const base = createEmptyState(false);
+        const base = createEmptyState();
         state = {
           ...base,
           ...saved,
@@ -526,14 +561,17 @@
           examHistory: Array.isArray(saved.examHistory) ? saved.examHistory : []
         };
       } else {
-        state = createEmptyState(false);
+        state = createEmptyState();
       }
       rebuildQuestionBank();
     }
 
     let saveTimer = null;
-    function persistState(syncCloud = true) {
+    function persistState(syncCloud = true, markCatalogDirty = false) {
       state.updatedAt = Date.now();
+      if (markCatalogDirty && isAdminUser()) {
+        state.hasUnpublishedChanges = true;
+      }
       rebuildQuestionBank();
       LocalDB.set('app_state', state);
       if (syncCloud && CloudSync.isSignedIn()) {
@@ -636,8 +674,9 @@
             dadosRef.doc('meta').set({
               customDisciplines: state.customDisciplines || [],
               customExams: state.customExams || [],
-              seedDeleted: !!state.seedDeleted,
+              seedDeleted: true,
               selectedRole: state.selectedRole || 'all',
+              hasUnpublishedChanges: !!state.hasUnpublishedChanges,
               settings: state.settings || {},
               updatedAt: state.updatedAt || Date.now()
             }),
@@ -647,6 +686,7 @@
               errors: state.errors || [],
               discStats: state.discStats || {},
               examHistory: state.examHistory || [],
+              activeExamDraft: state.activeExamDraft || null,
               stats: state.stats || {},
               updatedAt: state.updatedAt || Date.now()
             })
@@ -666,7 +706,7 @@
             });
             await batch.commit();
           }
-          setSyncLabel('✅ Nuvem atualizada');
+          setSyncLabel(state.hasUnpublishedChanges && isAdminUser() ? '⚠️ Alterações pendentes' : '✅ Nuvem atualizada');
           if (showFeedback) showToast('Sincronizado com o Firebase (1 doc/trilha)!', 'success');
           return true;
         } catch (e) {
@@ -699,7 +739,7 @@
             state.trails = cloudTrails.sort((a, b) => (a.order || 0) - (b.order || 0));
             if (Array.isArray(meta.customDisciplines)) state.customDisciplines = meta.customDisciplines;
             if (Array.isArray(meta.customExams)) state.customExams = meta.customExams;
-            if (typeof meta.seedDeleted === 'boolean') state.seedDeleted = meta.seedDeleted;
+            if (typeof meta.hasUnpublishedChanges === 'boolean') state.hasUnpublishedChanges = meta.hasUnpublishedChanges;
             if (meta.selectedRole) state.selectedRole = meta.selectedRole;
             if (meta.settings) state.settings = { ...state.settings, ...meta.settings };
             if (res.progress) state.progress = res.progress;
@@ -707,6 +747,7 @@
             if (Array.isArray(res.errors)) state.errors = res.errors;
             if (res.discStats) state.discStats = res.discStats;
             if (Array.isArray(res.examHistory)) state.examHistory = res.examHistory;
+            if (res.activeExamDraft !== undefined) state.activeExamDraft = res.activeExamDraft;
             if (res.stats) state.stats = { ...state.stats, ...res.stats };
             state.updatedAt = cloudUpdated || Date.now();
             await LocalDB.set('app_state', state);
@@ -748,8 +789,11 @@
             });
             await batch.commit();
           }
+          state.hasUnpublishedChanges = false;
+          persistState(true, false);
           setSyncLabel('✅ Catálogo publicado');
           showToast(`📢 Publicado! ${state.trails.length} trilha(s) e ${publicExams.length} simulado(s) disponíveis para todos.`, 'success');
+          App.render();
           return true;
         } catch (e) {
           setSyncLabel('⚠️ Erro ao publicar');
@@ -760,6 +804,8 @@
 
       async pullGlobalCatalog(silent = true) {
         if (!this.isSignedIn()) return 0;
+        // Se o Admin apagou algo localmente e ainda não publicou, evita reimportar do catálogo antigo
+        if (isAdminUser() && state.hasUnpublishedChanges) return 0;
         try {
           const [metaSnap, trailsSnap] = await Promise.all([
             fbDb.collection('ibam_public_meta').doc('catalog').get(),
@@ -816,10 +862,10 @@
           await batch.commit();
         }
         await userRef.collection('ibam_dados').doc('meta').set({
-          customDisciplines: [], customExams: [], seedDeleted: true, selectedRole: 'all', settings: state.settings, updatedAt: Date.now()
+          customDisciplines: [], customExams: [], seedDeleted: true, selectedRole: 'all', hasUnpublishedChanges: false, settings: state.settings, updatedAt: Date.now()
         });
         await userRef.collection('ibam_dados').doc('resultados').set({
-          progress: {}, srs: {}, errors: [], discStats: {}, examHistory: [], stats: state.stats, updatedAt: Date.now()
+          progress: {}, srs: {}, errors: [], discStats: {}, examHistory: [], activeExamDraft: null, stats: state.stats, updatedAt: Date.now()
         });
       }
     };
@@ -876,7 +922,7 @@
         if (errEl) errEl.classList.add('hidden');
         try {
           await fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-          showToast('Bem-vindo ao Estudei IBAM!', 'success');
+          showToast('Bem-vindo ao TrilhaPG!', 'success');
         } catch (e) { if (errEl) { errEl.textContent = formatAuthError(e); errEl.classList.remove('hidden'); } }
       },
       async loginEmail(isSignup) {
@@ -914,6 +960,41 @@
         html = html.replace(/\b(Administração Pública|servidor(?:es)? públicos?|União|Estados|Municípios|Prefeito|Secretário|Agente de Combate às Endemias|Agente Administrativo|fêmea|macho|SUS|Ministério da Saúde|Poder Executivo|Poder Legislativo|Poder Judiciário)\b/gi, '<span class="v-comp">$1</span>');
         html = html.replace(/\b(crase|regência|concordância|holometábolo|hematofagia|arboviroses|Dengue|Zika|Chikungunya|Febre Amarela|princípio da legalidade|impessoalidade|moralidade|publicidade|eficiência|ato administrativo|presunção de legitimidade|autoexecutoriedade|imperatividade)\b/gi, '<span class="v-conc">$1</span>');
         return html;
+      },
+
+      // Aplica destaques IBAM apenas em nós de texto dentro de um HTML já estruturado (preservando tags)
+      highlightStructuredHtml(htmlFragment) {
+        if (!htmlFragment || !htmlFragment.includes('<')) return this.applyOfflineMarks(htmlFragment || '');
+        const container = document.createElement('div');
+        container.innerHTML = htmlFragment;
+
+        const skipTags = new Set(['CODE', 'PRE', 'SCRIPT', 'STYLE', 'SPAN']);
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        let n;
+        while ((n = walker.nextNode())) {
+          if (!n.nodeValue || !n.nodeValue.trim()) continue;
+          let parent = n.parentElement;
+          let skip = false;
+          while (parent && parent !== container) {
+            if (skipTags.has(parent.tagName)) { skip = true; break; }
+            parent = parent.parentElement;
+          }
+          if (!skip) textNodes.push(n);
+        }
+
+        textNodes.forEach((node) => {
+          const marked = this.applyOfflineMarks(node.nodeValue);
+          if (marked !== escHtml(node.nodeValue)) {
+            const temp = document.createElement('span');
+            temp.innerHTML = marked;
+            const frag = document.createDocumentFragment();
+            while (temp.firstChild) frag.appendChild(temp.firstChild);
+            node.parentNode.replaceChild(frag, node);
+          }
+        });
+
+        return container.innerHTML;
       },
 
       generateOfflineQuestions(trail) {
@@ -992,7 +1073,7 @@
           .slice(0, 28000);
 
         const existingList = (trail.questions || []).map((q) => q.enunciado).join(' | ');
-        const prompt = `Atue como um especialista em concursos públicos da banca IBAM (Instituto Brasileiro de Administração Municipal).
+        const prompt = `Atue como um especialista em concursos públicos da banca IBAM (Instituto Brasileiro de Administração Municipal — Prefeitura de Praia Grande).
 Com base EXCLUSIVAMENTE no material teórico da trilha "${trail.title}" abaixo, crie até 5 questões inéditas de MÚLTIPLA ESCOLHA (4 alternativas: índices 0, 1, 2 e 3).
 Regras obrigatórias:
 1. Estilo IBAM: enunciados objetivos, claros e fiéis ao texto fornecido.
@@ -1035,7 +1116,7 @@ ${theoryText}`;
           for (let sIdx = 0; sIdx < batchSizes.length; sIdx++) {
             const qCount = batchSizes[sIdx];
             onStep(`Gerando ${slot.label} (lote ${sIdx + 1}/${batchSizes.length})...`);
-            const prompt = `Atue como especialista da banca IBAM. Crie EXATAMENTE ${qCount} questões inéditas de MÚLTIPLA ESCOLHA (4 alternativas: índices 0 a 3) para ${bp.roleName}, bloco "${slot.label}". ${focusNotes ? `Foco: ${focusNotes}` : ''}
+            const prompt = `Atue como especialista da banca IBAM (concursos municipais de Praia Grande/SP). Crie EXATAMENTE ${qCount} questões inéditas de MÚLTIPLA ESCOLHA (4 alternativas: índices 0 a 3) para ${bp.roleName}, bloco "${slot.label}". ${focusNotes ? `Foco: ${focusNotes}` : ''}
 Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topicoRef":"Assunto","enunciado":"...","opcoes":["A","B","C","D"],"respostaCorreta":0,"fundamentacao":"...","dicaBanca":"..."}]}`;
             const res = await this.callGemini(prompt);
             (res.questions || []).filter((q) => Array.isArray(q.opcoes) && q.opcoes.length >= 2).slice(0, qCount).forEach((q, i) => {
@@ -1143,18 +1224,17 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         };
       }
     };
-
     // =========================================================================
     // 8. EXPORTAÇÃO DE SIMULADOS (JSON + CADERNO DE PROVA PDF COM BOLHAS A-D)
     // =========================================================================
     const ExamExporter = {
       downloadJson(examObj) {
         if (!examObj) return;
-        const slug = (examObj.title || 'simulado_ibam').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+        const slug = (examObj.title || 'trilhapg_ibam').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
         const blob = new Blob([JSON.stringify(examObj, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `${slug || 'simulado_ibam'}.json`;
+        a.download = `${slug || 'trilhapg_ibam'}.json`;
         a.click();
         URL.revokeObjectURL(a.href);
         showToast('Simulado exportado em JSON!', 'success');
@@ -1227,7 +1307,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
     <span style="font-size:12px; font-weight:bold; color:#1e3a8a;">Caderno de Prova + Folha de Gabarito com Bolhas prontos.</span>
     <button onclick="window.print()" style="padding:8px 16px; background:#4f46e5; color:#fff; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🖨️ Imprimir / Salvar PDF</button>
   </div>
-  <div class="header"><h1>${escHtml(examObj.title)}</h1><p><strong>Banca:</strong> IBAM • <strong>Total:</strong> ${totalQ} questões • <strong>Pontuação Máxima:</strong> ${totalPts} pontos</p></div>
+  <div class="header"><h1>${escHtml(examObj.title)}</h1><p><strong>Banca:</strong> IBAM (Praia Grande) • <strong>Total:</strong> ${totalQ} questões • <strong>Pontuação Máxima:</strong> ${totalPts} pontos</p></div>
   <div class="cols">${questionsHtml}</div>
   <div class="page-break"><div class="sheet-box"><h2 class="sheet-title">Folha Oficial de Respostas — Cartão de Bolhas</h2><p class="sheet-sub">${escHtml(examObj.title)}</p><div class="sheet-fields"><div><strong>Nome:</strong> ______________________________________________________</div><div style="margin-bottom:0;"><strong>Data:</strong> ____/____/20____ &nbsp;&nbsp; <strong>Assinatura:</strong> ______________________________</div></div><div class="bubble-grid">${renderBubbleColumn(0, half)}${totalQ > 1 ? renderBubbleColumn(half, totalQ) : ''}</div></div></div>
   <div class="page-break"><h2 style="font-size:13pt; margin-bottom:10px; border-bottom:2px solid #111; padding-bottom:6px;">GABARITO OFICIAL &amp; FUNDAMENTAÇÃO</h2>${gabaritoHtml}</div>
@@ -1249,9 +1329,23 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
           const cellCls = rIdx === 0
             ? 'px-3 py-2 text-left font-black bg-indigo-50 dark:bg-indigo-950/60 text-indigo-900 dark:text-indigo-200 border border-slate-200 dark:border-slate-700'
             : 'px-3 py-2 align-top border border-slate-200 dark:border-slate-700';
-          return `<tr>${cells.map((c) => `<${tag} class="${cellCls}">${c.innerHTML.trim()}</${tag}>`).join('')}</tr>`;
+          return `<tr>${cells.map((c) => `<${tag} class="${cellCls}">${c.textContent ? escHtml(c.textContent.replace(/\s+/g, ' ').trim()) : ''}</${tag}>`).join('')}</tr>`;
         }).join('');
         return `<div class="overflow-x-auto my-3 rounded-xl border border-slate-200 dark:border-slate-700"><table class="w-full text-xs border-collapse">${rowsHtml}</table></div>`;
+      },
+
+      decorateBlockHtml(plainText, fallbackTag = 'p') {
+        const safe = escHtml(plainText);
+        if (/^(?:EXEMPLO\s+COMENTADO|GABARITO\s+COMENTADO)/i.test(plainText)) {
+          return `<div class="ibam-callout-example"><p class="text-xs sm:text-sm font-semibold">${safe}</p></div>`;
+        }
+        if (/^(?:TERM[ÔO]METRO\s+DA\s+BANCA|CHECKLIST\s+DE\s+REVIS[ÃA]O)/i.test(plainText)) {
+          return `<div class="ibam-callout-therm"><p class="text-xs sm:text-sm font-bold">${safe}</p></div>`;
+        }
+        if (fallbackTag === 'li') {
+          return `<p class="pl-5 mb-1.5">• ${safe}</p>`;
+        }
+        return `<p class="mb-2.5">${safe}</p>`;
       },
 
       extractNodesFromHtml(htmlString) {
@@ -1265,24 +1359,28 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
             const plain = (el.textContent || '').replace(/\s+/g, ' ').trim();
             if (plain) items.push({ kind: 'table', text: plain, html: this.formatWordTable(el) });
           } else if (tag === 'ul' || tag === 'ol') {
-            const lis = Array.from(el.querySelectorAll('li'));
-            lis.forEach((li) => {
+            Array.from(el.querySelectorAll('li')).forEach((li) => {
               const t = (li.textContent || '').replace(/\s+/g, ' ').trim();
-              if (t) items.push({ kind: 'li', tag: 'li', text: t, html: `<p class="pl-5 mb-1.5">• ${li.innerHTML.trim()}</p>` });
+              if (t) items.push({ kind: 'li', tag: 'li', text: t, html: this.decorateBlockHtml(t, 'li') });
             });
           } else {
             const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
-            if (t) items.push({ kind: 'block', tag, text: t, html: `<p class="mb-2.5">${el.innerHTML.trim()}</p>` });
+            if (t) items.push({ kind: 'block', tag, text: t, html: this.decorateBlockHtml(t, 'p') });
           }
         });
         return items;
+      },
+
+      extractTrilhaOrderNum(titleStr) {
+        const m = String(titleStr || '').match(/TRILHA\s+0*(\d+)/i);
+        return m ? Number(m[1]) : null;
       },
 
       parse(input, disciplineId, splitLargeTopics = false, isHtml = false) {
         const items = isHtml
           ? this.extractNodesFromHtml(input)
           : String(input || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').map((l) => l.trim()).filter(Boolean)
-              .map((text) => ({ kind: 'block', tag: 'p', text, html: `<p class="mb-2.5">${escHtml(text)}</p>` }));
+              .map((text) => ({ kind: 'block', tag: 'p', text, html: this.decorateBlockHtml(text, 'p') }));
 
         const moduleRx = /^M[ÓO]DULO\s+[IVX0-9]+\b.*$/i;
         const trilhaBannerRx = /^TRILHA\s+\d+\s*[-–—:]\s*(.+)$/i;
@@ -1369,12 +1467,16 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         let totalSubtopics = 0;
 
         trailsList.filter((tr) => tr.sections.length > 0).forEach((tr) => {
-          const builtSections = tr.sections.map((s) => ({
-            subtitulo: s.subtitulo,
-            rawText: s.rawParts.join('\n').trim(),
-            textoHtml: s.htmlParts.join('\n'),
-            notaBanca: ''
-          }));
+          const builtSections = tr.sections.map((s) => {
+            const rawJoined = s.rawParts.join('\n').trim();
+            const htmlJoined = s.htmlParts.join('\n');
+            return {
+              subtitulo: s.subtitulo,
+              rawText: rawJoined,
+              textoHtml: IBAMTheoryEngine.highlightStructuredHtml(htmlJoined),
+              notaBanca: ''
+            };
+          });
           totalSubtopics += builtSections.length;
 
           const chunks = [];
@@ -1391,6 +1493,8 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
             if (curChunk.length > 0) chunks.push(curChunk);
           }
 
+          const explicitOrder = this.extractTrilhaOrderNum(tr.title);
+
           chunks.forEach((chunk, pIdx) => {
             const partSuffix = chunks.length > 1 ? ` (Parte ${pIdx + 1}/${chunks.length})` : '';
             const totalWords = chunk.reduce((acc, s) => acc + s.rawText.split(/\s+/).length, 0);
@@ -1399,7 +1503,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
             finalTrails.push({
               id: uid(`tr_${disciplineId}`),
               disciplineId,
-              order: existingCount + finalTrails.length + 1,
+              order: explicitOrder !== null ? explicitOrder + pIdx * 0.01 : existingCount + finalTrails.length + 1,
               breadcrumb: tr.breadcrumb,
               title: `${tr.title}${partSuffix}`,
               subtitle: `${subLabel} • ~${totalWords} palavras${tr.metaNote ? ' • ' + tr.metaNote : ''}`,
@@ -1420,6 +1524,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         };
       }
     };
+
     // =========================================================================
     // 10. MOTOR SRS
     // =========================================================================
@@ -1472,7 +1577,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
     };
 
     // =========================================================================
-    // 11. PLAYER (LEITURA / QUIZ / SRS / SIMULADO ONLINE / CARTÃO-RESPOSTA BOLHAS)
+    // 11. PLAYER (LEITURA + LIDO / QUIZ / SRS / SIMULADO / BOLHAS + ATALHOS)
     // =========================================================================
     const Player = {
       mode: 'read',
@@ -1488,12 +1593,74 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
       timerRunning: false,
       timerHandle: null,
 
+      saveExamDraft() {
+        if (!['full_exam', 'bubble_sheet'].includes(this.mode) || !this.examMeta) return;
+        state.activeExamDraft = {
+          examId: this.examMeta.id,
+          mode: this.mode,
+          title: this.title,
+          examMeta: this.examMeta,
+          questions: this.questions,
+          qIndex: this.qIndex,
+          userAnswers: this.userAnswers,
+          timerSec: this.timerSec,
+          updatedAt: Date.now()
+        };
+        LocalDB.set('app_state', state);
+      },
+
+      clearExamDraft() {
+        state.activeExamDraft = null;
+        persistState(true);
+      },
+
+      resumeExamDraft() {
+        const draft = state.activeExamDraft;
+        if (!draft || !Array.isArray(draft.questions) || !draft.questions.length) return;
+        this.mode = draft.mode || 'full_exam';
+        this.trail = null;
+        this.examMeta = draft.examMeta || { id: draft.examId, title: draft.title, questions: draft.questions };
+        this.title = draft.title;
+        this.questions = draft.questions;
+        this.qIndex = draft.qIndex || 0;
+        this.hits = 0;
+        this.answered = false;
+        this.userAnswers = draft.userAnswers || {};
+        this.stopTimer();
+        const badge = document.getElementById('player-exam-timer');
+        if (draft.timerSec && draft.timerSec > 0) {
+          this.timerSec = draft.timerSec;
+          this.timerRunning = true;
+          badge.classList.remove('hidden');
+          this.updateExamTimerUI();
+          this.timerHandle = setInterval(() => {
+            if (this.timerSec > 0) { this.timerSec--; this.updateExamTimerUI(); }
+            else { this.stopTimer(); this.finishFullExam(); }
+          }, 1000);
+        } else {
+          badge.classList.add('hidden');
+        }
+        document.getElementById('player-overlay').classList.remove('hidden');
+        if (this.mode === 'bubble_sheet') this.renderBubbleSheet();
+        else this.renderQuestion();
+      },
+
+      toggleSectionRead(trailId, secIdx) {
+        if (!state.progress[trailId]) state.progress[trailId] = { mastered: false, bestScore: 0, readSections: {} };
+        if (!state.progress[trailId].readSections) state.progress[trailId].readSections = {};
+        state.progress[trailId].readSections[secIdx] = !state.progress[trailId].readSections[secIdx];
+        persistState(true);
+        if (!document.getElementById('player-overlay').classList.contains('hidden') && this.mode === 'read') {
+          this.renderRead();
+        }
+      },
+
       openTrailRead(trailId) {
         const t = state.trails.find((x) => x.id === trailId);
         if (!t) return;
         this.stopTimer();
         this.mode = 'read'; this.trail = t; this.examMeta = null; this.title = t.title;
-        this.timerSec = (t.readingMin || 5) * 60; this.timerRunning = false;
+        this.timerSec = (t.readingMin || 6) * 60; this.timerRunning = false;
         document.getElementById('player-exam-timer').classList.add('hidden');
         document.getElementById('player-overlay').classList.remove('hidden');
         this.renderRead();
@@ -1555,6 +1722,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         this.mode = 'full_exam'; this.trail = null; this.examMeta = examObj; this.title = examObj.title;
         this.questions = examObj.questions; this.qIndex = 0; this.hits = 0; this.answered = false; this.userAnswers = {};
         this.startExamClock(examObj.durationMin || 180);
+        this.saveExamDraft();
         document.getElementById('player-overlay').classList.remove('hidden');
         this.renderQuestion();
       },
@@ -1570,7 +1738,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
               Cole o gabarito oficial de uma prova impressa ou PDF externo (ex.: <code>1-A, 2-B, 3-C, 4-D</code> ou <code>ABCD...</code>; use <code>X</code> para questão anulada) e preencha suas bolhas para calcular a nota na hora.
             </p>
             <div class="space-y-2.5">
-              <input id="qk-title" placeholder="Título da Prova (ex: Prova IBAM Prefeitura 2025)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold" />
+              <input id="qk-title" placeholder="Título da Prova (ex: Prova IBAM Praia Grande 2025)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold" />
               <div class="grid grid-cols-3 gap-2">
                 <div>
                   <label class="text-[10px] font-extrabold text-slate-400 block mb-1">Alternativas</label>
@@ -1622,7 +1790,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
           const examObj = IBAMTheoryEngine.parseExternalAnswerKey(raw, opts, profile, title, timerMin);
           if (shouldSave) {
             state.customExams.unshift(examObj);
-            persistState(true);
+            persistState(true, isAdminUser());
           }
           Modal.close();
           showToast(`Cartão-resposta criado com ${examObj.questions.length} questões!`, 'success');
@@ -1638,6 +1806,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
           this.userAnswers = {};
           this.startExamClock(examObj.durationMin || 0);
         }
+        this.saveExamDraft();
         document.getElementById('player-overlay').classList.remove('hidden');
         this.renderBubbleSheet();
       },
@@ -1645,11 +1814,13 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
       selectBubble(qIdx, optIdx) {
         if (this.userAnswers[qIdx] === optIdx) delete this.userAnswers[qIdx];
         else this.userAnswers[qIdx] = optIdx;
+        this.saveExamDraft();
         this.renderBubbleSheet();
       },
 
       clearAllBubbles() {
         this.userAnswers = {};
+        this.saveExamDraft();
         this.renderBubbleSheet();
       },
 
@@ -1721,7 +1892,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
               <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div>
                   <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Folha de Respostas Oficial</p>
-                  <p class="text-xs font-bold text-slate-500">Toque na letra correspondente ao seu caderno de questões. Toque novamente para desmarcar.</p>
+                  <p class="text-xs font-bold text-slate-500">Toque na letra correspondente ao seu caderno (ou pressione ${letters.join(', ')} no teclado).</p>
                 </div>
                 <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-black">Alternativas ${letters[0]}–${letters[letters.length - 1]}</span>
               </div>
@@ -1740,6 +1911,9 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
 
       close() {
         this.stopTimer();
+        if (['full_exam', 'bubble_sheet'].includes(this.mode) && Object.keys(this.userAnswers).length > 0) {
+          this.saveExamDraft();
+        }
         document.getElementById('player-exam-timer').classList.add('hidden');
         document.getElementById('player-overlay').classList.add('hidden');
         App.render();
@@ -1807,6 +1981,10 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const fontSize = state.settings.fontSize || 16;
         const qCount = Math.min(5, (t.questions || []).length);
         const admin = isAdminUser();
+        const readMap = state.progress[t.id]?.readSections || {};
+        const secs = t.sections || [];
+        const readDoneCount = secs.filter((_, idx) => !!readMap[idx]).length;
+        const readPct = secs.length ? Math.round((readDoneCount / secs.length) * 100) : 0;
 
         document.getElementById('player-header-info').innerHTML = `
           <p class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 truncate">${escHtml(d.short)} • ${escHtml(t.breadcrumb || '')}</p>
@@ -1829,24 +2007,38 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
               </div>
             </div>
 
+            <!-- Barra de Progresso de Leitura das Unidades -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 space-y-1.5">
+              <div class="flex justify-between text-[11px] font-extrabold">
+                <span class="text-slate-500">Leitura do tópico: ${readDoneCount} de ${secs.length} unidade(s) marcada(s)</span>
+                <span class="text-emerald-600 dark:text-emerald-400">${readPct}%</span>
+              </div>
+              <div class="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 transition-all" style="width:${readPct}%"></div>
+              </div>
+            </div>
+
             <div class="space-y-4">
-              ${(t.sections || []).map((sec, idx) => `
-                <article class="bg-white dark:bg-slate-900 rounded-3xl border ${t.isHighPriority ? 'border-orange-300 dark:border-orange-800/80' : 'border-slate-200 dark:border-slate-800'} p-5 shadow-sm space-y-3">
-                  <div class="flex flex-wrap items-center justify-between gap-2">
-                    <span class="px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-black">${escHtml(sec.subtitulo || `Unidade ${idx + 1}`)}</span>
-                    <div class="flex items-center gap-1.5">
-                      ${t.isHighPriority ? '<span class="px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-[10px] font-black">⭐ Prioritário</span>' : ''}
-                      ${(t.sections || []).length > 1 ? `<button onclick="App.confirmDeleteSection('${t.id}', ${idx})" class="px-2.5 py-1 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-300 text-[11px] font-extrabold" title="Excluir esta unidade">🗑️ Excluir unidade</button>` : ''}
+              ${secs.map((sec, idx) => {
+                const isDone = !!readMap[idx];
+                return `
+                  <article class="bg-white dark:bg-slate-900 rounded-3xl border ${isDone ? 'border-emerald-300 dark:border-emerald-800/80' : t.isHighPriority ? 'border-orange-300 dark:border-orange-800/80' : 'border-slate-200 dark:border-slate-800'} p-5 shadow-sm space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                      <span class="px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-black">${escHtml(sec.subtitulo || `Unidade ${idx + 1}`)}</span>
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        <button onclick="Player.toggleSectionRead('${t.id}', ${idx})" class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold transition ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-50'}">${isDone ? '✓ Lida' : 'Marcar lida'}</button>
+                        ${secs.length > 1 ? `<button onclick="App.confirmDeleteSection('${t.id}', ${idx})" class="px-2.5 py-1 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-300 text-[11px] font-extrabold" title="Excluir esta unidade">🗑️ Excluir unidade</button>` : ''}
+                      </div>
                     </div>
-                  </div>
-                  <div class="theory-text leading-relaxed text-slate-800 dark:text-slate-200" style="font-size:${fontSize}px">
-                    ${sec.textoHtml && sec.textoHtml.includes('<')
-                      ? sec.textoHtml
-                      : this.formatParagraphs(IBAMTheoryEngine.applyOfflineMarks(sec.rawText))}
-                  </div>
-                  ${sec.notaBanca ? `<div class="pegadinha-note p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs font-semibold text-amber-900 dark:text-amber-200">${escHtml(sec.notaBanca)}</div>` : ''}
-                </article>
-              `).join('')}
+                    <div class="theory-text leading-relaxed text-slate-800 dark:text-slate-200" style="font-size:${fontSize}px">
+                      ${sec.textoHtml && sec.textoHtml.includes('<')
+                        ? sec.textoHtml
+                        : this.formatParagraphs(IBAMTheoryEngine.applyOfflineMarks(sec.rawText))}
+                    </div>
+                    ${sec.notaBanca ? `<div class="pegadinha-note p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs font-semibold text-amber-900 dark:text-amber-200">${escHtml(sec.notaBanca)}</div>` : ''}
+                  </article>
+                `;
+              }).join('')}
             </div>
 
             <button onclick="Player.openTrailQuiz('${t.id}')" class="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm shadow-lg transition">
@@ -1859,6 +2051,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
       jumpToQuestion(idx) {
         if (idx < 0 || idx >= this.questions.length) return;
         this.qIndex = idx;
+        this.saveExamDraft();
         this.renderQuestion();
       },
 
@@ -1951,6 +2144,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         if (this.mode === 'full_exam') {
           this.userAnswers[this.qIndex] = Number(choiceIdx);
           if (this.qIndex < this.questions.length - 1) this.qIndex++;
+          this.saveExamDraft();
           this.renderQuestion();
           return;
         }
@@ -2003,6 +2197,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
       finishFullExam() {
         this.stopTimer();
         document.getElementById('player-exam-timer').classList.add('hidden');
+        state.activeExamDraft = null;
 
         const isQuickExternal = !!this.examMeta?.isQuickKeyOnly;
         const total = this.questions.length;
@@ -2143,9 +2338,9 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const pct = total ? Math.round((this.hits / total) * 100) : 0;
         let masteredNow = false;
         if (this.mode === 'trail_quiz' && this.trail?.id) {
-          const prev = state.progress[this.trail.id] || { mastered: false, bestScore: 0 };
+          const prev = state.progress[this.trail.id] || { mastered: false, bestScore: 0, readSections: {} };
           masteredNow = pct === 100;
-          state.progress[this.trail.id] = { mastered: prev.mastered || masteredNow, bestScore: Math.max(prev.bestScore || 0, pct), updatedAt: todayISO(0) };
+          state.progress[this.trail.id] = { ...prev, mastered: prev.mastered || masteredNow, bestScore: Math.max(prev.bestScore || 0, pct), updatedAt: todayISO(0) };
           if (masteredNow) { this.addXP(50); SRSEngine.enqueueTrail(this.trail); }
           persistState(true);
         }
@@ -2166,14 +2361,49 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
       }
     };
 
+    // Atalhos de teclado no Player quando aberto
+    window.addEventListener('keydown', (e) => {
+      if (document.getElementById('player-overlay')?.classList.contains('hidden')) return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      const k = e.key.toUpperCase();
+      if (Player.mode === 'full_exam') {
+        const idx = ['A', 'B', 'C', 'D', 'E'].indexOf(k);
+        if (idx >= 0 && idx < (Player.questions[Player.qIndex]?.opcoes?.length || 4)) {
+          e.preventDefault();
+          Player.answer(idx);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          Player.jumpToQuestion(Player.qIndex + 1);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          Player.jumpToQuestion(Player.qIndex - 1);
+        }
+      } else if (Player.mode === 'bubble_sheet') {
+        const idx = ['A', 'B', 'C', 'D', 'E'].indexOf(k);
+        const maxOpts = (Player.examMeta?.optionsCount === 5) ? 5 : 4;
+        if (idx >= 0 && idx < maxOpts) {
+          e.preventDefault();
+          Player.selectBubble(Player.qIndex, idx);
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          Player.qIndex = Math.min(Player.questions.length - 1, Player.qIndex + 1);
+          Player.renderBubbleSheet();
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          Player.qIndex = Math.max(0, Player.qIndex - 1);
+          Player.renderBubbleSheet();
+        }
+      }
+    });
     // =========================================================================
-    // 12. CONTROLADOR PRINCIPAL (6 ABAS + EXCLUSÕES + EXPORTAÇÃO JSON)
+    // 12. CONTROLADOR PRINCIPAL (6 ABAS + EDITAL VERTICALIZADO + MÚLTIPLOS DOCX)
     // =========================================================================
     const App = {
       tab: 'trilhas',
       selectedDiscId: null,
       revSubTab: 'simulados',
       mgrSubTab: 'ai_exam',
+      showVerticalSyllabus: false,
       bankFilterDisc: 'all',
       bankOnlyPriority: false,
       importDraft: null,
@@ -2263,6 +2493,45 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         else root.innerHTML = this.viewAjustes();
       },
 
+      renderVerticalSyllabusCard(roleId) {
+        const activeRole = roleId === 'ace' ? 'ace' : 'ag_adm';
+        const items = PRAIA_GRANDE_SYLLABUS[activeRole] || [];
+        const coveredCount = items.filter((it) => state.trails.some((t) => t.disciplineId === it.discId)).length;
+        const pct = items.length ? Math.round((coveredCount / items.length) * 100) : 0;
+
+        return `
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-indigo-200 dark:border-indigo-800/80 p-5 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="font-black text-sm">📌 Edital Verticalizado — Praia Grande (${activeRole === 'ace' ? 'ACE' : 'Agente Administrativo'})</h3>
+                <p class="text-[11px] text-slate-500">${coveredCount} de ${items.length} eixos do edital com trilhas cadastradas (${pct}%)</p>
+              </div>
+              <button onclick="App.showVerticalSyllabus=false; App.render();" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-extrabold">Fechar</button>
+            </div>
+            <div class="space-y-1.5">
+              ${items.map((it) => {
+                const d = getDiscipline(it.discId);
+                const dTrails = state.trails.filter((t) => t.disciplineId === it.discId);
+                const doneTrails = dTrails.filter((t) => state.progress[t.id]?.mastered).length;
+                const hasTrail = dTrails.length > 0;
+                return `
+                  <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between gap-2 text-xs">
+                    <div class="flex items-start gap-2 min-w-0">
+                      <span class="shrink-0">${hasTrail ? (doneTrails === dTrails.length ? '✅' : '📘') : '⬜'}</span>
+                      <div class="min-w-0">
+                        <p class="font-extrabold truncate">${escHtml(it.topic)}</p>
+                        <p class="text-[10px] text-slate-400">${escHtml(d.short)} • ${dTrails.length} trilha(s) (${doneTrails} concluída(s))</p>
+                      </div>
+                    </div>
+                    <button onclick="App.openDiscipline('${it.discId}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-black shrink-0">Abrir</button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      },
+
       // --- ABA 1: TRILHAS ---
       viewTrilhas() {
         const currentRole = state.selectedRole || 'all';
@@ -2272,25 +2541,49 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const visibleTrails = state.trails.filter((t) => visibleDiscIds.has(t.disciplineId));
         const mastered = visibleTrails.filter((t) => state.progress[t.id]?.mastered).length;
         const pct = visibleTrails.length ? Math.round((mastered / visibleTrails.length) * 100) : 0;
+        const draft = state.activeExamDraft;
 
         return `
           <div class="space-y-4 animate-fade-in">
+            ${draft && Array.isArray(draft.questions) && draft.questions.length > 0 ? `
+              <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div>
+                  <p class="font-black text-amber-900 dark:text-amber-200">📝 Prova / Cartão-Resposta em andamento: ${escHtml(draft.title)}</p>
+                  <p class="text-[11px] text-amber-800/80 dark:text-amber-300/80">${Object.keys(draft.userAnswers || {}).length} de ${draft.questions.length} questões respondidas</p>
+                </div>
+                <div class="flex gap-1.5">
+                  <button onclick="Player.resumeExamDraft()" class="px-3.5 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-black">▶ Continuar</button>
+                  <button onclick="Player.clearExamDraft(); App.render();" class="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 font-bold text-slate-500">Descartar</button>
+                </div>
+              </div>
+            ` : ''}
+
+            ${isAdminUser() && state.hasUnpublishedChanges ? `
+              <div class="bg-orange-50 dark:bg-orange-950/40 border border-orange-300 dark:border-orange-800 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <p class="font-extrabold text-orange-800 dark:text-orange-200">⚠️ Você fez alterações locais no catálogo. Publique para atualizar os demais usuários.</p>
+                <button onclick="CloudSync.publishGlobalCatalog()" class="px-3.5 py-1.5 rounded-xl bg-orange-600 text-white font-black">📢 Publicar Agora</button>
+              </div>
+            ` : ''}
+
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 flex flex-wrap items-center justify-between gap-2 shadow-sm">
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="text-[11px] font-black text-slate-400 px-2">Cargo:</span>
                 ${ROLES.map((r) => `<button onclick="App.setRole('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentRole === r.id ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}">${escHtml(r.label)}</button>`).join('')}
               </div>
-              <div class="flex items-center gap-1.5">
-                <button onclick="Player.openQuickKeyModal()" class="px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-black">🔘 Cartão Bolhas Avulso</button>
-                <button onclick="App.tab='revisoes'; App.revSubTab='simulados'; App.render();" class="px-3 py-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-xs font-black">🏆 Simulados IBAM</button>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button onclick="App.showVerticalSyllabus=!App.showVerticalSyllabus; App.render();" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-black">📌 Edital Verticalizado</button>
+                <button onclick="Player.openQuickKeyModal()" class="px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-black">🔘 Cartão Bolhas</button>
+                <button onclick="App.tab='revisoes'; App.revSubTab='simulados'; App.render();" class="px-3 py-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-xs font-black">🏆 Simulados</button>
               </div>
             </div>
 
+            ${this.showVerticalSyllabus ? this.renderVerticalSyllabusCard(currentRole === 'ace' ? 'ace' : 'ag_adm') : ''}
+
             <div class="bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-3xl p-5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-200">Concursos Banca IBAM • 1 Tópico do Edital = 1 Trilha Integral</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-200">TrilhaPG • Concursos Prefeitura de Praia Grande (Banca IBAM)</p>
                 <h2 class="font-black text-xl sm:text-2xl mt-0.5">Suas Trilhas Teóricas</h2>
-                <p class="text-xs text-indigo-100 mt-1">${mastered} de ${visibleTrails.length} trilhas dominadas (${pct}%)</p>
+                <p class="text-xs text-indigo-100 mt-1">${mastered} de ${visibleTrails.length} trilhas dominadas (${pct}%) • 1 tópico do edital = 1 trilha integral</p>
               </div>
               <div class="flex gap-2">
                 <button onclick="App.openNewDisciplineModal()" class="px-3.5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-xs font-extrabold backdrop-blur">+ Nova Matéria</button>
@@ -2300,7 +2593,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
 
             <div class="responsive-grid-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               ${discs.map((d) => {
-                const list = state.trails.filter((t) => t.disciplineId === d.id);
+                const list = state.trails.filter((t) => t.disciplineId === d.id).sort((a, b) => (a.order || 0) - (b.order || 0));
                 const done = list.filter((t) => state.progress[t.id]?.mastered).length;
                 const p = list.length ? Math.round((done / list.length) * 100) : 0;
                 const isCustom = (state.customDisciplines || []).some((c) => c.id === d.id);
@@ -2367,8 +2660,10 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
             ` : `
               <div class="responsive-grid-2 grid grid-cols-1 lg:grid-cols-2 gap-3.5">
                 ${list.map((t, idx) => {
-                  const prog = state.progress[t.id] || { mastered: false, bestScore: 0 };
+                  const prog = state.progress[t.id] || { mastered: false, bestScore: 0, readSections: {} };
                   const unlocked = idx === 0 || !!state.progress[list[idx - 1].id]?.mastered;
+                  const readCount = Object.values(prog.readSections || {}).filter(Boolean).length;
+                  const secTotal = (t.sections || []).length;
                   return `
                     <div class="bg-white dark:bg-slate-900 rounded-2xl border ${prog.mastered ? 'border-emerald-300 dark:border-emerald-800' : unlocked ? 'border-slate-200 dark:border-slate-800' : 'opacity-70 border-slate-200/60'} p-4 shadow-sm flex flex-col justify-between gap-3">
                       <div>
@@ -2377,7 +2672,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
                           <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-100 dark:bg-slate-800">${t.origemIa ? '✨ IA' : '⚡ Integral'}</span>
                         </div>
                         <h3 class="font-black text-sm sm:text-base">${escHtml(t.title)}</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">${escHtml(t.subtitle)} • ${(t.questions || []).length} questões</p>
+                        <p class="text-xs text-slate-500 mt-0.5">${escHtml(t.subtitle)} • ${readCount}/${secTotal} lidas • ${(t.questions || []).length} questões</p>
                       </div>
                       <div class="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                         ${unlocked ? `
@@ -2600,7 +2895,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         Player.openQueue('simulado', pool, '🎯 Treino Rápido');
       },
 
-      // --- ABA 3: IMPORTAR APOSTILA ---
+      // --- ABA 3: IMPORTAR APOSTILA (SUPORTA MÚLTIPLOS .DOCX) ---
       viewImportar() {
         const discs = getAllDisciplines(state.selectedRole || 'all');
         const draft = this.importDraft;
@@ -2619,8 +2914,9 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
                 </label>
               </div>
               <div id="docx-dropzone" class="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-2xl p-6 text-center bg-indigo-50/40 dark:bg-indigo-950/20 cursor-pointer">
-                <input id="docx-input" type="file" accept=".docx" class="hidden" onchange="App.handleDocxFile(this.files[0])" />
-                <p class="text-xs sm:text-sm font-black">📄 Clique ou arraste sua apostila .docx aqui</p>
+                <input id="docx-input" type="file" accept=".docx" multiple class="hidden" onchange="App.handleDocxFiles(this.files)" />
+                <p class="text-xs sm:text-sm font-black">📄 Clique ou arraste um ou mais arquivos .docx aqui</p>
+                <p class="text-[11px] text-slate-400 mt-1">Organiza automaticamente por tópico do edital preservando tabelas, listas e texto literal.</p>
               </div>
               <details class="rounded-2xl border border-slate-200 dark:border-slate-800 p-3">
                 <summary class="text-xs font-extrabold cursor-pointer">✍️ Ou colar texto manualmente</summary>
@@ -2663,15 +2959,31 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         if (!dz || !inp) return;
         dz.onclick = () => inp.click();
         dz.ondragover = (e) => e.preventDefault();
-        dz.ondrop = (e) => { e.preventDefault(); if (e.dataTransfer.files?.[0]) this.handleDocxFile(e.dataTransfer.files[0]); };
+        dz.ondrop = (e) => { e.preventDefault(); if (e.dataTransfer.files?.length) this.handleDocxFiles(e.dataTransfer.files); };
       },
 
-      async handleDocxFile(file) {
-        if (!file || !file.name.toLowerCase().endsWith('.docx')) return;
-        const buf = await file.arrayBuffer();
-        const res = await mammoth.convertToHtml({ arrayBuffer: buf });
-        this.importDraft = ApostilaParser.parse(res.value || '', this.importDestDisc, this.importSplitLarge, true);
-        showToast(`${this.importDraft.trails.length} trilha(s) extraídas com ${this.importDraft.mappedSubtopics} unidade(s)!`, 'success');
+      async handleDocxFiles(fileList) {
+        const files = Array.from(fileList || []).filter((f) => f.name.toLowerCase().endsWith('.docx'));
+        if (!files.length) { showToast('Selecione ao menos um arquivo .docx válido.', 'error'); return; }
+
+        const combinedTrails = [];
+        let totalSubtopics = 0;
+
+        for (const file of files) {
+          const buf = await file.arrayBuffer();
+          const res = await mammoth.convertToHtml({ arrayBuffer: buf });
+          const parsed = ApostilaParser.parse(res.value || '', this.importDestDisc, this.importSplitLarge, true);
+          combinedTrails.push(...parsed.trails);
+          totalSubtopics += parsed.totalSubtopics;
+        }
+
+        combinedTrails.sort((a, b) => (a.order || 0) - (b.order || 0));
+        this.importDraft = {
+          totalSubtopics,
+          mappedSubtopics: combinedTrails.reduce((s, t) => s + t.sections.length, 0),
+          trails: combinedTrails
+        };
+        showToast(`${files.length} arquivo(s) lido(s): ${combinedTrails.length} trilha(s) e ${totalSubtopics} unidade(s)!`, 'success');
         this.render();
       },
 
@@ -2698,7 +3010,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
           state.trails.push(t);
         }
         this.importDraft = null;
-        persistState(true);
+        persistState(true, isAdminUser());
         showToast(`${chosen.length} trilha(s) adicionada(s)!`, 'success');
         this.selectedDiscId = this.importDestDisc;
         this.setTab('trilhas');
@@ -2734,7 +3046,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         }
         state.trails = state.trails.filter((t) => t.id !== trailId);
         delete state.progress[trailId];
-        persistState(true);
+        persistState(true, isAdminUser());
         showToast('Trilha excluída.', 'info');
         if (!document.getElementById('player-overlay').classList.contains('hidden')) Player.close();
         else this.render();
@@ -2772,7 +3084,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const totalWords = t.sections.reduce((acc, s) => acc + (s.rawText || '').split(/\s+/).length, 0);
         t.subtitle = `${t.sections.length === 1 ? '1 unidade' : t.sections.length + ' unidades'} • ~${totalWords} palavras`;
         t.readingMin = Math.min(25, Math.max(5, Math.ceil(totalWords / 170)));
-        persistState(true);
+        persistState(true, isAdminUser());
         showToast('Unidade removida.', 'info');
         if (!document.getElementById('player-overlay').classList.contains('hidden') && Player.mode === 'read') Player.renderRead();
         else this.render();
@@ -2810,7 +3122,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         state.errors = (state.errors || []).filter((id) => !qIds.has(id));
         qIds.forEach((qid) => delete state.srs[qid]);
         state.trails = state.trails.filter((t) => t.disciplineId !== discId);
-        persistState(true);
+        persistState(true, isAdminUser());
         showToast(`${toRemove.length} trilha(s) removida(s).`, 'info');
         this.render();
       },
@@ -2838,7 +3150,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         this.deleteAllTrailsInDisc(id);
         state.customDisciplines = (state.customDisciplines || []).filter((d) => d.id !== id);
         if (this.selectedDiscId === id) this.selectedDiscId = null;
-        persistState(true);
+        persistState(true, isAdminUser());
         showToast('Matéria removida.', 'info');
         this.render();
       },
@@ -2858,7 +3170,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `trilhas_${slug || discId}_${todayISO(0)}.json`;
+        a.download = `trilhapg_${slug || discId}_${todayISO(0)}.json`;
         a.click();
         URL.revokeObjectURL(a.href);
         showToast(`${list.length} trilha(s) de "${d.short}" exportadas em JSON!`, 'success');
@@ -2872,7 +3184,10 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         return `
           <div class="space-y-4 animate-fade-in">
             <div class="bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 rounded-3xl p-5 flex flex-wrap items-center justify-between gap-3">
-              <div><h2 class="font-black text-lg">👑 Publicação Oficial Compartilhada</h2><p class="text-xs font-semibold">Envia suas ${state.trails.length} trilha(s) e ${customExams.length} simulado(s) para todos os usuários logados.</p></div>
+              <div>
+                <h2 class="font-black text-lg">👑 Publicação Oficial Compartilhada ${state.hasUnpublishedChanges ? '• <span class="underline">Alterações Pendentes</span>' : ''}</h2>
+                <p class="text-xs font-semibold">Envia suas ${state.trails.length} trilha(s) e ${customExams.length} simulado(s) para todos os usuários logados.</p>
+              </div>
               <button onclick="CloudSync.publishGlobalCatalog()" class="px-5 py-3 rounded-2xl bg-slate-950 text-white text-xs font-black">📢 Publicar para Todos</button>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
@@ -2887,7 +3202,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
                     <option value="ag_adm" ${this.aiExamRole === 'ag_adm' ? 'selected' : ''}>🏢 Agente Administrativo (30 questões • 100 pts)</option>
                     <option value="ace" ${this.aiExamRole === 'ace' ? 'selected' : ''}>🦟 Agente de Combate às Endemias — ACE (40 questões • 100 pts)</option>
                   </select>
-                  <input id="ai-exam-focus" placeholder="Temas prioritários opcionais..." class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs" />
+                  <input id="ai-exam-focus" placeholder="Temas prioritários opcionais (ex: LC 973/2023, Crase, Dengue)..." class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs" />
                   <div id="ai-exam-status" class="hidden text-xs font-extrabold text-amber-600"></div>
                   <button id="btn-run-ai-exam" onclick="App.runGenerateFullExamAI()" class="w-full py-3 rounded-2xl bg-indigo-600 text-white text-xs font-black">🚀 Gerar Simulado (${selBp.totalQuestions}q) via IA</button>
                 </div>
@@ -2933,7 +3248,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
             if (idx >= 0) state.trails[idx] = cleanTrail;
             else state.trails.push(cleanTrail);
           });
-          persistState(true);
+          persistState(true, true);
           showToast(`${list.length} trilha(s) importada(s)!`, 'success');
           this.render();
         } catch (e) { showToast('Erro no JSON: ' + e.message, 'error'); }
@@ -2948,7 +3263,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         try {
           const examObj = await IBAMTheoryEngine.generateFullExamWithAI(this.aiExamRole, focusNotes, (msg) => { if (statusEl) statusEl.textContent = msg; });
           state.customExams.unshift(examObj);
-          persistState(true);
+          persistState(true, true);
           showToast('Simulado gerado!', 'success');
         } catch (e) { showToast('Erro IA: ' + e.message, 'error'); }
         finally { this.aiExamBusy = false; this.render(); }
@@ -2963,18 +3278,18 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
               questions: (ex.questions || []).map((q, i) => ({ id: uid(`q_${i}`), tipo: 'multiple_choice', disciplineId: q.disciplineId || 'portugues', weight: Number(q.weight) || 2, topicoRef: q.topicoRef || `Q${i + 1}`, enunciado: q.enunciado, opcoes: q.opcoes || [], respostaCorreta: Number(q.respostaCorreta) || 0, fundamentacao: q.fundamentacao || '', dicaBanca: q.dicaBanca || '' }))
             });
           });
-          persistState(true);
+          persistState(true, isAdminUser());
           showToast('Simulado salvo!', 'success');
           this.render();
         } catch (e) { showToast('JSON inválido: ' + e.message, 'error'); }
       },
 
-      deleteCustomExam(examId) { state.customExams = state.customExams.filter((e) => e.id !== examId); persistState(true); this.render(); },
+      deleteCustomExam(examId) { state.customExams = state.customExams.filter((e) => e.id !== examId); persistState(true, isAdminUser()); this.render(); },
       promptUpgradeAI(trailId) { this.runUpgradeAI(trailId); },
       async runUpgradeAI(trailId) {
         const t = state.trails.find((x) => x.id === trailId);
         if (!t) return;
-        try { await IBAMTheoryEngine.upgradeTrailWithAI(t, false); persistState(true); showToast('Questões IBAM geradas!', 'success'); this.render(); }
+        try { await IBAMTheoryEngine.upgradeTrailWithAI(t, false); persistState(true, isAdminUser()); showToast('Questões IBAM geradas!', 'success'); this.render(); }
         catch (e) { showToast('Erro Gemini: ' + e.message, 'error'); }
       },
 
@@ -2993,7 +3308,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         if (!short) return;
         const id = uid('disc');
         state.customDisciplines.push({ id, short, name: document.getElementById('nd-name')?.value || short, icon: '📘', roles: ['ag_adm', 'ace'] });
-        this.importDestDisc = id; persistState(true); Modal.close(); this.render();
+        this.importDestDisc = id; persistState(true, isAdminUser()); Modal.close(); this.render();
       },
 
       // --- ABA 5: ERROS ---
@@ -3010,7 +3325,7 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         `;
       },
 
-      // --- ABA 6: AJUSTES ---
+      // --- ABA 6: AJUSTES (BACKUP + RESTAURAÇÃO + LIMPEZA SEGURA) ---
       viewAjustes() {
         const gKey = localStorage.getItem(LS_KEYS.GEMINI_KEY) || '';
         const admin = isAdminUser();
@@ -3025,10 +3340,26 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
                 </div>
               </div>
             ` : ''}
-            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 flex flex-wrap gap-2">
-              <button onclick="PWAInstaller.promptInstall()" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">📲 Instalar App</button>
-              <button onclick="App.exportBackup()" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">⬇️ Backup JSON</button>
-              <button onclick="AuthUI.logout()" class="px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold">🔒 Sair</button>
+
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+              <h3 class="font-black text-sm">💾 Backup JSON, Instalador PWA &amp; Sessão</h3>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="PWAInstaller.promptInstall()" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">📲 Instalar App</button>
+                <button onclick="App.exportBackup()" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">⬇️ Exportar Backup</button>
+                <label class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-extrabold cursor-pointer">
+                  ⬆️ Restaurar Backup
+                  <input type="file" accept=".json" class="hidden" onchange="App.importBackup(this.files[0])" />
+                </label>
+                <button onclick="AuthUI.logout()" class="px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold">🔒 Sair</button>
+              </div>
+            </div>
+
+            <div class="bg-rose-50 dark:bg-rose-950/20 rounded-3xl border border-rose-200 dark:border-rose-900 p-5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="font-black text-sm text-rose-700 dark:text-rose-400">⚠️ Zona de Perigo</h3>
+                <p class="text-xs text-rose-600/80 dark:text-rose-300/80">Apaga trilhas, progresso, SRS, erros e simulados deste dispositivo e da nuvem.</p>
+              </div>
+              <button onclick="App.openWipeModal()" class="px-4 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-black">🗑️ Limpar Tudo</button>
             </div>
           </div>
         `;
@@ -3047,9 +3378,54 @@ Retorne APENAS JSON: {"questions":[{"disciplineId":"${slot.defaultDiscId}","topi
         const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `estudei_ibam_backup_${todayISO(0)}.json`;
+        a.download = `trilhapg_ibam_backup_${todayISO(0)}.json`;
         a.click();
         URL.revokeObjectURL(a.href);
+        showToast('Backup exportado!', 'success');
+      },
+
+      async importBackup(file) {
+        if (!file) return;
+        try {
+          const data = JSON.parse(await file.text());
+          if (!Array.isArray(data.trails)) throw new Error('Arquivo de backup inválido.');
+          state = { ...createEmptyState(), ...data };
+          persistState(true, false);
+          showToast(`Backup restaurado (${state.trails.length} trilhas)!`, 'success');
+          this.render();
+        } catch (e) {
+          showToast('Erro ao restaurar backup: ' + e.message, 'error');
+        }
+      },
+
+      openWipeModal() {
+        Modal.open(`
+          <div class="space-y-4">
+            <h3 class="font-black text-lg text-rose-600">🗑️ Limpar Tudo</h3>
+            <p class="text-xs text-slate-500">Esta ação apaga trilhas, progresso, SRS, erros e simulados no dispositivo e na nuvem. Digite <strong>ZERAR</strong> para confirmar:</p>
+            <input id="wipe-confirm-input" placeholder="Digite ZERAR" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-rose-300 text-xs font-black uppercase" />
+            <div class="flex gap-2">
+              <button onclick="App.executeWipe()" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-black">Confirmar Limpeza</button>
+              <button onclick="Modal.close()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold">Cancelar</button>
+            </div>
+          </div>
+        `);
+      },
+
+      async executeWipe() {
+        if ((document.getElementById('wipe-confirm-input')?.value || '').trim().toUpperCase() !== 'ZERAR') {
+          showToast('Digite ZERAR exatamente para confirmar.', 'warn');
+          return;
+        }
+        state = createEmptyState();
+        await LocalDB.clear();
+        await LocalDB.set('app_state', state);
+        rebuildQuestionBank();
+        if (CloudSync.isSignedIn()) await CloudSync.wipeCloud();
+        Modal.close();
+        this.selectedDiscId = null;
+        showToast('Dados zerados com sucesso!', 'success');
+        this.render();
       }
     };
 
